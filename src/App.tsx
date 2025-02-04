@@ -28,6 +28,7 @@ import Statements from "./pages/Statements";
 import Notifications from "./pages/Notifications";
 import Login from "./pages/Login";
 import TenantDashboard from "./pages/tenant/TenantDashboard";
+import TenantMaintenance from "./pages/tenant/TenantMaintenance";
 import TenantLayout from "./components/TenantLayout";
 
 const queryClient = new QueryClient();
@@ -68,6 +69,7 @@ const App = () => (
           {/* Tenant Portal Routes */}
           <Route path="/tenant" element={<TenantLayout />}>
             <Route path="dashboard" element={<TenantDashboard />} />
+            <Route path="maintenance" element={<TenantMaintenance />} />
           </Route>
           
           <Route path="*" element={<NotFound />} />
