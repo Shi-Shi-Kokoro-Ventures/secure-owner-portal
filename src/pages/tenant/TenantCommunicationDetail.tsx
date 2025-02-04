@@ -1,7 +1,8 @@
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Archive, Check, MessageCircle, Trash2 } from "lucide-react";
+import { ArrowLeft, Archive, MessageCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Types
@@ -85,7 +86,7 @@ const TenantCommunicationDetail = () => {
     navigate("/tenant/communications");
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (message && !message.isRead) {
       markAsReadMutation.mutate();
     }
