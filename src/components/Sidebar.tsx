@@ -2,14 +2,18 @@ import { Link, useLocation } from "react-router-dom";
 import { 
   Home, 
   Users, 
-  Building, 
+  Building,
   Settings, 
   HelpCircle,
   Mail,
   FileSignature,
   Archive,
   Wallet,
-  FileText
+  FileText,
+  List,
+  ClipboardCheck,
+  Search,
+  Wrench
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,7 +29,11 @@ export const Sidebar = () => {
     {
       label: "Properties",
       items: [
-        { name: "Properties List", href: "/properties", icon: Building }
+        { name: "Properties List", href: "/properties", icon: Building },
+        { name: "Applications", href: "/applications", icon: ClipboardCheck },
+        { name: "Inspections", href: "/inspections", icon: Search },
+        { name: "Work Orders", href: "/work-orders", icon: Wrench },
+        { name: "Property Archives", href: "/property-archives", icon: Archive }
       ]
     },
     {
@@ -52,9 +60,14 @@ export const Sidebar = () => {
       ]
     },
     {
+      label: "Reports",
+      items: [
+        { name: "Reports", href: "/reports", icon: FileText }
+      ]
+    },
+    {
       label: "Other",
       items: [
-        { name: "Reports", href: "/reports", icon: FileText },
         { name: "Settings", href: "/settings", icon: Settings },
         { name: "Help", href: "/help", icon: HelpCircle }
       ]
