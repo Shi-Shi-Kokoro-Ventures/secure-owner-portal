@@ -126,10 +126,10 @@ const TenantCommunicationDetail = () => {
   };
 
   useEffect(() => {
-    if (message && !message.isRead) {
+    if (message && !message.isRead && !markAsReadMutation.isPending) {
       markAsReadMutation.mutate();
     }
-  }, [message]);
+  }, [message?.isRead, markAsReadMutation.isPending]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -151,7 +151,7 @@ const TenantCommunicationDetail = () => {
           Back to Communications
         </Button>
         <div className="flex gap-2">
-          <Dialog open={isReplyOpen} onOpenChange={setIsReplyOpen}>
+          <Dialog>
             <DialogTrigger asChild>
               <Button className="gap-2">
                 <MessageCircle className="h-4 w-4" />
