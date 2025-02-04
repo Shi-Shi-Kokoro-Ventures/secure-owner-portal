@@ -21,17 +21,37 @@ import {
   Clock,
   ArrowRight,
 } from "lucide-react";
+import { AccountSummary } from "@/components/tenant/dashboard/AccountSummary";
+import { PaymentHistory } from "@/components/tenant/dashboard/PaymentHistory";
 
 const TenantDashboard = () => {
   // Mock data - replace with API calls in production
   const tenant = {
     name: "John Doe",
+    leaseStart: "2024-01-01",
+    leaseEnd: "2024-12-31",
+    unit: "Apt 4B - 123 Main St",
     balance: 1200.00,
     nextRentDue: "2024-03-01",
     nextRentAmount: 1500.00,
     openRequests: 2,
     unreadNotifications: 3
   };
+
+  const recentPayments = [
+    {
+      id: "1",
+      date: "2024-02-01",
+      amount: 1500.00,
+      status: "completed" as const,
+    },
+    {
+      id: "2",
+      date: "2024-01-01",
+      amount: 1500.00,
+      status: "completed" as const,
+    },
+  ];
 
   const recentActivity = [
     {
@@ -98,20 +118,25 @@ const TenantDashboard = () => {
         </p>
       </div>
 
-      {/* Quick Actions */}
-      <div className="flex flex-wrap gap-4">
-        <Button asChild size="lg" className="gap-2">
-          <Link to="/tenant/payments/new">
-            <CreditCard className="h-5 w-5" />
-            Make Payment
-          </Link>
-        </Button>
-        <Button asChild size="lg" variant="outline" className="gap-2">
-          <Link to="/tenant/maintenance/new">
-            <Wrench className="h-5 w-5" />
-            Submit Maintenance Request
-          </Link>
-        </Button>
+      {/* Account Summary & Quick Actions */}
+      <div className="grid gap-6 md:grid-cols-3">
+        <div className="md:col-span-2">
+          <AccountSummary tenant={tenant} />
+        </div>
+        <div className="space-y-4">
+          <Button asChild size="lg" className="w-full gap-2">
+            <Link to="/tenant/payments/new">
+              <CreditCard className="h-5 w-5" />
+              Make Payment
+            </Link>
+          </Button>
+          <Button asChild size="lg" variant="outline" className="w-full gap-2">
+            <Link to="/tenant/maintenance/new">
+              <Wrench className="h-5 w-5" />
+              Submit Maintenance Request
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -169,41 +194,9 @@ const TenantDashboard = () => {
         </Link>
       </div>
 
-      {/* Recent Activity and Important Notices */}
+      {/* Payment History & Important Notices */}
       <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Your latest updates and actions</CardDescription>
-              </div>
-              <Link to="/tenant/communications" className="text-sm text-primary hover:underline flex items-center gap-1">
-                View All <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center gap-4">
-                  <activity.icon className={`h-4 w-4 ${activity.color}`} />
-                  <div>
-                    <p className="text-sm font-medium">{activity.title}</p>
-                    {activity.amount && (
-                      <p className="text-xs text-muted-foreground">${activity.amount.toFixed(2)} - {activity.description}</p>
-                    )}
-                    {!activity.amount && (
-                      <p className="text-xs text-muted-foreground">{activity.description}</p>
-                    )}
-                    <p className="text-xs text-muted-foreground">{activity.date}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
+        <PaymentHistory payments={recentPayments} />
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
