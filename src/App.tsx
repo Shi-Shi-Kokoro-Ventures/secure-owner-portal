@@ -21,6 +21,7 @@ import Applications from "./pages/Applications";
 import Inspections from "./pages/Inspections";
 import WorkOrders from "./pages/WorkOrders";
 import PropertyArchives from "./pages/PropertyArchives";
+import { PlaceNewTenant } from "./components/PlaceNewTenant";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/" element={<Navigate to="/owners" replace />} />
           <Route path="/owners" element={<Owners />} />
           <Route path="/properties" element={<Properties />} />
+          <Route path="/properties/place-new-tenant" element={<PlaceNewTenant />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/help" element={<Help />} />
           <Route path="/tenant-signatures" element={<TenantSignatures />} />

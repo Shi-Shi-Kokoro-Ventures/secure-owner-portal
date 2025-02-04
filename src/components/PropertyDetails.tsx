@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
-import { PlaceNewTenant } from "./PlaceNewTenant";
+import { useNavigate } from "react-router-dom";
 
 export const PropertyDetails = () => {
   const { toast } = useToast();
-  const [showPlaceNewTenant, setShowPlaceNewTenant] = useState(false);
+  const navigate = useNavigate();
 
   const handleAction = (action: string) => {
     toast({
@@ -14,10 +13,6 @@ export const PropertyDetails = () => {
       description: `${action} functionality coming soon`,
     });
   };
-
-  if (showPlaceNewTenant) {
-    return <PlaceNewTenant />;
-  }
 
   return (
     <div className="space-y-4 rounded-lg border p-4">
@@ -86,7 +81,7 @@ export const PropertyDetails = () => {
               variant="link" 
               size="sm" 
               className="text-blue-600"
-              onClick={() => setShowPlaceNewTenant(true)}
+              onClick={() => navigate('/properties/place-new-tenant')}
             >
               <Plus className="mr-1 h-4 w-4" />
               Place New Tenant
