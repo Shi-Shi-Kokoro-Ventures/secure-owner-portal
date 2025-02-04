@@ -22,8 +22,15 @@ import Banking from "@/pages/Banking";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import TenantLayout from "@/components/TenantLayout";
 
-// Create a client
-const queryClient = new QueryClient();
+// Create a client with default options
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export default function App() {
   return (
