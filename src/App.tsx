@@ -28,6 +28,7 @@ import Statements from "./pages/Statements";
 import Notifications from "./pages/Notifications";
 import Login from "./pages/Login";
 import TenantDashboard from "./pages/tenant/TenantDashboard";
+import TenantLayout from "./components/TenantLayout";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,8 @@ const App = () => (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          
+          {/* Property Manager Routes */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/owners" element={<Owners />} />
           <Route path="/properties" element={<Properties />} />
@@ -61,7 +64,12 @@ const App = () => (
           <Route path="/files" element={<Files />} />
           <Route path="/statements" element={<Statements />} />
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/tenant/dashboard" element={<TenantDashboard />} />
+          
+          {/* Tenant Portal Routes */}
+          <Route path="/tenant" element={<TenantLayout />}>
+            <Route path="dashboard" element={<TenantDashboard />} />
+          </Route>
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
