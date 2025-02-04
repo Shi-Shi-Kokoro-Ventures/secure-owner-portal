@@ -1,9 +1,33 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, DollarSign, Home, Users } from "lucide-react";
+import { PropertyCard } from "@/components/owner/PropertyCard";
+import { PropertyStats } from "@/components/owner/PropertyStats";
+
+const mockProperties = [
+  {
+    name: "Sunset Apartments",
+    address: "123 Sunset Blvd, Los Angeles, CA 90028",
+    units: 4,
+    occupancyRate: 100,
+    revenue: 8000,
+  },
+  {
+    name: "Ocean View Complex",
+    address: "456 Ocean Dr, Santa Monica, CA 90401",
+    units: 6,
+    occupancyRate: 83,
+    revenue: 12000,
+  },
+  {
+    name: "Mountain Lodge",
+    address: "789 Mountain Rd, Beverly Hills, CA 90210",
+    units: 2,
+    occupancyRate: 100,
+    revenue: 4500,
+  },
+];
 
 const OwnerProperties = () => {
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 py-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">My Properties</h1>
         <p className="text-muted-foreground">
@@ -11,50 +35,15 @@ const OwnerProperties = () => {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Properties</CardTitle>
-            <Building2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">4</div>
-            <p className="text-xs text-muted-foreground">Active properties</p>
-          </CardContent>
-        </Card>
+      <PropertyStats />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Units</CardTitle>
-            <Home className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">Across all properties</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Occupancy Rate</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">92%</div>
-            <p className="text-xs text-muted-foreground">+2.1% from last month</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$24,500</div>
-            <p className="text-xs text-muted-foreground">+15% from last month</p>
-          </CardContent>
-        </Card>
+      <div className="mt-6">
+        <h2 className="mb-4 text-lg font-semibold">Property List</h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {mockProperties.map((property, index) => (
+            <PropertyCard key={index} property={property} />
+          ))}
+        </div>
       </div>
     </div>
   );
