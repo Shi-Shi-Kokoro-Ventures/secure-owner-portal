@@ -40,9 +40,9 @@ export const Sidebar = () => {
       <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
         <div className="flex h-16 shrink-0 items-center">
           <img
-            className="h-8 w-auto transition-transform hover:scale-105"
-            src="/lovable-uploads/34b95799-1197-441e-8517-5798003a835a.png"
-            alt="Property Manager Logo"
+            className="h-12 w-12 object-contain transition-transform hover:scale-105"
+            src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png"
+            alt="Shi Shi Kokoro Property Management"
           />
         </div>
         <nav className="flex flex-1 flex-col">
