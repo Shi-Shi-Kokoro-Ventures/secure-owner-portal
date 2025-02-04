@@ -17,16 +17,14 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Simplified navigation logic for development
     if (userType === "manager") {
-      // Set auth state for property manager
-      localStorage.setItem("isPropertyManager", "true");
       navigate("/dashboard");
       toast({
         title: "Welcome back",
         description: "You have successfully logged in as a property manager.",
       });
     } else {
-      // Handle tenant login
       navigate("/tenant/dashboard");
       toast({
         title: "Welcome back",
