@@ -33,6 +33,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { AddOwnerDialog } from "./AddOwnerDialog";
 
 interface Owner {
   id: string;
@@ -88,6 +89,8 @@ export const OwnersTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedOwner, setSelectedOwner] = useState<Owner | null>(null);
+  const [owners, setOwners] = useState<Owner[]>(mockOwners);
+  const [isAddOwnerOpen, setIsAddOwnerOpen] = useState(false);
 
   const handleSort = (key: keyof Owner) => {
     setSortConfig((current) => ({
@@ -97,7 +100,7 @@ export const OwnersTable = () => {
   };
 
   const filteredAndSortedOwners = useMemo(() => {
-    let result = [...mockOwners];
+    let result = [...owners];
 
     if (filterValue) {
       const lowerFilter = filterValue.toLowerCase();
@@ -121,7 +124,15 @@ export const OwnersTable = () => {
     }
 
     return result;
-  }, [mockOwners, filterValue, sortConfig]);
+  }, [owners, filterValue, sortConfig]);
+
+  const handleAddOwner = (newOwner: Omit<Owner, "id">) => {
+    const owner: Owner = {
+      ...newOwner,
+      id: (owners.length + 1).toString(),
+    };
+    setOwners((current) => [...current, owner]);
+  };
 
   const handleExport = () => {
     console.log("Exporting data...");
@@ -139,15 +150,11 @@ export const OwnersTable = () => {
     console.log("Deleting owner:", owner);
   };
 
-  const handleAddOwner = () => {
-    console.log("Adding new owner...");
-  };
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Button onClick={handleAddOwner} className="gap-2">
+          <Button onClick={() => setIsAddOwnerOpen(true)} className="gap-2">
             <UserPlus className="h-4 w-4" />
             Add Owner
           </Button>
@@ -358,6 +365,12 @@ export const OwnersTable = () => {
           </div>
         </div>
       )}
+
+      <AddOwnerDialog
+        open={isAddOwnerOpen}
+        onOpenChange={setIsAddOwnerOpen}
+        onAddOwner={handleAddOwner}
+      />
     </div>
   );
 };
