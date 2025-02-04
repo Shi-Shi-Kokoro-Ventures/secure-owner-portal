@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Download, FileSignature, Filter, Printer, Search, User } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const mockSignatures = [
   {
@@ -39,6 +40,50 @@ const mockSignatures = [
 ];
 
 const TenantSignatures = () => {
+  const { toast } = useToast();
+
+  const handleFilter = () => {
+    toast({
+      title: "Filter",
+      description: "Filter functionality coming soon",
+    });
+  };
+
+  const handlePrint = () => {
+    toast({
+      title: "Print",
+      description: "Print functionality coming soon",
+    });
+  };
+
+  const handleExport = () => {
+    toast({
+      title: "Export",
+      description: "Export functionality coming soon",
+    });
+  };
+
+  const handleNewRequest = () => {
+    toast({
+      title: "New Request",
+      description: "New signature request functionality coming soon",
+    });
+  };
+
+  const handleViewSignature = (id: string) => {
+    toast({
+      title: "View Signature",
+      description: `Viewing signature details for ID: ${id}`,
+    });
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    toast({
+      title: "Search",
+      description: `Searching for: ${event.target.value}`,
+    });
+  };
+
   return (
     <Layout>
       <div className="space-y-6">
@@ -88,22 +133,23 @@ const TenantSignatures = () => {
             <Input
               placeholder="Search signatures..."
               className="pl-10"
+              onChange={handleSearch}
             />
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleFilter}>
               <Filter className="h-4 w-4 mr-2" />
               Filter
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handlePrint}>
               <Printer className="h-4 w-4 mr-2" />
               Print
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleExport}>
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
-            <Button size="sm">
+            <Button size="sm" onClick={handleNewRequest}>
               <FileSignature className="h-4 w-4 mr-2" />
               New Request
             </Button>
@@ -144,7 +190,11 @@ const TenantSignatures = () => {
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="sm">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleViewSignature(signature.id)}
+                    >
                       <FileSignature className="h-4 w-4" />
                     </Button>
                   </TableCell>
