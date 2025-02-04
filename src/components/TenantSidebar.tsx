@@ -25,7 +25,11 @@ export const TenantSidebar = () => {
     <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
       <div className="flex flex-col flex-grow bg-primary px-2 pb-4">
         <div className="flex h-16 items-center px-4">
-          <img src="/lovable-uploads/1ab03cf0-3373-4f12-80ac-d96a64aeb0de.png" alt="Logo" className="h-8 w-8" />
+          <img 
+            src="https://images.unsplash.com/photo-1582562124811-c09040d0a901" 
+            alt="Shi Shi Kokoro Property Management" 
+            className="h-8 w-8 object-cover rounded-full"
+          />
           <h1 className="text-white text-xl font-bold ml-2">Tenant Portal</h1>
         </div>
         <nav className="mt-5 flex-1 space-y-1 px-2">

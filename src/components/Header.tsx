@@ -7,6 +7,13 @@ export const Header = () => {
   return (
     <div className="border-b bg-white shadow-sm">
       <div className="flex h-16 items-center px-4 gap-4">
+        <div className="flex items-center">
+          <img 
+            src="https://images.unsplash.com/photo-1582562124811-c09040d0a901" 
+            alt="Shi Shi Kokoro Property Management" 
+            className="h-8 w-8 object-cover"
+          />
+        </div>
         <div className="flex-1 flex items-center">
           <Search className="h-5 w-5 text-gray-400 absolute ml-3" />
           <Input
