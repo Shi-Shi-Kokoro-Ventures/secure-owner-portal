@@ -6,9 +6,17 @@ import { useState } from "react";
 const Tenants = () => {
   const [showAddForm, setShowAddForm] = useState(false);
 
+  const handleAddTenant = () => {
+    setShowAddForm(true);
+  };
+
   return (
     <Layout>
-      {showAddForm ? <AddTenantForm /> : <TenantsTable />}
+      {showAddForm ? (
+        <AddTenantForm />
+      ) : (
+        <TenantsTable onAddTenant={handleAddTenant} />
+      )}
     </Layout>
   );
 };

@@ -10,7 +10,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Search, Filter, UserPlus, Mail, Building, Calendar } from "lucide-react";
 
-export const TenantsTable = () => {
+interface TenantsTableProps {
+  onAddTenant: () => void;
+}
+
+export const TenantsTable = ({ onAddTenant }: TenantsTableProps) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -18,7 +22,7 @@ export const TenantsTable = () => {
           <h1 className="text-2xl font-bold">Tenants</h1>
           <p className="text-muted-foreground">Manage your tenants</p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={onAddTenant}>
           <UserPlus className="h-4 w-4" />
           Add Tenant
         </Button>
