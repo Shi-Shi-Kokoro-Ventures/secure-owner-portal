@@ -21,6 +21,7 @@ import Reports from "@/pages/Reports";
 import Banking from "@/pages/Banking";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import TenantLayout from "@/components/TenantLayout";
+import TenantCommunicationDetail from "@/pages/tenant/TenantCommunicationDetail";
 
 // Create a client with default options
 const queryClient = new QueryClient({
@@ -136,6 +137,10 @@ export default function App() {
             <Route
               path="/tenant/communications"
               element={<TenantCommunications />}
+            />
+            <Route
+              path="/tenant/communications/:id"
+              element={<TenantCommunicationDetail />}
             />
             <Route path="/tenant/settings" element={<TenantSettings />} />
           </Route>

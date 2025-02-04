@@ -1,0 +1,98 @@
+import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft, Archive, Check, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+const TenantCommunicationDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const { data: message, isLoading } = useQuery({
+    queryKey: ["communication", id],
+    queryFn: async () => {
+      // Replace with actual API call
+      return mockCommunications.find((m) => m.id === id);
+    },
+  });
+
+  const handleArchive = () => {
+    toast({
+      title: "Message archived",
+      description: "The message has been archived successfully.",
+    });
+    navigate("/tenant/communications");
+  };
+
+  const handleDelete = () => {
+    toast({
+      title: "Message deleted",
+      description: "The message has been deleted successfully.",
+    });
+    navigate("/tenant/communications");
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!message) {
+    return <div>Message not found</div>;
+  }
+
+  return (
+    <div className="container mx-auto py-6 space-y-6 animate-fade-in">
+      <div className="flex items-center justify-between">
+        <Button
+          variant="ghost"
+          className="gap-2"
+          onClick={() => navigate("/tenant/communications")}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Communications
+        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={handleArchive}
+          >
+            <Archive className="h-4 w-4" />
+            Archive
+          </Button>
+          <Button
+            variant="destructive"
+            className="gap-2"
+            onClick={handleDelete}
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete
+          </Button>
+        </div>
+      </div>
+
+      <div className="space-y-6 bg-white p-6 rounded-lg border">
+        <div>
+          <h1 className="text-2xl font-bold">{message.title}</h1>
+          <div className="flex items-center gap-4 text-muted-foreground mt-2">
+            <span>From: {message.from}</span>
+            <span>Date: {message.date}</span>
+            {!message.isRead && (
+              <span className="flex items-center gap-1 text-blue-500">
+                <MessageCircle className="h-4 w-4" />
+                Unread
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="prose max-w-none">
+          <p>{message.message}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TenantCommunicationDetail;
