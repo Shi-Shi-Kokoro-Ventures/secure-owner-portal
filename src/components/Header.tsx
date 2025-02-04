@@ -9,9 +9,9 @@ export const Header = () => {
       <div className="flex h-16 items-center px-4 gap-4">
         <div className="flex items-center">
           <img 
-            src="https://images.unsplash.com/photo-1582562124811-c09040d0a901" 
+            src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png" 
             alt="Shi Shi Kokoro Property Management" 
-            className="h-8 w-8 object-cover"
+            className="h-12 w-12 object-contain"
           />
         </div>
         <div className="flex-1 flex items-center">
