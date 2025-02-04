@@ -27,18 +27,60 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useQuery } from "@tanstack/react-query";
 
+// Mock data types
+interface TenantData {
+  tenant: {
+    name: string;
+    leaseStart: string;
+    leaseEnd: string;
+    unit: string;
+    balance: number;
+    nextRentDue: string;
+    nextRentAmount: number;
+    openRequests: number;
+    unreadNotifications: number;
+  };
+  recentPayments: Array<{
+    id: string;
+    date: string;
+    amount: number;
+    status: "completed" | "pending" | "failed";
+  }>;
+}
+
 // Mock API call - replace with actual API call
-const fetchDashboardData = async () => {
-  try {
-    // Simulate API call
-    const response = await fetch('/api/tenant/dashboard');
-    if (!response.ok) {
-      throw new Error('Failed to fetch dashboard data');
-    }
-    return response.json();
-  } catch (error) {
-    throw new Error('Error fetching dashboard data');
-  }
+const fetchDashboardData = async (): Promise<TenantData> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // Return mock data
+  return {
+    tenant: {
+      name: "John Doe",
+      leaseStart: "2024-01-01",
+      leaseEnd: "2024-12-31",
+      unit: "Apt 4B - 123 Main St",
+      balance: 1200.00,
+      nextRentDue: "2024-03-01",
+      nextRentAmount: 1500.00,
+      openRequests: 2,
+      unreadNotifications: 3
+    },
+    recentPayments: [
+      {
+        id: "1",
+        date: "2024-02-01",
+        amount: 1500.00,
+        status: "completed",
+      },
+      {
+        id: "2",
+        date: "2024-01-01",
+        amount: 1500.00,
+        status: "completed",
+      },
+    ]
+  };
 };
 
 const TenantDashboard = () => {
@@ -48,12 +90,14 @@ const TenantDashboard = () => {
     queryKey: ['tenantDashboard'],
     queryFn: fetchDashboardData,
     meta: {
-      onError: () => {
-        toast({
-          title: "Error",
-          description: "Failed to load dashboard data. Please try again later.",
-          variant: "destructive",
-        });
+      onSettled: (data, error) => {
+        if (error) {
+          toast({
+            title: "Error",
+            description: "Failed to load dashboard data. Please try again later.",
+            variant: "destructive",
+          });
+        }
       },
     },
   });
@@ -180,7 +224,7 @@ const TenantDashboard = () => {
     <div className="container mx-auto px-4 space-y-8">
       {/* Welcome Banner */}
       <div className="bg-white rounded-lg p-6 border shadow-sm">
-        <h1 className="text-3xl font-bold tracking-tight">Welcome, {tenant.name}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Welcome, {data?.tenant.name}</h1>
         <p className="text-muted-foreground">
           Here's an overview of your rental account
         </p>
@@ -189,7 +233,7 @@ const TenantDashboard = () => {
       {/* Account Summary & Quick Actions */}
       <div className="grid gap-6 md:grid-cols-3">
         <div className="md:col-span-2">
-          <AccountSummary tenant={tenant} />
+          {data?.tenant && <AccountSummary tenant={data.tenant} />}
         </div>
         <div className="space-y-4">
           <Button asChild size="lg" className="w-full gap-2">
@@ -216,7 +260,7 @@ const TenantDashboard = () => {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${tenant.balance.toFixed(2)}</div>
+              <div className="text-2xl font-bold">${data?.tenant.balance.toFixed(2)}</div>
               <p className="text-xs text-muted-foreground">Due in 5 days</p>
             </CardContent>
           </Card>
@@ -229,8 +273,12 @@ const TenantDashboard = () => {
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{new Date(tenant.nextRentDue).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
-              <p className="text-xs text-muted-foreground">${tenant.nextRentAmount.toFixed(2)}</p>
+              <div className="text-2xl font-bold">
+                {data?.tenant && new Date(data.tenant.nextRentDue).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                ${data?.tenant.nextRentAmount.toFixed(2)}
+              </p>
             </CardContent>
           </Card>
         </Link>
@@ -242,7 +290,7 @@ const TenantDashboard = () => {
               <Wrench className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{tenant.openRequests}</div>
+              <div className="text-2xl font-bold">{data?.tenant.openRequests}</div>
               <p className="text-xs text-muted-foreground">In progress</p>
             </CardContent>
           </Card>
@@ -255,17 +303,16 @@ const TenantDashboard = () => {
               <Bell className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{tenant.unreadNotifications}</div>
+              <div className="text-2xl font-bold">{data?.tenant.unreadNotifications}</div>
               <p className="text-xs text-muted-foreground">Unread messages</p>
             </CardContent>
           </Card>
         </Link>
-
       </div>
 
       {/* Payment History & Important Notices */}
       <div className="grid gap-6 md:grid-cols-2">
-        <PaymentHistory payments={recentPayments} />
+        {data?.recentPayments && <PaymentHistory payments={data.recentPayments} />}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
