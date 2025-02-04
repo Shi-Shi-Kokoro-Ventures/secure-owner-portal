@@ -1,8 +1,41 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Archive, Check, Trash2 } from "lucide-react";
+import { ArrowLeft, Archive, Check, MessageCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+// Types
+interface Communication {
+  id: string;
+  title: string;
+  message: string;
+  date: string;
+  isRead: boolean;
+  type: "notification" | "message";
+  from: string;
+}
+
+// Mock data - in a real app, this would come from an API
+const mockCommunications: Communication[] = [
+  {
+    id: "MSG-001",
+    title: "Maintenance Update",
+    message: "Your maintenance request #1234 has been completed. Please review and confirm.",
+    date: "2024-02-04",
+    isRead: false,
+    type: "notification",
+    from: "Property Manager",
+  },
+  {
+    id: "MSG-002",
+    title: "Rent Reminder",
+    message: "This is a friendly reminder that your rent payment is due in 5 days.",
+    date: "2024-02-01",
+    isRead: true,
+    type: "message",
+    from: "System",
+  },
+];
 
 const TenantCommunicationDetail = () => {
   const { id } = useParams();
