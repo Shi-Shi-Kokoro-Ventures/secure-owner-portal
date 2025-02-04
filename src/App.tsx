@@ -4,6 +4,7 @@ import TenantMaintenance from "@/pages/tenant/TenantMaintenance";
 import NewMaintenanceRequest from "@/pages/tenant/NewMaintenanceRequest";
 import TenantDashboard from "@/pages/tenant/TenantDashboard";
 import TenantPayments from "@/pages/tenant/TenantPayments";
+import NewPayment from "@/pages/tenant/NewPayment";
 import TenantDocuments from "@/pages/tenant/TenantDocuments";
 import TenantCommunications from "@/pages/tenant/TenantCommunications";
 import TenantSettings from "@/pages/tenant/TenantSettings";
@@ -113,10 +114,17 @@ export default function App() {
         <Route element={<TenantLayout />}>
           <Route path="/tenant/dashboard" element={<TenantDashboard />} />
           <Route path="/tenant/maintenance" element={<TenantMaintenance />} />
-          <Route path="/tenant/maintenance/new" element={<NewMaintenanceRequest />} />
+          <Route
+            path="/tenant/maintenance/new"
+            element={<NewMaintenanceRequest />}
+          />
           <Route path="/tenant/payments" element={<TenantPayments />} />
+          <Route path="/tenant/payments/new" element={<NewPayment />} />
           <Route path="/tenant/documents" element={<TenantDocuments />} />
-          <Route path="/tenant/communications" element={<TenantCommunications />} />
+          <Route
+            path="/tenant/communications"
+            element={<TenantCommunications />}
+          />
           <Route path="/tenant/settings" element={<TenantSettings />} />
         </Route>
       </Routes>
