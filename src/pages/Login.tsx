@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AtSign, Key } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,15 +12,26 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [userType, setUserType] = useState<"tenant" | "manager">("manager");
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simplified navigation logic for development
-    if (userType === "tenant") {
-      navigate("/tenant/dashboard");
-    } else {
+    if (userType === "manager") {
+      // Set auth state for property manager
+      localStorage.setItem("isPropertyManager", "true");
       navigate("/dashboard");
+      toast({
+        title: "Welcome back",
+        description: "You have successfully logged in as a property manager.",
+      });
+    } else {
+      // Handle tenant login
+      navigate("/tenant/dashboard");
+      toast({
+        title: "Welcome back",
+        description: "You have successfully logged in as a tenant.",
+      });
     }
   };
 
