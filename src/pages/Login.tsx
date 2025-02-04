@@ -16,18 +16,10 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Temporary authentication logic until backend is implemented
+    // Simplified navigation logic for development
     if (userType === "tenant") {
-      toast({
-        title: "Success",
-        description: "Logged in as tenant successfully",
-      });
       navigate("/tenant/dashboard");
     } else {
-      toast({
-        title: "Success",
-        description: "Logged in as property manager successfully",
-      });
       navigate("/dashboard");
     }
   };
