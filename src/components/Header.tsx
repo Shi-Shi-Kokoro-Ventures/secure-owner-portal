@@ -1,4 +1,4 @@
-import { Bell, HelpCircle, MessageCircle, Search, Settings, User } from "lucide-react";
+import { Bell, HelpCircle, MessageCircle, Search, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
@@ -29,6 +29,17 @@ export const Header = () => {
             <div className="text-sm">
               <div className="font-medium">Shi Shi Kokoro property...</div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="bg-[#4C8DAE] text-white px-4 py-2 text-sm">
+        <div className="flex items-center justify-between">
+          <div>Setup Progress</div>
+          <div className="flex items-center gap-4">
+            <div>0%</div>
+            <Button variant="secondary" size="sm" className="h-7">
+              Resume
+            </Button>
           </div>
         </div>
       </div>
