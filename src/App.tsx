@@ -24,6 +24,14 @@ const App = () => (
           <Route path="/properties" element={<Properties />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/help" element={<Help />} />
+          <Route path="/tenant-signatures" element={<NotFound />} />
+          <Route path="/tenant-archives" element={<NotFound />} />
+          <Route path="/banking" element={<NotFound />} />
+          <Route path="/owner-signatures" element={<NotFound />} />
+          <Route path="/owner-archives" element={<NotFound />} />
+          <Route path="/reports" element={<NotFound />} />
+          <Route path="/mailing" element={<NotFound />} />
+          <Route path="/tenants" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
