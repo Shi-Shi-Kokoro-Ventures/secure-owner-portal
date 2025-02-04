@@ -2,13 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar } from "lucide-react";
+import { Calendar, HelpCircle } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { HelpCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const AddTenantForm = () => {
@@ -19,7 +18,7 @@ export const AddTenantForm = () => {
           <h1 className="text-2xl font-bold">New Tenant</h1>
           <p className="text-muted-foreground">Tenants / New Tenant</p>
         </div>
-        <Button>Add Tenant</Button>
+        <Button variant="default" className="bg-[#0072bc] hover:bg-[#005a96]">Add Tenant</Button>
       </div>
 
       <div className="space-y-4">
@@ -66,7 +65,7 @@ export const AddTenantForm = () => {
             </div>
             <div>
               <label className="block text-sm mb-1">Private Notes</label>
-              <Textarea />
+              <Textarea className="min-h-[100px]" />
             </div>
           </CollapsibleContent>
         </Collapsible>
@@ -110,11 +109,11 @@ export const AddTenantForm = () => {
           <CollapsibleContent className="p-4 space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <Checkbox id="portal-access" />
-              <label htmlFor="portal-access">
+              <label htmlFor="portal-access" className="flex items-center gap-1">
                 Tenant Portal Access
                 <Tooltip>
                   <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 inline ml-1" />
+                    <HelpCircle className="h-4 w-4" />
                   </TooltipTrigger>
                   <TooltipContent>
                     Enable tenant portal access
@@ -124,7 +123,9 @@ export const AddTenantForm = () => {
             </div>
             <div className="flex justify-between items-center">
               <div className="text-gray-500">- not set up -</div>
-              <Button variant="secondary">Log in as Tenant</Button>
+              <Button variant="secondary" className="bg-[#6B4E9D] text-white hover:bg-[#5a417f]">
+                Log in as Tenant
+              </Button>
             </div>
           </CollapsibleContent>
         </Collapsible>
@@ -138,11 +139,11 @@ export const AddTenantForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm mb-1">Rent Charge</label>
-                <Input placeholder="set at move-in" disabled />
+                <Input placeholder="set at move-in" disabled className="bg-gray-100" />
               </div>
               <div>
                 <label className="block text-sm mb-1">Late Fees</label>
-                <div className="text-gray-500">Using Defaults</div>
+                <div className="text-gray-500 italic">Using Defaults</div>
               </div>
               <div>
                 <label className="block text-sm mb-1">Create Invoice</label>
@@ -164,7 +165,7 @@ export const AddTenantForm = () => {
             <span className="font-semibold">Custom Fields</span>
             <HelpCircle className="h-5 w-5" />
           </CollapsibleTrigger>
-          <CollapsibleContent className="p-4 space-y-4">
+          <CollapsibleContent className="p-4">
             <div className="text-center text-gray-500 py-4">
               No custom fields found for this record.
             </div>
@@ -174,8 +175,8 @@ export const AddTenantForm = () => {
           </CollapsibleContent>
         </Collapsible>
 
-        <div className="flex justify-between items-center pt-4">
-          <div className="space-x-4 text-sm text-blue-600">
+        <div className="flex justify-between items-center pt-4 border-t">
+          <div className="space-x-4 text-sm text-[#0072bc]">
             <a href="#" className="hover:underline">Terms & Conditions</a>
             <span>|</span>
             <a href="#" className="hover:underline">Knowledge Base</a>
@@ -184,7 +185,7 @@ export const AddTenantForm = () => {
           </div>
           <div className="space-x-4">
             <Button variant="outline">Cancel</Button>
-            <Button>Add Tenant</Button>
+            <Button className="bg-[#0072bc] hover:bg-[#005a96]">Add Tenant</Button>
           </div>
         </div>
       </div>
