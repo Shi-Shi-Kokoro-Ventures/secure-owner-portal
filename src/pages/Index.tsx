@@ -1,13 +1,22 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Layout } from "@/components/Layout";
+import { OwnersTable } from "@/components/OwnersTable";
+import { SearchBar } from "@/components/SearchBar";
 
 const Index = () => {
+  const handleSearch = (term: string) => {
+    console.log("Searching for:", term);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <Layout>
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Property Owners</h2>
+          <SearchBar onSearch={handleSearch} />
+        </div>
+        <OwnersTable />
       </div>
-    </div>
+    </Layout>
   );
 };
 
