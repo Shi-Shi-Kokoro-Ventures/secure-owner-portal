@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { PropertiesTable } from "@/components/PropertiesTable";
@@ -6,6 +7,7 @@ import { Filter, ListFilter, Plus, Building2, FileText, DollarSign, Wrench } fro
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { useToast } from "@/hooks/use-toast";
+import { AddPropertyDialog } from "@/components/AddPropertyDialog";
 
 const summaryData = [
   { month: 'Mar', value: 0 },
@@ -40,6 +42,7 @@ const newsAndTips = [
 
 const Properties = () => {
   const { toast } = useToast();
+  const [addPropertyOpen, setAddPropertyOpen] = useState(false);
 
   const handleFilterClick = () => {
     toast({
@@ -56,10 +59,7 @@ const Properties = () => {
   };
 
   const handleAddProperty = () => {
-    toast({
-      title: "Add Property",
-      description: "Add property functionality coming soon",
-    });
+    setAddPropertyOpen(true);
   };
 
   const handlePropertyTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -283,6 +283,10 @@ const Properties = () => {
           </div>
         </div>
       </div>
+      <AddPropertyDialog 
+        open={addPropertyOpen} 
+        onOpenChange={setAddPropertyOpen}
+      />
     </Layout>
   );
 };
