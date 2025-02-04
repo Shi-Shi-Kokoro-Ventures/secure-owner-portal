@@ -26,7 +26,7 @@ const mockProperties = [
     units: 4,
     occupancyRate: 75,
     revenue: 12000,
-    imageUrl: "/lovable-uploads/6f1b7169-8671-4db3-b85e-17b211176d2d.png"
+    imageUrl: "/lovable-uploads/654bda82-66ad-4b81-96b5-2acfa997dc7a.png"
   },
 ];
 
