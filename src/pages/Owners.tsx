@@ -1,12 +1,12 @@
 import { Layout } from "@/components/Layout";
 import { OwnersTable } from "@/components/OwnersTable";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Filter, Plus, DollarSign, Download, Printer } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { AddOwnerDialog } from "@/components/AddOwnerDialog";
 import { useState } from "react";
 
+// This is the property manager's view for managing owners
 const Owners = () => {
   const [showAddOwner, setShowAddOwner] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,7 +25,7 @@ const Owners = () => {
     <Layout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Owners</h1>
+          <h1 className="text-2xl font-bold">Property Owners</h1>
           <div className="flex items-center gap-2">
             <SearchBar onSearch={handleSearch} />
             <Button variant="outline" className="gap-2">
@@ -65,19 +65,6 @@ const Owners = () => {
           onOpenChange={setShowAddOwner}
           onAddOwner={handleAddOwner}
         />
-
-        <footer className="text-sm text-gray-600 mt-8">
-          <div className="flex items-center gap-4">
-            <a href="#" className="hover:underline">Terms & Conditions</a>
-            <span>|</span>
-            <a href="#" className="hover:underline">Knowledge Base</a>
-            <span>|</span>
-            <a href="#" className="hover:underline">Refer a Friend</a>
-            <div className="flex-1 text-right">
-              © 2008 - 2025 Rentec Direct, LLC
-            </div>
-          </div>
-        </footer>
       </div>
     </Layout>
   );

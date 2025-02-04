@@ -1,4 +1,4 @@
-import { CreditCard } from "lucide-react";
+import { DollarSign } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const OwnerPayments = () => {
@@ -6,13 +6,13 @@ const OwnerPayments = () => {
     <div className="container mx-auto px-4">
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Payments</h1>
-        <p className="text-muted-foreground">View and manage payments</p>
+        <p className="text-muted-foreground">View and manage payments for your properties</p>
       </div>
       
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5" />
+            <DollarSign className="h-5 w-5" />
             Payment History
           </CardTitle>
         </CardHeader>

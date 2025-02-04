@@ -6,7 +6,7 @@ const OwnerReports = () => {
     <div className="container mx-auto px-4">
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Reports</h1>
-        <p className="text-muted-foreground">Generate and view reports</p>
+        <p className="text-muted-foreground">Generate and view reports for your properties</p>
       </div>
       
       <Card>
