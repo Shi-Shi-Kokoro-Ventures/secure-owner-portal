@@ -24,6 +24,16 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import TenantLayout from "@/components/TenantLayout";
 import TenantCommunicationDetail from "@/pages/tenant/TenantCommunicationDetail";
 import NotFound from "@/pages/NotFound";
+import OwnerLayout from "@/components/OwnerLayout";
+import OwnerDashboard from "@/pages/owner/OwnerDashboard";
+import OwnerProperties from "@/pages/owner/OwnerProperties";
+import OwnerStatements from "@/pages/owner/OwnerStatements";
+import OwnerDocuments from "@/pages/owner/OwnerDocuments";
+import OwnerReports from "@/pages/owner/OwnerReports";
+import OwnerCommunications from "@/pages/owner/OwnerCommunications";
+import OwnerSettings from "@/pages/owner/OwnerSettings";
+import OwnerMaintenance from "@/pages/owner/OwnerMaintenance";
+import OwnerPayments from "@/pages/owner/OwnerPayments";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -118,6 +128,25 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Owner routes - protected and wrapped in OwnerLayout */}
+          <Route
+            element={
+              <ProtectedRoute>
+                <OwnerLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+            <Route path="/owner/properties" element={<OwnerProperties />} />
+            <Route path="/owner/statements" element={<OwnerStatements />} />
+            <Route path="/owner/documents" element={<OwnerDocuments />} />
+            <Route path="/owner/reports" element={<OwnerReports />} />
+            <Route path="/owner/communications" element={<OwnerCommunications />} />
+            <Route path="/owner/settings" element={<OwnerSettings />} />
+            <Route path="/owner/maintenance" element={<OwnerMaintenance />} />
+            <Route path="/owner/payments" element={<OwnerPayments />} />
+          </Route>
 
           {/* Tenant routes - protected and wrapped in TenantLayout */}
           <Route
