@@ -73,6 +73,10 @@ const NewMaintenanceRequest = () => {
     }));
   };
 
+  const handleCancel = () => {
+    navigate("/tenant/maintenance");
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -117,6 +121,8 @@ const NewMaintenanceRequest = () => {
       setIsSubmitting(false);
     }
   };
+
+  // ... keep existing code (JSX for the form layout and UI elements)
 
   return (
     <div className="container mx-auto py-6 max-w-3xl">
@@ -240,7 +246,7 @@ const NewMaintenanceRequest = () => {
           <Button
             type="button"
             variant="outline"
-            onClick={() => navigate("/tenant/maintenance")}
+            onClick={handleCancel}
             disabled={isSubmitting}
           >
             Cancel
