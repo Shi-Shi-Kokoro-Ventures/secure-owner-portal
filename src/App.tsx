@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import TenantMaintenance from "@/pages/tenant/TenantMaintenance";
@@ -22,8 +22,8 @@ import Banking from "@/pages/Banking";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import TenantLayout from "@/components/TenantLayout";
 import TenantCommunicationDetail from "@/pages/tenant/TenantCommunicationDetail";
+import NotFound from "@/pages/NotFound";
 
-// Create a client with default options
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -40,16 +40,11 @@ export default function App() {
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
+          
+          {/* Redirect root to login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
 
           {/* Property Manager routes - protected */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
           <Route
             path="/dashboard"
             element={
@@ -123,8 +118,14 @@ export default function App() {
             }
           />
 
-          {/* Tenant routes */}
-          <Route element={<TenantLayout />}>
+          {/* Tenant routes - protected and wrapped in TenantLayout */}
+          <Route
+            element={
+              <ProtectedRoute>
+                <TenantLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="/tenant/dashboard" element={<TenantDashboard />} />
             <Route path="/tenant/maintenance" element={<TenantMaintenance />} />
             <Route
@@ -144,6 +145,9 @@ export default function App() {
             />
             <Route path="/tenant/settings" element={<TenantSettings />} />
           </Route>
+
+          {/* Catch all route for 404 */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster />
       </Router>
