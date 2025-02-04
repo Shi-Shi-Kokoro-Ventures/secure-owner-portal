@@ -8,7 +8,7 @@ import {
   Mail,
   FileSignature,
   Archive,
-  Bank,
+  Wallet,
   FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -40,7 +40,7 @@ export const Sidebar = () => {
     {
       label: "Banking",
       items: [
-        { name: "Banking", href: "/banking", icon: Bank }
+        { name: "Banking", href: "/banking", icon: Wallet }
       ]
     },
     {
