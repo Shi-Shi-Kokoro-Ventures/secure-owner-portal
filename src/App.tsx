@@ -22,6 +22,10 @@ import Inspections from "./pages/Inspections";
 import WorkOrders from "./pages/WorkOrders";
 import PropertyArchives from "./pages/PropertyArchives";
 import { PlaceNewTenant } from "./components/PlaceNewTenant";
+import Files from "./pages/Files";
+import Statements from "./pages/Statements";
+import Notifications from "./pages/Notifications";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +36,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Navigate to="/owners" replace />} />
           <Route path="/owners" element={<Owners />} />
           <Route path="/properties" element={<Properties />} />
@@ -50,6 +55,9 @@ const App = () => (
           <Route path="/inspections" element={<Inspections />} />
           <Route path="/work-orders" element={<WorkOrders />} />
           <Route path="/property-archives" element={<PropertyArchives />} />
+          <Route path="/files" element={<Files />} />
+          <Route path="/statements" element={<Statements />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
