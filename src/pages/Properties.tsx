@@ -5,6 +5,7 @@ import { PropertyDetails } from "@/components/PropertyDetails";
 import { Filter, ListFilter, Plus, Building2, FileText, DollarSign, Wrench } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { useToast } from "@/hooks/use-toast";
 
 const summaryData = [
   { month: 'Mar', value: 0 },
@@ -38,16 +39,58 @@ const newsAndTips = [
 ];
 
 const Properties = () => {
+  const { toast } = useToast();
+
+  const handleFilterClick = () => {
+    toast({
+      title: "Filter Applied",
+      description: "Property filter functionality coming soon",
+    });
+  };
+
+  const handleViewListings = () => {
+    toast({
+      title: "View Listings",
+      description: "Property listings view coming soon",
+    });
+  };
+
+  const handleAddProperty = () => {
+    toast({
+      title: "Add Property",
+      description: "Add property functionality coming soon",
+    });
+  };
+
+  const handlePropertyTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    toast({
+      title: "Property Type Changed",
+      description: `Selected: ${event.target.value}`,
+    });
+  };
+
+  const handleQuickAccessClick = (action: string) => {
+    toast({
+      title: "Quick Access",
+      description: `${action} functionality coming soon`,
+    });
+  };
+
   return (
     <Layout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">Summary</h1>
           <div className="flex items-center gap-4">
-            <select className="rounded-md border border-gray-300 px-3 py-1.5">
+            <select 
+              className="rounded-md border border-gray-300 px-3 py-1.5"
+              onChange={handlePropertyTypeChange}
+            >
               <option>All Properties</option>
+              <option>Residential</option>
+              <option>Commercial</option>
             </select>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleFilterClick}>
               <Filter className="h-4 w-4" />
             </Button>
           </div>
@@ -169,10 +212,34 @@ const Properties = () => {
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-4">Quick Access</h2>
           <div className="flex flex-wrap gap-4">
-            <Button variant="link" className="text-blue-600">File Library</Button>
-            <Button variant="link" className="text-blue-600">Inspections</Button>
-            <Button variant="link" className="text-blue-600">Signature Requests</Button>
-            <Button variant="link" className="text-blue-600">Tenant Screening</Button>
+            <Button 
+              variant="link" 
+              className="text-blue-600"
+              onClick={() => handleQuickAccessClick('File Library')}
+            >
+              File Library
+            </Button>
+            <Button 
+              variant="link" 
+              className="text-blue-600"
+              onClick={() => handleQuickAccessClick('Inspections')}
+            >
+              Inspections
+            </Button>
+            <Button 
+              variant="link" 
+              className="text-blue-600"
+              onClick={() => handleQuickAccessClick('Signature Requests')}
+            >
+              Signature Requests
+            </Button>
+            <Button 
+              variant="link" 
+              className="text-blue-600"
+              onClick={() => handleQuickAccessClick('Tenant Screening')}
+            >
+              Tenant Screening
+            </Button>
           </div>
         </Card>
 
@@ -181,22 +248,25 @@ const Properties = () => {
           <h2 className="text-xl font-semibold">Properties</h2>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <select className="rounded-md border border-gray-300 px-3 py-1.5">
+              <select 
+                className="rounded-md border border-gray-300 px-3 py-1.5"
+                onChange={handlePropertyTypeChange}
+              >
                 <option>All</option>
                 <option>Vacant</option>
                 <option>Occupied</option>
               </select>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleFilterClick}>
                 <Filter className="mr-2 h-4 w-4" />
                 Filter
               </Button>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleViewListings}>
                 <ListFilter className="mr-2 h-4 w-4" />
                 View Listings (0)
               </Button>
-              <Button size="sm">
+              <Button size="sm" onClick={handleAddProperty}>
                 <Plus className="mr-2 h-4 w-4" />
                 Add a Property
               </Button>

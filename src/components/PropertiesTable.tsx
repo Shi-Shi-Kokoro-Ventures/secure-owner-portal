@@ -1,6 +1,16 @@
 import { Home } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export const PropertiesTable = () => {
+  const { toast } = useToast();
+
+  const handlePagination = (action: string) => {
+    toast({
+      title: "Pagination",
+      description: `${action} page functionality coming soon`,
+    });
+  };
+
   return (
     <div className="rounded-md border">
       <div className="bg-[#4A8DB7] text-white">
@@ -29,9 +39,26 @@ export const PropertiesTable = () => {
       <div className="flex items-center justify-between bg-gray-50 px-4 py-3 text-sm">
         <div>Showing 1 to 1 of 1 entries</div>
         <div className="flex gap-2">
-          <button className="rounded bg-gray-200 px-3 py-1" disabled>Previous</button>
-          <button className="rounded bg-blue-600 px-3 py-1 text-white">1</button>
-          <button className="rounded bg-gray-200 px-3 py-1" disabled>Next</button>
+          <button 
+            className="rounded bg-gray-200 px-3 py-1" 
+            disabled
+            onClick={() => handlePagination('Previous')}
+          >
+            Previous
+          </button>
+          <button 
+            className="rounded bg-blue-600 px-3 py-1 text-white"
+            onClick={() => handlePagination('Current')}
+          >
+            1
+          </button>
+          <button 
+            className="rounded bg-gray-200 px-3 py-1" 
+            disabled
+            onClick={() => handlePagination('Next')}
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
