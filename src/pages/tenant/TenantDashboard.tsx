@@ -47,12 +47,14 @@ const TenantDashboard = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['tenantDashboard'],
     queryFn: fetchDashboardData,
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to load dashboard data. Please try again later.",
-        variant: "destructive",
-      });
+    meta: {
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Failed to load dashboard data. Please try again later.",
+          variant: "destructive",
+        });
+      },
     },
   });
 
