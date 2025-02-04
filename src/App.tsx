@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import TenantMaintenance from "@/pages/tenant/TenantMaintenance";
 import NewMaintenanceRequest from "@/pages/tenant/NewMaintenanceRequest";
+import TenantDashboard from "@/pages/tenant/TenantDashboard";
 import WorkOrders from "@/pages/WorkOrders";
 import { AddPropertyForm } from "@/components/AddPropertyForm";
 import { PlaceNewTenant } from "@/components/PlaceNewTenant";
@@ -13,6 +14,7 @@ import Tenants from "@/pages/Tenants";
 import Reports from "@/pages/Reports";
 import Banking from "@/pages/Banking";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import TenantLayout from "@/components/TenantLayout";
 
 export default function App() {
   return (
@@ -104,8 +106,11 @@ export default function App() {
         />
 
         {/* Tenant routes */}
-        <Route path="/tenant/maintenance" element={<TenantMaintenance />} />
-        <Route path="/tenant/maintenance/new" element={<NewMaintenanceRequest />} />
+        <Route element={<TenantLayout />}>
+          <Route path="/tenant/dashboard" element={<TenantDashboard />} />
+          <Route path="/tenant/maintenance" element={<TenantMaintenance />} />
+          <Route path="/tenant/maintenance/new" element={<NewMaintenanceRequest />} />
+        </Route>
       </Routes>
       <Toaster />
     </Router>
