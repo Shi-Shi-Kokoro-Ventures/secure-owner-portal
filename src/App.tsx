@@ -9,6 +9,14 @@ import Properties from "./pages/Properties";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
+import Banking from "./pages/Banking";
+import TenantSignatures from "./pages/TenantSignatures";
+import TenantArchives from "./pages/TenantArchives";
+import OwnerSignatures from "./pages/OwnerSignatures";
+import OwnerArchives from "./pages/OwnerArchives";
+import Reports from "./pages/Reports";
+import Mailing from "./pages/Mailing";
+import Tenants from "./pages/Tenants";
 
 const queryClient = new QueryClient();
 
@@ -24,14 +32,14 @@ const App = () => (
           <Route path="/properties" element={<Properties />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/help" element={<Help />} />
-          <Route path="/tenant-signatures" element={<NotFound />} />
-          <Route path="/tenant-archives" element={<NotFound />} />
-          <Route path="/banking" element={<NotFound />} />
-          <Route path="/owner-signatures" element={<NotFound />} />
-          <Route path="/owner-archives" element={<NotFound />} />
-          <Route path="/reports" element={<NotFound />} />
-          <Route path="/mailing" element={<NotFound />} />
-          <Route path="/tenants" element={<NotFound />} />
+          <Route path="/tenant-signatures" element={<TenantSignatures />} />
+          <Route path="/tenant-archives" element={<TenantArchives />} />
+          <Route path="/banking" element={<Banking />} />
+          <Route path="/owner-signatures" element={<OwnerSignatures />} />
+          <Route path="/owner-archives" element={<OwnerArchives />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/mailing" element={<Mailing />} />
+          <Route path="/tenants" element={<Tenants />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
