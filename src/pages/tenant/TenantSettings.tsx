@@ -3,10 +3,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Settings, User, Lock, Bell, Shield, Phone } from "lucide-react";
+import { Settings, User, Lock, Bell } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 const TenantSettings = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSave = () => {
+    // TODO: Implement actual save functionality
+    toast({
+      title: "Settings saved",
+      description: "Your settings have been successfully updated.",
+    });
+  };
+
+  const handleCancel = () => {
+    navigate("/tenant/dashboard");
+  };
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div>
@@ -142,8 +159,8 @@ const TenantSettings = () => {
         </Card>
 
         <div className="flex justify-end gap-4">
-          <Button variant="outline">Cancel</Button>
-          <Button>Save Changes</Button>
+          <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+          <Button onClick={handleSave}>Save Changes</Button>
         </div>
       </div>
     </div>
