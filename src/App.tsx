@@ -27,6 +27,7 @@ import Files from "./pages/Files";
 import Statements from "./pages/Statements";
 import Notifications from "./pages/Notifications";
 import Login from "./pages/Login";
+import TenantDashboard from "./pages/tenant/TenantDashboard";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ const App = () => (
           <Route path="/files" element={<Files />} />
           <Route path="/statements" element={<Statements />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/tenant/dashboard" element={<TenantDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
