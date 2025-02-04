@@ -1,7 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Home, Users, Building, Settings, HelpCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const Sidebar = () => {
+  const location = useLocation();
+  
   const navigation = [
     { name: "Dashboard", href: "/", icon: Home },
     { name: "Owners", href: "/owners", icon: Users },
@@ -21,7 +24,10 @@ export const Sidebar = () => {
             <Link
               key={item.name}
               to={item.href}
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-white hover:bg-primary-700"
+              className={cn(
+                "group flex items-center px-2 py-2 text-sm font-medium rounded-md text-white hover:bg-primary-700",
+                location.pathname === item.href && "bg-primary-700"
+              )}
             >
               <item.icon className="mr-3 h-6 w-6" aria-hidden="true" />
               {item.name}
