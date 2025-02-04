@@ -16,28 +16,35 @@ import {
   Wrench,
   Calendar,
   Bell,
+  AlertCircle,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const TenantDashboard = () => {
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="space-y-6 p-6">
+        {/* Welcome Banner */}
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Tenant Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Welcome, John Doe</h1>
           <p className="text-muted-foreground">
-            Welcome back! Here's an overview of your rental information.
+            Here's an overview of your rental account
           </p>
         </div>
 
         {/* Quick Actions */}
         <div className="flex gap-4">
-          <Button className="gap-2">
-            <CreditCard className="h-4 w-4" />
-            Make Payment
+          <Button asChild className="gap-2">
+            <Link to="/tenant/payments/new">
+              <CreditCard className="h-4 w-4" />
+              Make Payment
+            </Link>
           </Button>
-          <Button variant="outline" className="gap-2">
-            <Wrench className="h-4 w-4" />
-            Submit Maintenance Request
+          <Button asChild variant="outline" className="gap-2">
+            <Link to="/tenant/maintenance/new">
+              <Wrench className="h-4 w-4" />
+              Submit Maintenance Request
+            </Link>
           </Button>
         </div>
 
@@ -56,12 +63,12 @@ const TenantDashboard = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Lease Status</CardTitle>
-              <Home className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Next Rent Due</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Active</div>
-              <p className="text-xs text-muted-foreground">Expires in 8 months</p>
+              <div className="text-2xl font-bold">March 1, 2024</div>
+              <p className="text-xs text-muted-foreground">$1,500.00</p>
             </CardContent>
           </Card>
 
@@ -124,30 +131,36 @@ const TenantDashboard = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Important Dates</CardTitle>
-              <CardDescription>Upcoming deadlines and events</CardDescription>
+              <CardTitle>Important Notices</CardTitle>
+              <CardDescription>Updates from property management</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <AlertCircle className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-medium">Rent Due</p>
-                    <p className="text-xs text-muted-foreground">March 1, 2024</p>
+                    <p className="text-sm font-medium">Building Maintenance Notice</p>
+                    <p className="text-xs text-muted-foreground">
+                      Scheduled maintenance on March 15, 2024
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-medium">Property Inspection</p>
-                    <p className="text-xs text-muted-foreground">March 15, 2024</p>
+                    <p className="text-sm font-medium">Community Update</p>
+                    <p className="text-xs text-muted-foreground">
+                      New parking regulations starting next month
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <Home className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-medium">Lease Renewal Discussion</p>
-                    <p className="text-xs text-muted-foreground">April 1, 2024</p>
+                    <p className="text-sm font-medium">Lease Renewal</p>
+                    <p className="text-xs text-muted-foreground">
+                      Your lease is up for renewal in 3 months
+                    </p>
                   </div>
                 </div>
               </div>
