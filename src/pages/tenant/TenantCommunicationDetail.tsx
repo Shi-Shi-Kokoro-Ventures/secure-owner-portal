@@ -1,9 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Archive, MessageCircle, Trash2 } from "lucide-react";
+import { ArrowLeft, Archive, MessageCircle, Trash2, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 // Types
 interface Communication {
@@ -43,6 +51,8 @@ const TenantCommunicationDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
+  const [replyMessage, setReplyMessage] = useState("");
 
   const { data: message, isLoading } = useQuery({
     queryKey: ["communication", id],
@@ -70,6 +80,23 @@ const TenantCommunicationDetail = () => {
     },
   });
 
+  // Reply mutation
+  const replyMutation = useMutation({
+    mutationFn: async (replyText: string) => {
+      // Replace with actual API call
+      console.log("Sending reply:", replyText);
+      return { success: true };
+    },
+    onSuccess: () => {
+      setIsReplyOpen(false);
+      setReplyMessage("");
+      toast({
+        title: "Reply sent",
+        description: "Your reply has been sent successfully.",
+      });
+    },
+  });
+
   const handleArchive = () => {
     toast({
       title: "Message archived",
@@ -84,6 +111,18 @@ const TenantCommunicationDetail = () => {
       description: "The message has been deleted successfully.",
     });
     navigate("/tenant/communications");
+  };
+
+  const handleReply = () => {
+    if (!replyMessage.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a message before sending.",
+        variant: "destructive",
+      });
+      return;
+    }
+    replyMutation.mutate(replyMessage);
   };
 
   useEffect(() => {
@@ -112,6 +151,46 @@ const TenantCommunicationDetail = () => {
           Back to Communications
         </Button>
         <div className="flex gap-2">
+          <Dialog open={isReplyOpen} onOpenChange={setIsReplyOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <MessageCircle className="h-4 w-4" />
+                Reply
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Reply to message</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 mt-4">
+                <Textarea
+                  placeholder="Type your reply here..."
+                  className="min-h-[200px]"
+                  value={replyMessage}
+                  onChange={(e) => setReplyMessage(e.target.value)}
+                />
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsReplyOpen(false);
+                      setReplyMessage("");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleReply}
+                    disabled={replyMutation.isPending}
+                    className="gap-2"
+                  >
+                    <Send className="h-4 w-4" />
+                    {replyMutation.isPending ? "Sending..." : "Send Reply"}
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
           <Button
             variant="outline"
             className="gap-2"
