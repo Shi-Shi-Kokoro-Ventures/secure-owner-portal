@@ -42,7 +42,7 @@ const OwnerMaintenance = () => {
               ].map((request) => (
                 <div
                   key={request.title}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center gap-4">
                     <Wrench className="h-5 w-5 text-primary" />

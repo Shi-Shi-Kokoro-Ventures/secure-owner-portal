@@ -26,7 +26,7 @@ const OwnerReports = () => {
               ].map((report) => (
                 <div
                   key={report}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center gap-4">
                     <FileBarChart className="h-5 w-5 text-primary" />
@@ -60,7 +60,7 @@ const OwnerReports = () => {
               ].map((report) => (
                 <div
                   key={report}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center gap-4">
                     <BarChart className="h-5 w-5 text-primary" />
