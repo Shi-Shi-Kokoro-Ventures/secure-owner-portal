@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import TenantMaintenance from "@/pages/tenant/TenantMaintenance";
 import NewMaintenanceRequest from "@/pages/tenant/NewMaintenanceRequest";
+import MaintenanceRequestDetail from "@/pages/tenant/MaintenanceRequestDetail";
 import TenantDashboard from "@/pages/tenant/TenantDashboard";
 import TenantPayments from "@/pages/tenant/TenantPayments";
 import NewPayment from "@/pages/tenant/NewPayment";
@@ -131,6 +132,10 @@ export default function App() {
             <Route
               path="/tenant/maintenance/new"
               element={<NewMaintenanceRequest />}
+            />
+            <Route
+              path="/tenant/maintenance/:id"
+              element={<MaintenanceRequestDetail />}
             />
             <Route path="/tenant/payments" element={<TenantPayments />} />
             <Route path="/tenant/payments/new" element={<NewPayment />} />
