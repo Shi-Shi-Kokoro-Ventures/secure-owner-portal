@@ -43,6 +43,22 @@ interface Owner {
   balance: number;
   lastPayment: string;
   status: string;
+  username?: string;
+  dateOfBirth?: string;
+  phone?: string;
+  address?: string;
+  mailingAddress?: string;
+  governmentId?: string;
+  taxId?: string;
+  ownershipType?: string;
+  bankAccount?: string;
+  billingAddress?: string;
+  communicationPreference?: string;
+  timezone?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  emergencyContactRelation?: string;
+  notes?: string;
 }
 
 const mockOwners: Owner[] = [
