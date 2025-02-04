@@ -12,13 +12,36 @@ import {
   FileText,
   User,
   CreditCard,
-  Lock
+  Lock,
+  DollarSign,
+  RefreshCcw,
+  Building,
+  ChevronDown,
+  Wrench,
+  Phone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const Settings = () => {
+  const [expandedSections, setExpandedSections] = useState({
+    account: true,
+    financial: true,
+    program: true,
+    tools: true
+  });
+
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   const sections = [
     {
+      id: 'account',
       title: "Account",
       items: [
         {
@@ -37,7 +60,8 @@ const Settings = () => {
           icon: Lock,
           title: "Login & Password",
           description: "Change your login or password to the application.",
-          href: "#login-password"
+          href: "#login-password",
+          showLiveHelp: true
         },
         {
           icon: Users,
@@ -54,23 +78,61 @@ const Settings = () => {
       ]
     },
     {
+      id: 'financial',
       title: "Financial",
       items: [
         {
-          icon: CreditCard,
-          title: "Payment Settings",
-          description: "Configure payment methods and preferences.",
-          href: "#payment-settings"
+          icon: FileText,
+          title: "Accounting Defaults",
+          description: "Defaults related to accounting display options.",
+          href: "#accounting-defaults"
         },
         {
-          icon: FileText,
-          title: "Billing History",
-          description: "View and download past invoices.",
-          href: "#billing-history"
+          icon: CreditCard,
+          title: "Online Payments",
+          description: "Set up ACH and credit payment capabilities.",
+          href: "#online-payments"
+        },
+        {
+          icon: DollarSign,
+          title: "Cash Payments",
+          description: "Set up Cash Payments.",
+          href: "#cash-payments"
+        },
+        {
+          icon: RefreshCcw,
+          title: "Recurring Transactions",
+          description: "Manage existing recurring transactions (rent, etc).",
+          href: "#recurring-transactions"
+        },
+        {
+          icon: DollarSign,
+          title: "Chart of Accounts",
+          description: "Manage your income & expense categories, along with asset and liability accounts.",
+          href: "#chart-accounts"
+        },
+        {
+          icon: Building,
+          title: "Products & Services",
+          description: "Define your products and services.",
+          href: "#products-services"
+        },
+        {
+          icon: Wrench,
+          title: "CAM Pools",
+          description: "Set up and configure shared CAM pools.",
+          href: "#cam-pools"
+        },
+        {
+          icon: Users,
+          title: "Vendors & Payees",
+          description: "Set up and manage an address book of payees.",
+          href: "#vendors-payees"
         }
       ]
     },
     {
+      id: 'program',
       title: "Program",
       items: [
         {
@@ -83,7 +145,8 @@ const Settings = () => {
           icon: ClipboardList,
           title: "Custom Fields",
           description: "Set up and manage custom fields",
-          href: "#custom-fields"
+          href: "#custom-fields",
+          showLiveHelp: true
         },
         {
           icon: Mail,
@@ -118,6 +181,7 @@ const Settings = () => {
       ]
     },
     {
+      id: 'tools',
       title: "Tools",
       items: [
         {
@@ -127,7 +191,7 @@ const Settings = () => {
           href: "#integrations"
         },
         {
-          icon: MessageSquare,
+          icon: Phone,
           title: "Communication Preferences",
           description: "Set up email and messaging preferences.",
           href: "#communication"
@@ -143,38 +207,50 @@ const Settings = () => {
         
         {sections.map((section) => (
           <div key={section.title} className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-primary">{section.title}</h2>
-              <Button variant="ghost" size="sm">
-                <span className="sr-only">Toggle {section.title}</span>
-                <SettingsIcon className="h-4 w-4" />
-              </Button>
-            </div>
+            <button 
+              onClick={() => toggleSection(section.id as keyof typeof expandedSections)}
+              className="w-full flex items-center justify-between p-3 bg-primary text-white rounded-t-lg hover:bg-primary-600 transition-colors"
+            >
+              <h2 className="text-xl font-semibold">{section.title}</h2>
+              <ChevronDown className={cn(
+                "h-5 w-5 transition-transform",
+                expandedSections[section.id as keyof typeof expandedSections] ? "transform rotate-180" : ""
+              )} />
+            </button>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {section.items.map((item) => (
-                <a
-                  key={item.title}
-                  href={item.href}
-                  className="p-4 rounded-lg border border-gray-200 hover:border-primary hover:shadow-md transition-all"
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
-                      <item.icon className="h-6 w-6 text-primary" />
+            {expandedSections[section.id as keyof typeof expandedSections] && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {section.items.map((item) => (
+                  <a
+                    key={item.title}
+                    href={item.href}
+                    className="p-4 rounded-lg border border-gray-200 hover:border-primary hover:shadow-md transition-all relative"
+                  >
+                    <div className="flex items-start space-x-4">
+                      <div className="flex-shrink-0">
+                        <item.icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-medium mb-1">{item.title}</h3>
+                        <p className="text-sm text-gray-600">{item.description}</p>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-medium mb-1">{item.title}</h3>
-                      <p className="text-sm text-gray-600">{item.description}</p>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
+                    {item.showLiveHelp && (
+                      <div className="absolute top-2 right-2">
+                        <Button size="sm" variant="secondary" className="text-xs bg-blue-500 text-white hover:bg-blue-600">
+                          Live Expert Help
+                        </Button>
+                      </div>
+                    )}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         ))}
 
         <footer className="mt-8 pt-4 border-t border-gray-200 text-sm text-gray-600">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-wrap justify-between items-center gap-4">
             <div className="space-x-4">
               <a href="#terms" className="hover:text-primary">Terms & Conditions</a>
               <span>|</span>
