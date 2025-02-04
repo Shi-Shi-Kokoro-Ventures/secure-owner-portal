@@ -5,28 +5,28 @@ import { Plus } from "lucide-react";
 
 const mockProperties = [
   {
-    name: "Sunset Apartments",
-    address: "123 Sunset Blvd, Los Angeles, CA 90028",
-    units: 4,
-    occupancyRate: 100,
-    revenue: 8000,
-    imageUrl: "/lovable-uploads/34b95799-1197-441e-8517-5798003a835a.png"
-  },
-  {
-    name: "Ocean View Complex",
-    address: "456 Ocean Dr, Santa Monica, CA 90401",
+    name: "Modern Triplex",
+    address: "456 Contemporary Ave, Los Angeles, CA 90028",
     units: 6,
-    occupancyRate: 83,
-    revenue: 12000,
-    imageUrl: "/lovable-uploads/1ab03cf0-3373-4f12-80ac-d96a64aeb0de.png"
+    occupancyRate: 100,
+    revenue: 15000,
+    imageUrl: "/lovable-uploads/034ef3b6-46b9-4c34-83c5-06aaf235ef29.png"
   },
   {
-    name: "Mountain Lodge",
-    address: "789 Mountain Rd, Beverly Hills, CA 90210",
-    units: 2,
-    occupancyRate: 100,
-    revenue: 4500,
-    imageUrl: "/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png"
+    name: "Urban Heights",
+    address: "789 Skyline Dr, Santa Monica, CA 90401",
+    units: 3,
+    occupancyRate: 83,
+    revenue: 9000,
+    imageUrl: "/lovable-uploads/4593ebac-7117-4d76-9862-5d9e41a94352.png"
+  },
+  {
+    name: "The Stacks",
+    address: "123 Vertical Way, Beverly Hills, CA 90210",
+    units: 4,
+    occupancyRate: 75,
+    revenue: 12000,
+    imageUrl: "/lovable-uploads/6f1b7169-8671-4db3-b85e-17b211176d2d.png"
   },
 ];
 
