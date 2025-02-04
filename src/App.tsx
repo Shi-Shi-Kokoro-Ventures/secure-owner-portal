@@ -17,6 +17,10 @@ import OwnerArchives from "./pages/OwnerArchives";
 import Reports from "./pages/Reports";
 import Mailing from "./pages/Mailing";
 import Tenants from "./pages/Tenants";
+import Applications from "./pages/Applications";
+import Inspections from "./pages/Inspections";
+import WorkOrders from "./pages/WorkOrders";
+import PropertyArchives from "./pages/PropertyArchives";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +44,10 @@ const App = () => (
           <Route path="/reports" element={<Reports />} />
           <Route path="/mailing" element={<Mailing />} />
           <Route path="/tenants" element={<Tenants />} />
+          <Route path="/applications" element={<Applications />} />
+          <Route path="/inspections" element={<Inspections />} />
+          <Route path="/work-orders" element={<WorkOrders />} />
+          <Route path="/property-archives" element={<PropertyArchives />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
