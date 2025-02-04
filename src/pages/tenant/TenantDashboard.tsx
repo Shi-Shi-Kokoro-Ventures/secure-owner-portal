@@ -23,10 +23,76 @@ import {
 } from "lucide-react";
 import { AccountSummary } from "@/components/tenant/dashboard/AccountSummary";
 import { PaymentHistory } from "@/components/tenant/dashboard/PaymentHistory";
+import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useQuery } from "@tanstack/react-query";
+
+// Mock API call - replace with actual API call
+const fetchDashboardData = async () => {
+  try {
+    // Simulate API call
+    const response = await fetch('/api/tenant/dashboard');
+    if (!response.ok) {
+      throw new Error('Failed to fetch dashboard data');
+    }
+    return response.json();
+  } catch (error) {
+    throw new Error('Error fetching dashboard data');
+  }
+};
 
 const TenantDashboard = () => {
-  // Mock data - replace with API calls in production
-  const tenant = {
+  const { toast } = useToast();
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['tenantDashboard'],
+    queryFn: fetchDashboardData,
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to load dashboard data. Please try again later.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 space-y-8 animate-pulse">
+        <div className="bg-gray-200 h-32 rounded-lg"></div>
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="bg-gray-200 h-48 rounded-lg"></div>
+          <div className="bg-gray-200 h-48 rounded-lg"></div>
+          <div className="bg-gray-200 h-48 rounded-lg"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            There was a problem loading your dashboard. Please try refreshing the page or contact support if the problem persists.
+          </AlertDescription>
+        </Alert>
+        <Button
+          className="mt-4"
+          onClick={() => window.location.reload()}
+        >
+          Retry Loading
+        </Button>
+      </div>
+    );
+  }
+
+  // Use mock data when real data is not available
+  const tenant = data?.tenant || {
     name: "John Doe",
     leaseStart: "2024-01-01",
     leaseEnd: "2024-12-31",
@@ -38,7 +104,7 @@ const TenantDashboard = () => {
     unreadNotifications: 3
   };
 
-  const recentPayments = [
+  const recentPayments = data?.recentPayments || [
     {
       id: "1",
       date: "2024-02-01",
@@ -192,6 +258,7 @@ const TenantDashboard = () => {
             </CardContent>
           </Card>
         </Link>
+
       </div>
 
       {/* Payment History & Important Notices */}
