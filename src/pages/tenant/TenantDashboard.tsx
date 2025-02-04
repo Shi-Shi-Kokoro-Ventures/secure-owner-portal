@@ -102,15 +102,36 @@ const TenantDashboard = () => {
     },
   });
 
-  // Show loading state
+  // Show loading state with skeleton animation
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 space-y-8 animate-pulse">
-        <div className="bg-gray-200 h-32 rounded-lg"></div>
+      <div className="container mx-auto px-4 space-y-8">
+        <div className="bg-white rounded-lg p-6 border shadow-sm animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+        </div>
         <div className="grid gap-6 md:grid-cols-3">
-          <div className="bg-gray-200 h-48 rounded-lg"></div>
-          <div className="bg-gray-200 h-48 rounded-lg"></div>
-          <div className="bg-gray-200 h-48 rounded-lg"></div>
+          <div className="h-48 bg-white rounded-lg border shadow-sm animate-pulse">
+            <div className="p-6 space-y-4">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            </div>
+          </div>
+          <div className="h-48 bg-white rounded-lg border shadow-sm animate-pulse">
+            <div className="p-6 space-y-4">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            </div>
+          </div>
+          <div className="h-48 bg-white rounded-lg border shadow-sm animate-pulse">
+            <div className="p-6 space-y-4">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -222,27 +243,27 @@ const TenantDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 space-y-8">
-      {/* Welcome Banner */}
-      <div className="bg-white rounded-lg p-6 border shadow-sm">
+      {/* Welcome Banner with animation */}
+      <div className="bg-white rounded-lg p-6 border shadow-sm hover:shadow-md transition-shadow animate-fade-in">
         <h1 className="text-3xl font-bold tracking-tight">Welcome, {data?.tenant.name}</h1>
         <p className="text-muted-foreground">
           Here's an overview of your rental account
         </p>
       </div>
 
-      {/* Account Summary & Quick Actions */}
+      {/* Account Summary & Quick Actions with hover effects */}
       <div className="grid gap-6 md:grid-cols-3">
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 animate-fade-in" style={{ animationDelay: "100ms" }}>
           {data?.tenant && <AccountSummary tenant={data.tenant} />}
         </div>
-        <div className="space-y-4">
-          <Button asChild size="lg" className="w-full gap-2">
+        <div className="space-y-4 animate-fade-in" style={{ animationDelay: "200ms" }}>
+          <Button asChild size="lg" className="w-full gap-2 hover:scale-105 transition-transform">
             <Link to="/tenant/payments/new">
               <CreditCard className="h-5 w-5" />
               Make Payment
             </Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="w-full gap-2">
+          <Button asChild size="lg" variant="outline" className="w-full gap-2 hover:scale-105 transition-transform">
             <Link to="/tenant/maintenance/new">
               <Wrench className="h-5 w-5" />
               Submit Maintenance Request
@@ -251,9 +272,9 @@ const TenantDashboard = () => {
         </div>
       </div>
 
-      {/* Summary Cards */}
+      {/* Summary Cards with hover effects */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Link to="/tenant/payments">
+        <Link to="/tenant/payments" className="transform hover:scale-105 transition-all duration-200 animate-fade-in">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Current Balance</CardTitle>
@@ -266,7 +287,7 @@ const TenantDashboard = () => {
           </Card>
         </Link>
 
-        <Link to="/tenant/payments">
+        <Link to="/tenant/payments" className="transform hover:scale-105 transition-all duration-200 animate-fade-in">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Next Rent Due</CardTitle>
@@ -283,7 +304,7 @@ const TenantDashboard = () => {
           </Card>
         </Link>
 
-        <Link to="/tenant/maintenance">
+        <Link to="/tenant/maintenance" className="transform hover:scale-105 transition-all duration-200 animate-fade-in">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Open Requests</CardTitle>
@@ -296,7 +317,7 @@ const TenantDashboard = () => {
           </Card>
         </Link>
 
-        <Link to="/tenant/communications">
+        <Link to="/tenant/communications" className="transform hover:scale-105 transition-all duration-200 animate-fade-in">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Notifications</CardTitle>
@@ -310,8 +331,8 @@ const TenantDashboard = () => {
         </Link>
       </div>
 
-      {/* Payment History & Important Notices */}
-      <div className="grid gap-6 md:grid-cols-2">
+      {/* Payment History & Important Notices with animations */}
+      <div className="grid gap-6 md:grid-cols-2 animate-fade-in" style={{ animationDelay: "300ms" }}>
         {data?.recentPayments && <PaymentHistory payments={data.recentPayments} />}
         <Card>
           <CardHeader>

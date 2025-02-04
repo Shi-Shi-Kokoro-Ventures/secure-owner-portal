@@ -40,7 +40,7 @@ export const Sidebar = () => {
       <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
         <div className="flex h-16 shrink-0 items-center">
           <img
-            className="h-8 w-auto"
+            className="h-8 w-auto transition-transform hover:scale-105"
             src="/lovable-uploads/34b95799-1197-441e-8517-5798003a835a.png"
             alt="Property Manager Logo"
           />
@@ -59,13 +59,13 @@ export const Sidebar = () => {
                           isActive
                             ? "bg-gray-50 text-primary"
                             : "text-gray-700 hover:text-primary hover:bg-gray-50",
-                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200 hover:translate-x-1"
                         )}
                       >
                         <item.icon
                           className={cn(
                             isActive ? "text-primary" : "text-gray-400 group-hover:text-primary",
-                            "h-6 w-6 shrink-0"
+                            "h-6 w-6 shrink-0 transition-colors duration-200"
                           )}
                           aria-hidden="true"
                         />
@@ -89,13 +89,13 @@ export const Sidebar = () => {
                           isActive
                             ? "bg-gray-50 text-primary"
                             : "text-gray-700 hover:text-primary hover:bg-gray-50",
-                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200 hover:translate-x-1"
                         )}
                       >
                         <item.icon
                           className={cn(
                             isActive ? "text-primary" : "text-gray-400 group-hover:text-primary",
-                            "h-6 w-6 shrink-0"
+                            "h-6 w-6 shrink-0 transition-colors duration-200"
                           )}
                           aria-hidden="true"
                         />
