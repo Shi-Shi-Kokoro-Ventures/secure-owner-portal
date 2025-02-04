@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Archive, Check, MessageCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -41,12 +41,31 @@ const TenantCommunicationDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: message, isLoading } = useQuery({
     queryKey: ["communication", id],
     queryFn: async () => {
       // Replace with actual API call
       return mockCommunications.find((m) => m.id === id);
+    },
+  });
+
+  // Mark as read mutation
+  const markAsReadMutation = useMutation({
+    mutationFn: async () => {
+      if (!message) return;
+      // Replace with actual API call
+      message.isRead = true;
+      return message;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["communications"] });
+      queryClient.invalidateQueries({ queryKey: ["communication", id] });
+      toast({
+        title: "Message marked as read",
+        description: "The message has been marked as read.",
+      });
     },
   });
 
@@ -65,6 +84,12 @@ const TenantCommunicationDetail = () => {
     });
     navigate("/tenant/communications");
   };
+
+  React.useEffect(() => {
+    if (message && !message.isRead) {
+      markAsReadMutation.mutate();
+    }
+  }, [message]);
 
   if (isLoading) {
     return <div>Loading...</div>;
