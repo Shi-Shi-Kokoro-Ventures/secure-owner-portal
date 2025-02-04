@@ -9,17 +9,27 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [userType, setUserType] = useState<"tenant" | "manager">("manager");
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual authentication
-    toast({
-      title: "Success",
-      description: "Logged in successfully",
-    });
-    navigate("/owners");
+    
+    // Temporary authentication logic until backend is implemented
+    if (userType === "tenant") {
+      toast({
+        title: "Success",
+        description: "Logged in as tenant successfully",
+      });
+      navigate("/tenant/dashboard");
+    } else {
+      toast({
+        title: "Success",
+        description: "Logged in as property manager successfully",
+      });
+      navigate("/dashboard");
+    }
   };
 
   return (
@@ -51,6 +61,18 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+            </div>
+            <div>
+              <Label htmlFor="userType">Login as</Label>
+              <select
+                id="userType"
+                className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
+                value={userType}
+                onChange={(e) => setUserType(e.target.value as "tenant" | "manager")}
+              >
+                <option value="manager">Property Manager</option>
+                <option value="tenant">Tenant</option>
+              </select>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center">
