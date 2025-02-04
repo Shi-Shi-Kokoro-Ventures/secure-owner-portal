@@ -3,6 +3,10 @@ import { Toaster } from "@/components/ui/toaster";
 import TenantMaintenance from "@/pages/tenant/TenantMaintenance";
 import NewMaintenanceRequest from "@/pages/tenant/NewMaintenanceRequest";
 import TenantDashboard from "@/pages/tenant/TenantDashboard";
+import TenantPayments from "@/pages/tenant/TenantPayments";
+import TenantDocuments from "@/pages/tenant/TenantDocuments";
+import TenantCommunications from "@/pages/tenant/TenantCommunications";
+import TenantSettings from "@/pages/tenant/TenantSettings";
 import WorkOrders from "@/pages/WorkOrders";
 import { AddPropertyForm } from "@/components/AddPropertyForm";
 import { PlaceNewTenant } from "@/components/PlaceNewTenant";
@@ -110,6 +114,10 @@ export default function App() {
           <Route path="/tenant/dashboard" element={<TenantDashboard />} />
           <Route path="/tenant/maintenance" element={<TenantMaintenance />} />
           <Route path="/tenant/maintenance/new" element={<NewMaintenanceRequest />} />
+          <Route path="/tenant/payments" element={<TenantPayments />} />
+          <Route path="/tenant/documents" element={<TenantDocuments />} />
+          <Route path="/tenant/communications" element={<TenantCommunications />} />
+          <Route path="/tenant/settings" element={<TenantSettings />} />
         </Route>
       </Routes>
       <Toaster />
