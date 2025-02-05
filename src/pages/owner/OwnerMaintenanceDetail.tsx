@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 
 const OwnerMaintenanceDetail = () => {
   const { id } = useParams();
@@ -45,12 +46,7 @@ const OwnerMaintenanceDetail = () => {
       // TODO: Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const currentDate = new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-
+      const currentDate = format(new Date(), "MMM d, yyyy 'at' h:mm a");
       const statusMessage = newStatus === 'approved' 
         ? "Maintenance request approved"
         : "Maintenance request rejected";
@@ -92,11 +88,7 @@ const OwnerMaintenanceDetail = () => {
       // TODO: Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const currentDate = new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
+      const currentDate = format(new Date(), "MMM d, yyyy 'at' h:mm a");
 
       const newUpdateObj = {
         date: currentDate,
@@ -252,6 +244,7 @@ const OwnerMaintenanceDetail = () => {
       </div>
     </div>
   );
+
 };
 
 export default OwnerMaintenanceDetail;
