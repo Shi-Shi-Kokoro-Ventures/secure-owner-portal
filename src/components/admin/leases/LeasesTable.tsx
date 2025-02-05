@@ -9,9 +9,19 @@ import {
 } from "@/components/ui/table";
 import { Lease } from "@/types/lease";
 import { formatDistance } from "date-fns";
-import { Loader2 } from "lucide-react";
+import { Loader2, MoreHorizontal, FileText, UserCheck, Ban } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LeasesTableProps {
   leases: Lease[];
@@ -20,6 +30,22 @@ interface LeasesTableProps {
 
 export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
   const { toast } = useToast();
+
+  const { data: userRole } = useQuery({
+    queryKey: ['userRole'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      
+      const { data } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+      
+      return data?.role;
+    }
+  });
 
   const getStatusBadge = (status: Lease['status']) => {
     const variants = {
@@ -51,10 +77,10 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
     return formatDistance(end, now, { addSuffix: true });
   };
 
-  const handleRowClick = (leaseId: string) => {
+  const handleAction = (action: string, leaseId: string) => {
     toast({
-      title: "Lease Details",
-      description: "Detailed lease view will be available in the next update.",
+      title: action,
+      description: `${action} for lease ${leaseId} will be available in the next update.`,
     });
   };
 
@@ -66,20 +92,26 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
     );
   }
 
+  const isAdmin = userRole === 'admin';
+  const isPropertyManager = userRole === 'property_manager';
+  const isOwner = userRole === 'owner';
+
   return (
     <div className="rounded-md border animate-in fade-in duration-500">
       <div className="p-4 bg-muted/50 border-b">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold">Active Leases</h3>
-          <Button
-            onClick={() => toast({
-              title: "Create Lease",
-              description: "New lease creation will be available in the next update.",
-            })}
-            size="sm"
-          >
-            Create Lease
-          </Button>
+          {(isAdmin || isPropertyManager) && (
+            <Button
+              onClick={() => toast({
+                title: "Create Lease",
+                description: "New lease creation will be available in the next update.",
+              })}
+              size="sm"
+            >
+              Create Lease
+            </Button>
+          )}
         </div>
       </div>
       <Table>
@@ -95,14 +127,14 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
             <TableHead>Security Deposit</TableHead>
             <TableHead>Auto Renewal</TableHead>
             <TableHead>Status</TableHead>
+            {(isAdmin || isPropertyManager) && <TableHead>Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {leases?.map((lease) => (
             <TableRow 
               key={lease.id} 
-              className="hover:bg-muted/50 cursor-pointer transition-colors duration-200"
-              onClick={() => handleRowClick(lease.id)}
+              className="hover:bg-muted/50 transition-colors duration-200"
             >
               <TableCell className="font-medium">{lease.lease_number}</TableCell>
               <TableCell>{lease.unit.property.property_name}</TableCell>
@@ -131,11 +163,45 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
                 )}
               </TableCell>
               <TableCell>{getStatusBadge(lease.status)}</TableCell>
+              {(isAdmin || isPropertyManager) && (
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-[200px]">
+                      <DropdownMenuLabel>Lease Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => handleAction("View Details", lease.id)}>
+                        <FileText className="mr-2 h-4 w-4" />
+                        View Details
+                      </DropdownMenuItem>
+                      {isAdmin && (
+                        <DropdownMenuItem onClick={() => handleAction("Edit Lease", lease.id)}>
+                          <UserCheck className="mr-2 h-4 w-4" />
+                          Edit Lease
+                        </DropdownMenuItem>
+                      )}
+                      {(isAdmin || isPropertyManager) && (
+                        <DropdownMenuItem 
+                          onClick={() => handleAction("Terminate Lease", lease.id)}
+                          className="text-red-600"
+                        >
+                          <Ban className="mr-2 h-4 w-4" />
+                          Terminate Lease
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              )}
             </TableRow>
           ))}
           {leases?.length === 0 && (
             <TableRow>
-              <TableCell colSpan={10} className="h-24 text-center text-muted-foreground">
+              <TableCell colSpan={11} className="h-24 text-center text-muted-foreground">
                 No leases found
               </TableCell>
             </TableRow>
