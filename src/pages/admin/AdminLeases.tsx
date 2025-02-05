@@ -43,7 +43,7 @@ const AdminLeases = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        logger.error("Error fetching leases:", error);
+        logger.error("Error fetching leases: " + error.message);
         toast({
           variant: "destructive",
           title: "Error fetching leases",
@@ -52,7 +52,7 @@ const AdminLeases = () => {
         return [];
       }
 
-      logger.info("Leases data fetched:", data?.length || 0, "leases found");
+      logger.info(`Leases data fetched: ${data?.length || 0} leases found`);
       return data as Lease[];
     },
   });
@@ -67,7 +67,7 @@ const AdminLeases = () => {
     );
   }
 
-  logger.info("Rendering AdminLeases with", leases?.length || 0, "leases");
+  logger.info(`Rendering AdminLeases with ${leases?.length || 0} leases`);
 
   return (
     <AdminLayout>
