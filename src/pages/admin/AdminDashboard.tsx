@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,9 +15,58 @@ import {
   UserPlus,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [announcement, setAnnouncement] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleBroadcastAnnouncement = async () => {
+    if (!announcement.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter an announcement message",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { error } = await supabase.functions.invoke('broadcast-announcement', {
+        body: { 
+          message: announcement,
+        },
+        headers: {
+          'x-admin-id': user?.id
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "System announcement has been broadcast to all users",
+      });
+      setAnnouncement("");
+    } catch (error) {
+      console.error('Error broadcasting announcement:', error);
+      toast({
+        title: "Error",
+        description: "Failed to broadcast announcement. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <AdminLayout>
@@ -41,10 +91,34 @@ const AdminDashboard = () => {
             <FileText className="h-4 w-4" />
             Approve Leases
           </Button>
-          <Button className="gap-2">
-            <Megaphone className="h-4 w-4" />
-            Broadcast System Announcement
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Megaphone className="h-4 w-4" />
+                Broadcast System Announcement
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Broadcast System Announcement</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <Textarea
+                  placeholder="Enter your announcement message..."
+                  value={announcement}
+                  onChange={(e) => setAnnouncement(e.target.value)}
+                  className="min-h-[100px]"
+                />
+                <Button 
+                  onClick={handleBroadcastAnnouncement}
+                  disabled={isSubmitting}
+                  className="w-full"
+                >
+                  {isSubmitting ? "Broadcasting..." : "Broadcast Announcement"}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Metrics Grid */}
