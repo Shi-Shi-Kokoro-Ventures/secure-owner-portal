@@ -26,7 +26,7 @@ export const LeaseMetricCard = ({
       <Tooltip>
         <TooltipTrigger asChild>
           <Card 
-            className={`relative overflow-hidden ${onClick ? 'cursor-pointer' : ''}`}
+            className={`relative overflow-hidden ${onClick ? 'cursor-pointer hover:shadow-lg transition-all duration-200' : ''}`}
             onClick={onClick}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
