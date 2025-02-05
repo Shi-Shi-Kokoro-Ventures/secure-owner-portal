@@ -1,44 +1,65 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Eye, FileText, Mail, Phone } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Owner {
   id: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   phone: string;
   email: string;
   properties: number;
   balance: number;
-  lastPayment: string;
+  last_payment: string;
   status: string;
 }
 
-const mockOwners: Owner[] = [
-  {
-    id: "1",
-    name: "John Smith",
-    phone: "(555) 123-4567",
-    email: "john.smith@example.com",
-    properties: 3,
-    balance: 5000.00,
-    lastPayment: "2024-02-15",
-    status: "Active"
-  },
-  {
-    id: "2",
-    name: "Sarah Johnson",
-    phone: "(555) 987-6543",
-    email: "sarah.j@example.com",
-    properties: 2,
-    balance: 3200.50,
-    lastPayment: "2024-02-10",
-    status: "Active"
-  }
-];
+interface OwnersTableProps {
+  onRefresh?: () => void;
+}
 
-export const OwnersTable = () => {
-  const [owners] = useState<Owner[]>(mockOwners);
+export const OwnersTable = ({ onRefresh }: OwnersTableProps) => {
+  const [owners, setOwners] = useState<Owner[]>([]);
+
+  const fetchOwners = async () => {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('role', 'owner');
+    
+    if (error) {
+      console.error('Error fetching owners:', error);
+      return;
+    }
+
+    // Transform the data to match our interface
+    const transformedOwners = data.map(user => ({
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      phone: user.phone || '',
+      email: user.email,
+      properties: 0, // We'll implement this count later
+      balance: 0, // We'll implement this calculation later
+      last_payment: new Date().toISOString(), // We'll implement this later
+      status: 'Active'
+    }));
+
+    setOwners(transformedOwners);
+  };
+
+  useEffect(() => {
+    fetchOwners();
+  }, []);
+
+  // Refresh data when onRefresh is called
+  useEffect(() => {
+    if (onRefresh) {
+      fetchOwners();
+    }
+  }, [onRefresh]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -79,7 +100,7 @@ export const OwnersTable = () => {
           ) : (
             owners.map((owner) => (
               <TableRow key={owner.id} className="hover:bg-gray-50">
-                <TableCell className="font-medium">{owner.name}</TableCell>
+                <TableCell className="font-medium">{`${owner.first_name} ${owner.last_name}`}</TableCell>
                 <TableCell>
                   <div className="flex flex-col space-y-1">
                     <div className="flex items-center space-x-2">
@@ -96,7 +117,7 @@ export const OwnersTable = () => {
                 <TableCell className="text-right font-medium">
                   {formatCurrency(owner.balance)}
                 </TableCell>
-                <TableCell>{formatDate(owner.lastPayment)}</TableCell>
+                <TableCell>{formatDate(owner.last_payment)}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                     owner.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'

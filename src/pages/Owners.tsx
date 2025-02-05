@@ -5,20 +5,47 @@ import { Filter, Plus, DollarSign, Download, Printer } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { AddOwnerDialog } from "@/components/AddOwnerDialog";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
-// This is the property manager's view for managing owners
 const Owners = () => {
   const [showAddOwner, setShowAddOwner] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const { toast } = useToast();
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
     // TODO: Implement search functionality
   };
 
-  const handleAddOwner = (ownerData: any) => {
-    // TODO: Implement add owner functionality
-    console.log("Adding owner:", ownerData);
+  const handleAddOwner = async (ownerData: any) => {
+    try {
+      const { error } = await supabase.from('users').insert({
+        first_name: ownerData.name.split(' ')[0],
+        last_name: ownerData.name.split(' ').slice(1).join(' '),
+        email: ownerData.email,
+        phone: ownerData.phone,
+        role: 'owner'
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Owner added successfully",
+      });
+      
+      // Trigger a refresh of the owners table
+      setRefreshTrigger(prev => prev + 1);
+    } catch (error) {
+      console.error('Error adding owner:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add owner. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -57,7 +84,7 @@ const Owners = () => {
               Print
             </Button>
           </div>
-          <OwnersTable />
+          <OwnersTable onRefresh={() => refreshTrigger} />
         </div>
 
         <AddOwnerDialog 
