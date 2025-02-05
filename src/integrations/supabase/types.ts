@@ -621,38 +621,47 @@ export type Database = {
       payments: {
         Row: {
           amount_paid: number
+          connected_account_id: string | null
           created_at: string
           id: string
           lease_id: string | null
           method: Database["public"]["Enums"]["payment_method"]
           payment_date: string
           payment_method_id: string | null
+          platform_fee_amount: number | null
           status: Database["public"]["Enums"]["payment_status"]
           stripe_payment_intent_id: string | null
+          stripe_transfer_id: string | null
           tenant_id: string | null
         }
         Insert: {
           amount_paid: number
+          connected_account_id?: string | null
           created_at?: string
           id?: string
           lease_id?: string | null
           method: Database["public"]["Enums"]["payment_method"]
           payment_date: string
           payment_method_id?: string | null
+          platform_fee_amount?: number | null
           status?: Database["public"]["Enums"]["payment_status"]
           stripe_payment_intent_id?: string | null
+          stripe_transfer_id?: string | null
           tenant_id?: string | null
         }
         Update: {
           amount_paid?: number
+          connected_account_id?: string | null
           created_at?: string
           id?: string
           lease_id?: string | null
           method?: Database["public"]["Enums"]["payment_method"]
           payment_date?: string
           payment_method_id?: string | null
+          platform_fee_amount?: number | null
           status?: Database["public"]["Enums"]["payment_status"]
           stripe_payment_intent_id?: string | null
+          stripe_transfer_id?: string | null
           tenant_id?: string | null
         }
         Relationships: [
@@ -741,6 +750,41 @@ export type Database = {
             foreignKeyName: "reward_redemptions_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stripe_connect_accounts: {
+        Row: {
+          created_at: string
+          id: string
+          onboarding_status: string | null
+          stripe_account_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          onboarding_status?: string | null
+          stripe_account_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          onboarding_status?: string | null
+          stripe_account_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stripe_connect_accounts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
