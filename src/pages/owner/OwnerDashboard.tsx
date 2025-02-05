@@ -22,40 +22,62 @@ const performanceData = [
 
 const OwnerDashboard = () => {
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Owner Dashboard</h1>
-        <p className="text-muted-foreground">
+    <div className="container mx-auto px-4 py-8 space-y-8 animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+          Owner Dashboard
+        </h1>
+        <p className="text-muted-foreground text-lg">
           Welcome back! Here's an overview of your properties
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-8">
         <DashboardMetrics />
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
+        <div className="grid gap-8 md:grid-cols-2">
+          <Card className="transition-all duration-300 hover:shadow-lg">
             <CardHeader>
-              <CardTitle>Performance Overview</CardTitle>
+              <CardTitle className="text-xl font-semibold">Performance Overview</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-[300px]">
+              <div className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={performanceData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <XAxis 
+                      dataKey="month" 
+                      stroke="#6B7280"
+                      tick={{ fill: '#6B7280' }}
+                    />
+                    <YAxis 
+                      stroke="#6B7280"
+                      tick={{ fill: '#6B7280' }}
+                      tickFormatter={(value) => `$${value.toLocaleString()}`}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#FFF',
+                        border: '1px solid #E5E7EB',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
+                      formatter={(value) => [`$${value.toLocaleString()}`, '']}
+                    />
                     <Line
                       type="monotone"
                       dataKey="income"
-                      stroke="#8884d8"
+                      stroke="#9b87f5"
+                      strokeWidth={2}
+                      dot={{ fill: '#9b87f5', strokeWidth: 2 }}
                       name="Income"
                     />
                     <Line
                       type="monotone"
                       dataKey="expenses"
-                      stroke="#82ca9d"
+                      stroke="#7E69AB"
+                      strokeWidth={2}
+                      dot={{ fill: '#7E69AB', strokeWidth: 2 }}
                       name="Expenses"
                     />
                   </LineChart>

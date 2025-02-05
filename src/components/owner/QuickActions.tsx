@@ -25,105 +25,121 @@ export const QuickActions = () => {
   };
 
   return (
-    <Card>
+    <Card className="transition-all duration-300 hover:shadow-lg">
       <CardHeader>
-        <CardTitle>Quick Actions</CardTitle>
+        <CardTitle className="text-xl font-semibold">Quick Actions</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <Button 
             variant="outline" 
-            className="flex items-center gap-2 h-auto py-4 justify-start"
+            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
             onClick={() => handleAction('Request Funds Transfer')}
           >
-            <BanknoteIcon className="h-4 w-4 flex-shrink-0" />
+            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <BanknoteIcon className="h-5 w-5 text-primary" />
+            </div>
             <div className="text-left">
-              <div className="font-medium">Request Funds Transfer</div>
-              <div className="text-xs text-muted-foreground">Transfer available funds to your account</div>
+              <div className="font-medium text-gray-900">Request Funds Transfer</div>
+              <div className="text-sm text-muted-foreground">Transfer available funds to your account</div>
             </div>
           </Button>
           
           <Button 
             variant="outline" 
-            className="flex items-center gap-2 h-auto py-4 justify-start"
+            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
             onClick={() => navigate('/owner/maintenance')}
           >
-            <Wrench className="h-4 w-4 flex-shrink-0" />
+            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <Wrench className="h-5 w-5 text-primary" />
+            </div>
             <div className="text-left">
-              <div className="font-medium">Maintenance Requests</div>
-              <div className="text-xs text-muted-foreground">Review and approve work orders</div>
+              <div className="font-medium text-gray-900">Maintenance Requests</div>
+              <div className="text-sm text-muted-foreground">Review and approve work orders</div>
             </div>
           </Button>
           
           <Button 
             variant="outline" 
-            className="flex items-center gap-2 h-auto py-4 justify-start"
+            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
             onClick={() => handleAction('View Lease Renewals')}
           >
-            <FileText className="h-4 w-4 flex-shrink-0" />
+            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <FileText className="h-5 w-5 text-primary" />
+            </div>
             <div className="text-left">
-              <div className="font-medium">Lease Renewals</div>
-              <div className="text-xs text-muted-foreground">Review upcoming renewals</div>
+              <div className="font-medium text-gray-900">Lease Renewals</div>
+              <div className="text-sm text-muted-foreground">Review upcoming renewals</div>
             </div>
           </Button>
           
           <Button 
             variant="outline" 
-            className="flex items-center gap-2 h-auto py-4 justify-start"
+            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
             onClick={() => handleAction('Review Applications')}
           >
-            <UserPlus className="h-4 w-4 flex-shrink-0" />
+            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <UserPlus className="h-5 w-5 text-primary" />
+            </div>
             <div className="text-left">
-              <div className="font-medium">Review Applications</div>
-              <div className="text-xs text-muted-foreground">Screen new tenant applications</div>
+              <div className="font-medium text-gray-900">Review Applications</div>
+              <div className="text-sm text-muted-foreground">Screen new tenant applications</div>
             </div>
           </Button>
           
           <Button 
             variant="outline" 
-            className="flex items-center gap-2 h-auto py-4 justify-start"
+            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
             onClick={() => handleAction('Send Messages')}
           >
-            <MessageSquare className="h-4 w-4 flex-shrink-0" />
+            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <MessageSquare className="h-5 w-5 text-primary" />
+            </div>
             <div className="text-left">
-              <div className="font-medium">Send Messages</div>
-              <div className="text-xs text-muted-foreground">Communicate with tenants</div>
+              <div className="font-medium text-gray-900">Send Messages</div>
+              <div className="text-sm text-muted-foreground">Communicate with tenants</div>
             </div>
           </Button>
           
           <Button 
             variant="outline" 
-            className="flex items-center gap-2 h-auto py-4 justify-start"
+            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
             onClick={() => handleAction('Upload Documents')}
           >
-            <Upload className="h-4 w-4 flex-shrink-0" />
+            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <Upload className="h-5 w-5 text-primary" />
+            </div>
             <div className="text-left">
-              <div className="font-medium">Upload Documents</div>
-              <div className="text-xs text-muted-foreground">Add property documents</div>
+              <div className="font-medium text-gray-900">Upload Documents</div>
+              <div className="text-sm text-muted-foreground">Add property documents</div>
             </div>
           </Button>
           
           <Button 
             variant="outline" 
-            className="flex items-center gap-2 h-auto py-4 justify-start"
+            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
             onClick={() => handleAction('View Alerts')}
           >
-            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <AlertCircle className="h-5 w-5 text-primary" />
+            </div>
             <div className="text-left">
-              <div className="font-medium">View Alerts</div>
-              <div className="text-xs text-muted-foreground">Check important notifications</div>
+              <div className="font-medium text-gray-900">View Alerts</div>
+              <div className="text-sm text-muted-foreground">Check important notifications</div>
             </div>
           </Button>
           
           <Button 
             variant="outline" 
-            className="flex items-center gap-2 h-auto py-4 justify-start"
+            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
             onClick={() => handleAction('Approve Applications')}
           >
-            <ClipboardCheck className="h-4 w-4 flex-shrink-0" />
+            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <ClipboardCheck className="h-5 w-5 text-primary" />
+            </div>
             <div className="text-left">
-              <div className="font-medium">Approve Applications</div>
-              <div className="text-xs text-muted-foreground">Review pending approvals</div>
+              <div className="font-medium text-gray-900">Approve Applications</div>
+              <div className="text-sm text-muted-foreground">Review pending approvals</div>
             </div>
           </Button>
         </div>
