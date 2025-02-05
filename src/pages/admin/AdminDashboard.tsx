@@ -1,6 +1,7 @@
 import { ActivityLog } from "@/components/admin/dashboard/ActivityLog"
 import { QuickActions } from "@/components/admin/dashboard/QuickActions"
 import { StatCard } from "@/components/admin/dashboard/StatCard"
+import { VapiAssistant } from "@/components/admin/VapiAssistant"
 import { Building2, Users, Wrench, DollarSign } from "lucide-react"
 
 export default function AdminDashboard() {
@@ -49,9 +50,12 @@ export default function AdminDashboard() {
         />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-1">
-        <QuickActions />
-        <ActivityLog />
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-6">
+          <QuickActions />
+          <ActivityLog />
+        </div>
+        <VapiAssistant />
       </div>
     </div>
   )
