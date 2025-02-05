@@ -3,13 +3,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Loader2, Send } from 'lucide-react'
+import { Loader2, Send, Mic, MicOff } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 
 export const VapiAssistant = () => {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,10 +36,26 @@ export const VapiAssistant = () => {
     }
   }
 
+  const toggleRecording = () => {
+    // Voice recording functionality would be implemented here
+    setIsRecording(!isRecording)
+  }
+
   return (
-    <Card className="flex flex-col h-[600px] p-4">
-      <ScrollArea className="flex-1 pr-4">
-        <div className="space-y-4">
+    <div className="flex flex-col h-full">
+      <ScrollArea className="flex-1 px-4">
+        <div className="space-y-4 py-4">
+          {messages.length === 0 && (
+            <div className="text-center text-muted-foreground py-8">
+              <p>How can I help you today?</p>
+              <p className="text-sm mt-2">Try asking about:</p>
+              <ul className="text-sm mt-1">
+                <li>• Lease status updates</li>
+                <li>• Maintenance requests</li>
+                <li>• Property analytics</li>
+              </ul>
+            </div>
+          )}
           {messages.map((msg, i) => (
             <div
               key={i}
@@ -55,20 +72,39 @@ export const VapiAssistant = () => {
               </div>
             </div>
           ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-secondary text-secondary-foreground max-w-[80%] rounded-lg p-3">
+                <Loader2 className="h-4 w-4 animate-spin" />
+              </div>
+            </div>
+          )}
         </div>
       </ScrollArea>
 
-      <form onSubmit={handleSubmit} className="flex gap-2 mt-4">
-        <Input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Ask your AI assistant..."
-          disabled={isLoading}
-        />
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-        </Button>
+      <form onSubmit={handleSubmit} className="p-4 border-t bg-background">
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={toggleRecording}
+            className={isRecording ? 'text-red-500' : ''}
+          >
+            {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+          </Button>
+          <Input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Ask your AI assistant..."
+            disabled={isLoading}
+            className="flex-1"
+          />
+          <Button type="submit" disabled={isLoading || !message.trim()}>
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+          </Button>
+        </div>
       </form>
-    </Card>
+    </div>
   )
 }
