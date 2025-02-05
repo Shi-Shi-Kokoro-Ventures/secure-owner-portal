@@ -2,7 +2,7 @@ import {
   FileText, Clock, Shield, AlertTriangle, 
   DollarSign, Users, Ban, Building2 
 } from "lucide-react";
-import { StatCard } from "../dashboard/StatCard";
+import { StatCard } from "./StatCard";
 import { Lease } from "@/types/lease";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";

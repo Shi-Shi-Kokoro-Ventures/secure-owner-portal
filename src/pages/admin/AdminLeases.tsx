@@ -83,10 +83,10 @@ const AdminLeases = () => {
     <AdminLayout>
       <div className="space-y-6 p-6 animate-in fade-in duration-500">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-3xl font-bold tracking-tight font-montserrat">
             Lease Management
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground font-inter">
             Manage and track all property leases
           </p>
         </div>
