@@ -34,8 +34,7 @@ import OwnerCommunications from "@/pages/owner/OwnerCommunications";
 import OwnerSettings from "@/pages/owner/OwnerSettings";
 import OwnerMaintenance from "@/pages/owner/OwnerMaintenance";
 import OwnerPayments from "@/pages/owner/OwnerPayments";
-import Notifications from "@/pages/Notifications";
-import Help from "@/pages/Help";
+import OwnerMaintenanceDetail from "@/pages/owner/OwnerMaintenanceDetail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -165,6 +164,7 @@ export default function App() {
             <Route path="/owner/communications" element={<OwnerCommunications />} />
             <Route path="/owner/settings" element={<OwnerSettings />} />
             <Route path="/owner/maintenance" element={<OwnerMaintenance />} />
+            <Route path="/owner/maintenance/:id" element={<OwnerMaintenanceDetail />} />
             <Route path="/owner/payments" element={<OwnerPayments />} />
           </Route>
 

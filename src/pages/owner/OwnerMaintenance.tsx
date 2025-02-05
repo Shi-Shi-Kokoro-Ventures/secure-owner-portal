@@ -3,19 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Wrench, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 
 const OwnerMaintenance = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleViewDetails = (requestId: string) => {
-    // For now, show a toast since the detail page isn't implemented yet
-    toast({
-      title: "Coming Soon",
-      description: "Maintenance request details will be available soon.",
-    });
-    // Later this will navigate to: navigate(`/owner/maintenance/${requestId}`)
+    navigate(`/owner/maintenance/${requestId}`);
   };
 
   return (
