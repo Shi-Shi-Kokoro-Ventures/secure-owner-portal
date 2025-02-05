@@ -50,7 +50,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation Bar */}
       <nav className="fixed top-0 w-full bg-white shadow-sm z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
@@ -72,8 +71,7 @@ const Index = () => {
           </div>
         </div>
       </nav>
-
-      {/* Hero Section */}
+      
       <div className="relative pt-16">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70 z-10" />
         <div 
@@ -111,8 +109,7 @@ const Index = () => {
           </div>
         </div>
       </div>
-
-      {/* About Us Section */}
+      
       <section id="about" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -156,7 +153,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
+      
       {/* Services Section */}
       <section id="services" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -230,9 +227,9 @@ const Index = () => {
                 </Card>
                 <Button 
                   className="w-full"
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate("/tenant-services")}
                 >
-                  Access Tenant Portal
+                  Learn More About Tenant Services
                 </Button>
               </div>
             </div>

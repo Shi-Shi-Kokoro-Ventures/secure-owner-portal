@@ -1,10 +1,10 @@
-import { RouteObject } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 import Login from "@/pages/Login";
-import NotFound from "@/pages/NotFound";
 import Services from "@/pages/Services";
+import TenantServices from "@/pages/TenantServices";
 
-export const commonRoutes: RouteObject[] = [
+export const commonRoutes = [
   {
     path: "/",
     element: <Index />,
@@ -18,7 +18,7 @@ export const commonRoutes: RouteObject[] = [
     element: <Services />,
   },
   {
-    path: "*",
-    element: <NotFound />,
+    path: "/tenant-services",
+    element: <TenantServices />,
   },
 ];
