@@ -6,16 +6,39 @@ import { Loader2, Send, Mic, MicOff, AlertCircle } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { cn } from '@/lib/utils'
 import { logger } from '@/utils/logger'
+import { useToast } from '@/components/ui/use-toast'
 
 export const VapiAssistant = () => {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
+  const { toast } = useToast()
 
   useEffect(() => {
     logger.info("VapiAssistant mounted");
-  }, []);
+    
+    // Test Supabase connection
+    const testSupabaseConnection = async () => {
+      try {
+        const { data, error } = await supabase.from('leases').select('count').single();
+        if (error) {
+          logger.error("Supabase connection test failed:", error);
+          toast({
+            title: "Database Connection Error",
+            description: "Unable to connect to the database. Please try again later.",
+            variant: "destructive"
+          });
+        } else {
+          logger.info("Supabase connection test successful:", data);
+        }
+      } catch (error) {
+        logger.error("Error testing Supabase connection:", error);
+      }
+    };
+
+    testSupabaseConnection();
+  }, [toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,13 +57,27 @@ export const VapiAssistant = () => {
 
       if (error) {
         logger.error("Error from Vapi assistant", error);
+        toast({
+          title: "AI Assistant Error",
+          description: "Unable to get a response from the AI assistant. Please try again.",
+          variant: "destructive"
+        });
         throw error;
+      }
+
+      if (!data?.choices?.[0]?.message?.content) {
+        throw new Error("Invalid response format from AI assistant");
       }
 
       logger.info("Received response from Vapi assistant", { response: data });
       setMessages(prev => [...prev, { role: 'assistant', content: data.choices[0].message.content }])
     } catch (error) {
       logger.error('Error calling Vapi assistant:', error)
+      toast({
+        title: "Error",
+        description: "Failed to process your request. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false)
     }
