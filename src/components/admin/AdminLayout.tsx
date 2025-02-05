@@ -17,8 +17,11 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="flex h-screen overflow-hidden">
-        <AdminSidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
+      <div className="flex min-h-screen overflow-hidden">
+        <div className="fixed inset-y-0 z-50">
+          <AdminSidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
+        </div>
+        
         <div className={cn(
           "flex flex-col flex-1 w-full",
           "transition-all duration-300 ease-in-out",
