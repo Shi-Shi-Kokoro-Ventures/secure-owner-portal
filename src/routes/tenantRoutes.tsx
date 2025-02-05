@@ -11,6 +11,8 @@ import TenantDocuments from "@/pages/tenant/TenantDocuments";
 import TenantCommunications from "@/pages/tenant/TenantCommunications";
 import TenantCommunicationDetail from "@/pages/tenant/TenantCommunicationDetail";
 import TenantSettings from "@/pages/tenant/TenantSettings";
+import Help from "@/pages/Help";
+import Notifications from "@/pages/Notifications";
 
 export const tenantRoutes: RouteObject[] = [
   {
@@ -25,7 +27,9 @@ export const tenantRoutes: RouteObject[] = [
       { path: "/tenant/documents", element: <TenantDocuments /> },
       { path: "/tenant/communications", element: <TenantCommunications /> },
       { path: "/tenant/communications/:id", element: <TenantCommunicationDetail /> },
-      { path: "/tenant/settings", element: <TenantSettings /> }
+      { path: "/tenant/settings", element: <TenantSettings /> },
+      { path: "/tenant/help", element: <Help /> },
+      { path: "/tenant/notifications", element: <Notifications /> }
     ]
   }
 ];
