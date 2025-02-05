@@ -10,26 +10,38 @@ export default function AdminDashboard() {
         <StatCard
           title="Total Properties"
           value="28"
-          trend="up"
-          trendValue="12%"
+          description="Total number of properties under management"
+          trend={{
+            value: "12%",
+            positive: true
+          }}
         />
         <StatCard
           title="Active Tenants"
           value="143"
-          trend="up"
-          trendValue="8%"
+          description="Current number of active tenants"
+          trend={{
+            value: "8%",
+            positive: true
+          }}
         />
         <StatCard
           title="Maintenance Requests"
           value="12"
-          trend="down"
-          trendValue="5%"
+          description="Open maintenance requests"
+          trend={{
+            value: "5%",
+            positive: false
+          }}
         />
         <StatCard
           title="Revenue"
           value="$52,000"
-          trend="up"
-          trendValue="15%"
+          description="Total revenue this month"
+          trend={{
+            value: "15%",
+            positive: true
+          }}
         />
       </div>
 
