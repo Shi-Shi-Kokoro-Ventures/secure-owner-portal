@@ -3,13 +3,14 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { UserPlus, Pencil, Trash2, UserCheck } from "lucide-react";
+import { UserPlus, Pencil, Trash2, UserCheck, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 type UserRole = 'admin' | 'property_manager' | 'owner' | 'tenant';
 
@@ -21,6 +22,7 @@ interface User {
   role: UserRole;
   phone: string | null;
   created_at: string;
+  profile_picture_url: string | null;
 }
 
 interface EditFormState {
@@ -29,6 +31,7 @@ interface EditFormState {
   email: string;
   phone: string;
   role: UserRole;
+  profile_picture_url?: string | null;
 }
 
 const AdminUsers = () => {
@@ -89,7 +92,8 @@ const AdminUsers = () => {
       last_name: user.last_name,
       email: user.email,
       phone: user.phone || "",
-      role: user.role
+      role: user.role,
+      profile_picture_url: user.profile_picture_url || ""
     });
     setIsEditDialogOpen(true);
   };
@@ -210,6 +214,47 @@ const AdminUsers = () => {
     });
   };
 
+  const handleProfilePictureUpload = async (event: React.ChangeEvent<HTMLInputElement>, userId: string) => {
+    try {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${userId}/profile.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile_pictures')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile_pictures')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ profile_picture_url: publicUrl })
+        .eq('id', userId);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Success",
+        description: "Profile picture updated successfully",
+      });
+
+      fetchUsers();
+    } catch (error) {
+      console.error('Error uploading profile picture:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload profile picture. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -232,6 +277,7 @@ const AdminUsers = () => {
             <Table>
               <TableHeader>
                 <TableRow className="bg-[#4C8DAE] hover:bg-[#4C8DAE]">
+                  <TableHead className="text-white font-semibold">Profile</TableHead>
                   <TableHead className="text-white font-semibold">Name</TableHead>
                   <TableHead className="text-white font-semibold">Email</TableHead>
                   <TableHead className="text-white font-semibold">Role</TableHead>
@@ -243,19 +289,44 @@ const AdminUsers = () => {
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
+                    <TableCell colSpan={7} className="text-center py-8">
                       Loading users...
                     </TableCell>
                   </TableRow>
                 ) : users.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
+                    <TableCell colSpan={7} className="text-center py-8">
                       No users found
                     </TableCell>
                   </TableRow>
                 ) : (
                   users.map((user) => (
                     <TableRow key={user.id} className="hover:bg-gray-50">
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={user.profile_picture_url || undefined} alt={`${user.first_name} ${user.last_name}`} />
+                            <AvatarFallback>{user.first_name[0]}{user.last_name[0]}</AvatarFallback>
+                          </Avatar>
+                          <div className="relative">
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              id={`profile-upload-${user.id}`}
+                              onChange={(e) => handleProfilePictureUpload(e, user.id)}
+                            />
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute -left-2 -top-2"
+                              onClick={() => document.getElementById(`profile-upload-${user.id}`)?.click()}
+                            >
+                              <Upload className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </TableCell>
                       <TableCell className="font-medium">
                         {user.first_name} {user.last_name}
                       </TableCell>
