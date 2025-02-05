@@ -6,6 +6,7 @@ import { commonRoutes } from "./routes/commonRoutes";
 import { propertyManagerRoutes } from "./routes/propertyManagerRoutes";
 import { tenantRoutes } from "./routes/tenantRoutes";
 import { ownerRoutes } from "./routes/ownerRoutes";
+import { adminRoutes } from "./routes/adminRoutes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +34,9 @@ const App: React.FC = () => {
             ))}
             {ownerRoutes.map((route) => (
               <Route key={route.path || 'owner-index'} path={route.path} element={route.element} />
+            ))}
+            {adminRoutes.map((route) => (
+              <Route key={route.path || 'admin-index'} path={route.path} element={route.element} />
             ))}
           </Routes>
           <Toaster />
