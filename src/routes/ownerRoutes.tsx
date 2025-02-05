@@ -1,3 +1,4 @@
+
 import { RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import OwnerLayout from "@/components/OwnerLayout";
@@ -16,8 +17,10 @@ import Applications from "@/pages/Applications";
 
 export const ownerRoutes: RouteObject[] = [
   {
+    path: "/owner",
     element: <ProtectedRoute><OwnerLayout /></ProtectedRoute>,
     children: [
+      { path: "/owner", element: <OwnerDashboard /> },
       { path: "/owner/dashboard", element: <OwnerDashboard /> },
       { path: "/owner/properties", element: <OwnerProperties /> },
       { path: "/owner/statements", element: <OwnerStatements /> },

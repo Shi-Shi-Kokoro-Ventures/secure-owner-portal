@@ -47,11 +47,19 @@ const App: React.FC = () => {
               />
             ))}
             {ownerRoutes.map((route) => (
-              <Route 
-                key={route.path || 'owner-index'} 
-                path={route.path} 
-                element={route.element} 
-              />
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.element}
+              >
+                {route.children?.map((childRoute) => (
+                  <Route
+                    key={childRoute.path}
+                    path={childRoute.path}
+                    element={childRoute.element}
+                  />
+                ))}
+              </Route>
             ))}
             {adminRoutes.map((route) => (
               <Route 
@@ -61,9 +69,9 @@ const App: React.FC = () => {
               />
             ))}
             {vendorRoutes.map((route) => (
-              <Route 
-                key={route.path || 'vendor-index'} 
-                path={route.path} 
+              <Route
+                key={route.path || 'vendor-index'}
+                path={route.path}
                 element={route.element}
               >
                 {route.children?.map((childRoute) => (
