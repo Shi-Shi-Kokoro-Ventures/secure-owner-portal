@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Sidebar } from "./AdminSidebar";
+import { AdminSidebar } from "./AdminSidebar";
 import { Header } from "@/components/Header";
 import { VapiAssistant } from "./VapiAssistant";
 import { Button } from "@/components/ui/button";
@@ -16,9 +16,9 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   }, [sidebarOpen, aiChatOpen]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="flex h-screen overflow-hidden">
-        <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
+        <AdminSidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
         <div className={cn(
           "flex flex-col flex-1 w-full",
           "transition-all duration-300 ease-in-out",
@@ -45,7 +45,7 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
               <MessageCircle className="h-6 w-6" />
             </Button>
           ) : (
-            <div className="bg-white rounded-lg shadow-xl w-96 h-[600px] flex flex-col">
+            <div className="bg-background rounded-lg shadow-xl w-96 h-[600px] flex flex-col">
               <div className="p-4 border-b flex justify-between items-center">
                 <h3 className="font-semibold">AI Assistant</h3>
                 <Button
@@ -68,4 +68,4 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
     </div>
   );
-}
+};
