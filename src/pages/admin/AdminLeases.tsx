@@ -64,7 +64,7 @@ const AdminLeases = () => {
         .select(`
           id,
           lease_number,
-          tenant:tenant_id(first_name, last_name),
+          tenant:users!leases_tenant_id_fkey(first_name, last_name),
           unit:unit_id(
             unit_number,
             property:property_id(property_name)
