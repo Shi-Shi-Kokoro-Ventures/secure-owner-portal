@@ -1,93 +1,72 @@
-import { Layout } from "@/components/Layout";
+import React from "react";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ClipboardCheck, Download, Filter, Printer } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const Applications = () => {
-  const { toast } = useToast();
-
-  const handleAction = (action: string) => {
-    toast({
-      title: action,
-      description: `${action} functionality coming soon`,
-    });
-  };
+  const applications = [
+    {
+      id: 1,
+      applicant: "John Doe",
+      property: "123 Main St",
+      submitted: "2024-02-20",
+      status: "Pending Review",
+    },
+    {
+      id: 2,
+      applicant: "Jane Smith",
+      property: "456 Oak Ave",
+      submitted: "2024-02-19",
+      status: "Under Review",
+    },
+  ];
 
   return (
-    <Layout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Applications</h1>
-          <p className="text-muted-foreground">
-            Manage and review rental applications
-          </p>
-        </div>
+    <div className="container mx-auto p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Rental Applications</h1>
+        <Button>Export Applications</Button>
+      </div>
 
-        {/* Summary Cards */}
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg border p-4">
-            <div className="flex items-center gap-2">
-              <ClipboardCheck className="h-5 w-5 text-primary" />
-              <span className="text-sm font-medium">New Applications</span>
-            </div>
-            <p className="mt-2 text-2xl font-bold">0</p>
-          </div>
-          <div className="rounded-lg border p-4">
-            <div className="flex items-center gap-2">
-              <ClipboardCheck className="h-5 w-5 text-yellow-600" />
-              <span className="text-sm font-medium">In Review</span>
-            </div>
-            <p className="mt-2 text-2xl font-bold">0</p>
-          </div>
-          <div className="rounded-lg border p-4">
-            <div className="flex items-center gap-2">
-              <ClipboardCheck className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium">Approved</span>
-            </div>
-            <p className="mt-2 text-2xl font-bold">0</p>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => handleAction('Filter')}>
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => handleAction('Print')}>
-            <Printer className="h-4 w-4 mr-2" />
-            Print
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => handleAction('Export')}>
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
-        </div>
-
-        {/* Applications Table */}
-        <div className="rounded-lg border">
+      <Card className="p-4">
+        <ScrollArea className="h-[600px]">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Applicant Name</TableHead>
+                <TableHead>Applicant</TableHead>
                 <TableHead>Property</TableHead>
-                <TableHead>Submission Date</TableHead>
+                <TableHead>Submitted</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                  No applications found
-                </TableCell>
-              </TableRow>
+              {applications.map((application) => (
+                <TableRow key={application.id}>
+                  <TableCell>{application.applicant}</TableCell>
+                  <TableCell>{application.property}</TableCell>
+                  <TableCell>{application.submitted}</TableCell>
+                  <TableCell>{application.status}</TableCell>
+                  <TableCell>
+                    <Button variant="outline" size="sm">
+                      Review
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
-        </div>
-      </div>
-    </Layout>
+        </ScrollArea>
+      </Card>
+    </div>
   );
 };
 
