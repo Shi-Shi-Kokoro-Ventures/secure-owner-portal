@@ -16,16 +16,20 @@ interface StatCardProps {
 
 export const StatCard = ({ title, value, description, icon: Icon, trend, className }: StatCardProps) => (
   <Card className={cn(
-    "relative overflow-hidden bg-white dark:bg-gray-800/50 transition-all duration-300 hover:shadow-lg",
-    "before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary-100/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity",
-    "animate-in fade-in slide-in-from-bottom-3 duration-500 hover:translate-y-[-2px] transform transition-transform",
+    "relative overflow-hidden bg-white dark:bg-gray-800/50",
+    "transition-all duration-300 hover:shadow-lg",
+    "before:content-[''] before:absolute before:inset-0",
+    "before:bg-gradient-radial before:from-primary-100/20 before:to-transparent",
+    "before:opacity-0 hover:before:opacity-100 before:transition-opacity",
+    "animate-in fade-in slide-in-from-bottom-3 duration-500",
+    "hover:translate-y-[-2px] transform transition-transform",
     className
   )}>
     <div className="p-6 relative z-10">
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <p className="text-base font-medium text-gray-500 dark:text-gray-400">{title}</p>
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-100/80 dark:bg-primary-900/30 transition-colors group-hover:bg-primary-200">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-100/80 dark:bg-primary-900/30">
             <Icon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
           </div>
         </div>
@@ -36,7 +40,7 @@ export const StatCard = ({ title, value, description, icon: Icon, trend, classNa
             </h2>
             {trend && (
               <span className={cn(
-                "inline-flex items-center text-sm font-medium transition-colors",
+                "inline-flex items-center text-sm font-medium",
                 trend.positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
               )}>
                 {trend.positive ? <ArrowUpRight className="mr-0.5 h-4 w-4" /> : <ArrowDownRight className="mr-0.5 h-4 w-4" />}

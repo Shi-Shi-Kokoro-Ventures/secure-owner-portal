@@ -13,10 +13,10 @@ const AdminLeases = () => {
   const { toast } = useToast();
   const [selectedLeaseId, setSelectedLeaseId] = useState<string | null>(null);
 
-  const { data: leases, isLoading } = useQuery({
+  const { data: leases, isLoading, error } = useQuery({
     queryKey: ['leases'],
     queryFn: async () => {
-      logger.info(`Fetching leases data`);
+      logger.info('Fetching leases data');
       const { data, error } = await supabase
         .from('leases')
         .select(`
@@ -43,13 +43,13 @@ const AdminLeases = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        logger.info(`Error fetching leases: ${error.message}`);
+        logger.error('Error fetching leases:', error.message);
         toast({
           variant: "destructive",
           title: "Error fetching leases",
           description: error.message,
         });
-        return [];
+        throw error;
       }
 
       logger.info(`Leases data fetched successfully: ${data?.length || 0} leases found`);
@@ -57,10 +57,22 @@ const AdminLeases = () => {
     },
   });
 
+  if (error) {
+    return (
+      <AdminLayout>
+        <div className="p-6">
+          <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-lg">
+            Error loading leases. Please try again later.
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   if (isLoading) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       </AdminLayout>
@@ -71,7 +83,7 @@ const AdminLeases = () => {
     <AdminLayout>
       <div className="space-y-6 p-6 animate-in fade-in duration-500">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          <h1 className="text-3xl font-bold tracking-tight">
             Lease Management
           </h1>
           <p className="text-muted-foreground">
@@ -79,6 +91,7 @@ const AdminLeases = () => {
           </p>
         </div>
 
+        {/* Explicitly check if leases is an array before rendering LeaseMetrics */}
         {Array.isArray(leases) && <LeaseMetrics leases={leases} />}
         
         <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">

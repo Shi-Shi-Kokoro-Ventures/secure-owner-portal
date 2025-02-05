@@ -2,11 +2,12 @@ import {
   FileText, Clock, Shield, AlertTriangle, 
   DollarSign, Users, Ban, Building2 
 } from "lucide-react";
-import { LeaseMetricCard } from "./LeaseMetricCard";
+import { StatCard } from "../dashboard/StatCard";
 import { Lease } from "@/types/lease";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/utils/logger";
 
 interface LeaseMetricsProps {
   leases: Lease[];
@@ -24,11 +25,13 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
         .from('users')
         .select('role')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
       
       return data?.role;
     }
   });
+
+  logger.info(`Rendering LeaseMetrics with ${leases?.length || 0} leases`);
 
   const activeLeases = leases?.filter(lease => lease.status === 'active').length || 0;
   const pendingLeases = leases?.filter(lease => lease.status === 'pending').length || 0;
@@ -60,99 +63,83 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
   const isOwner = userRole === 'owner';
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-6">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
       {(isAdmin || isPropertyManager || isOwner) && (
-        <LeaseMetricCard
+        <StatCard
           title="Active Leases"
-          value={activeLeases}
+          value={activeLeases.toString()}
           icon={FileText}
-          iconColor="text-emerald-500"
           description="Currently active lease agreements"
-          tooltip="Click to view all active leases"
           onClick={() => handleMetricClick("Active Leases")}
         />
       )}
       
       {(isAdmin || isPropertyManager) && (
-        <LeaseMetricCard
+        <StatCard
           title="Pending Approvals"
-          value={pendingLeases}
+          value={pendingLeases.toString()}
           icon={Clock}
-          iconColor="text-amber-500"
           description="Awaiting review and approval"
-          tooltip="Click to review pending leases"
           onClick={() => handleMetricClick("Pending Approvals")}
         />
       )}
 
       {(isAdmin || isPropertyManager || isOwner) && (
-        <LeaseMetricCard
+        <StatCard
           title="Expiring Soon"
-          value={expiringLeases}
+          value={expiringLeases.toString()}
           icon={AlertTriangle}
-          iconColor="text-orange-500"
           description="Within 30 days"
-          tooltip="Click to view leases expiring soon"
           onClick={() => handleMetricClick("Expiring Leases")}
         />
       )}
 
       {(isAdmin || isPropertyManager) && (
-        <LeaseMetricCard
+        <StatCard
           title="Lease Violations"
-          value={violations}
+          value={violations.toString()}
           icon={Ban}
-          iconColor="text-red-500"
           description="Total lease violations"
-          tooltip="Click to view lease violations"
           onClick={() => handleMetricClick("Lease Violations")}
         />
       )}
 
       {(isAdmin || isPropertyManager || isOwner) && (
-        <LeaseMetricCard
+        <StatCard
           title="Security Deposits"
           value={`$${totalDeposits.toLocaleString()}`}
           icon={Shield}
-          iconColor="text-blue-500"
           description="Total deposits held"
-          tooltip="Click to manage security deposits"
           onClick={() => handleMetricClick("Security Deposits")}
         />
       )}
 
       {(isAdmin || isOwner) && (
-        <LeaseMetricCard
+        <StatCard
           title="Monthly Revenue"
           value={`$${monthlyRevenue.toLocaleString()}`}
           icon={DollarSign}
-          iconColor="text-emerald-500"
           description="Total monthly rent collection"
-          tooltip="Click to view revenue details"
           onClick={() => handleMetricClick("Monthly Revenue")}
         />
       )}
 
       {(isAdmin || isPropertyManager) && (
-        <LeaseMetricCard
+        <StatCard
           title="Retention Rate"
           value={`${retentionRate}%`}
           icon={Users}
-          iconColor="text-purple-500"
           description="Auto-renewal rate"
-          tooltip="Click to view tenant retention details"
           onClick={() => handleMetricClick("Retention Rate")}
         />
       )}
 
       {(isAdmin || isPropertyManager || isOwner) && (
-        <LeaseMetricCard
+        <StatCard
           title="Occupancy Rate"
           value={`${occupancyRate}%`}
           icon={Building2}
-          iconColor="text-indigo-500"
           description="Current occupancy percentage"
-          tooltip="Click to view occupancy details"
           onClick={() => handleMetricClick("Occupancy Rate")}
         />
       )}
