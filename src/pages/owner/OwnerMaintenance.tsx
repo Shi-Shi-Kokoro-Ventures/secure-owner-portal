@@ -2,8 +2,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wrench, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const OwnerMaintenance = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleViewDetails = (requestId: string) => {
+    // For now, show a toast since the detail page isn't implemented yet
+    toast({
+      title: "Coming Soon",
+      description: "Maintenance request details will be available soon.",
+    });
+    // Later this will navigate to: navigate(`/owner/maintenance/${requestId}`)
+  };
+
   return (
     <div className="container mx-auto px-4">
       <div className="mb-6">
@@ -22,18 +36,21 @@ const OwnerMaintenance = () => {
             <div className="space-y-4">
               {[
                 {
+                  id: "m001",
                   title: "HVAC Repair",
                   property: "123 Main St, Unit 4",
                   status: "urgent",
                   date: "Feb 1, 2024",
                 },
                 {
+                  id: "m002",
                   title: "Plumbing Issue",
                   property: "456 Oak Ave, Unit 2",
                   status: "in-progress",
                   date: "Jan 30, 2024",
                 },
                 {
+                  id: "m003",
                   title: "Window Replacement",
                   property: "789 Pine St, Unit 1",
                   status: "completed",
@@ -41,7 +58,7 @@ const OwnerMaintenance = () => {
                 },
               ].map((request) => (
                 <div
-                  key={request.title}
+                  key={request.id}
                   className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center gap-4">
@@ -66,7 +83,11 @@ const OwnerMaintenance = () => {
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleViewDetails(request.id)}
+                  >
                     View Details
                   </Button>
                 </div>
