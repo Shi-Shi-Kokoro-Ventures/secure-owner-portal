@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Trash2, UserCheck, Upload } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { User } from "@/types/user";
 
 interface UsersTableProps {
@@ -38,6 +39,24 @@ export const UsersTable = ({
     });
   };
 
+  const LoadingSkeleton = () => (
+    <TableRow>
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <Skeleton className="h-4 w-20" />
+        </div>
+      </TableCell>
+      <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+    </TableRow>
+  );
+
   return (
     <Table>
       <TableHeader>
@@ -54,14 +73,12 @@ export const UsersTable = ({
       </TableHeader>
       <TableBody>
         {isLoading ? (
-          <TableRow>
-            <TableCell colSpan={7} className="text-center py-8">
-              Loading users...
-            </TableCell>
-          </TableRow>
+          Array.from({ length: 5 }).map((_, index) => (
+            <LoadingSkeleton key={index} />
+          ))
         ) : users.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={7} className="text-center py-8">
+            <TableCell colSpan={8} className="text-center py-8">
               No users found
             </TableCell>
           </TableRow>

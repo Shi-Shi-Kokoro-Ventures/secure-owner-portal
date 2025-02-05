@@ -1,37 +1,51 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 import type { User } from "@/types/user";
 
 export const useUsers = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  const fetchUsers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .order('created_at', { ascending: false });
+  const fetchUsers = async (): Promise<User[]> => {
+    const { data, error } = await supabase
+      .from('users')
+      .select(`
+        *,
+        addresses(street_address, city, state, zip_code),
+        emergency_contacts(name, phone)
+      `)
+      .order('created_at', { ascending: false });
 
-      if (error) {
-        throw error;
-      }
-
-      setUsers(data || []);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch users. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+    if (error) {
+      throw error;
     }
+
+    return data || [];
   };
+
+  const {
+    data: users = [],
+    isLoading,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: ['users'],
+    queryFn: fetchUsers,
+    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    meta: {
+      onSettled: (data, error) => {
+        if (error) {
+          console.error('Error fetching users:', error);
+          toast({
+            title: "Error",
+            description: "Failed to fetch users. Please try again.",
+            variant: "destructive",
+          });
+        }
+      },
+    },
+  });
 
   const deleteUser = async (userId: string) => {
     try {
@@ -47,7 +61,7 @@ export const useUsers = () => {
         description: "User deleted successfully",
       });
       
-      fetchUsers();
+      refetch();
       return true;
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -74,7 +88,7 @@ export const useUsers = () => {
         description: "User updated successfully",
       });
       
-      fetchUsers();
+      refetch();
       return true;
     } catch (error) {
       console.error('Error updating user:', error);
@@ -114,7 +128,7 @@ export const useUsers = () => {
         description: "Profile picture updated successfully",
       });
 
-      fetchUsers();
+      refetch();
       return true;
     } catch (error) {
       console.error('Error uploading profile picture:', error);
@@ -130,9 +144,10 @@ export const useUsers = () => {
   return {
     users,
     isLoading,
-    fetchUsers,
+    error,
     deleteUser,
     updateUser,
-    uploadProfilePicture
+    uploadProfilePicture,
+    refetch
   };
 };
