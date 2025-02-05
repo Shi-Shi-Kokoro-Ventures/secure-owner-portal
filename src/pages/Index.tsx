@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { 
   Building2, 
   CheckCircle2, 
@@ -29,6 +28,10 @@ const Index = () => {
 
   const handleConsultationClick = () => {
     console.log("Booking consultation");
+  };
+
+  const handleLearnMoreClick = () => {
+    navigate("/services");
   };
 
   return (
@@ -84,6 +87,7 @@ const Index = () => {
                 <Button 
                   size="lg" 
                   variant="outline"
+                  onClick={handleLearnMoreClick}
                   className="border-white text-white hover:bg-white/10"
                 >
                   Learn More About Our Services
