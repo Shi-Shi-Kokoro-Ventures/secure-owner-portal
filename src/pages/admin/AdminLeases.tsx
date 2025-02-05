@@ -60,8 +60,8 @@ const AdminLeases = () => {
   if (error) {
     return (
       <AdminLayout>
-        <div className="p-6">
-          <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-lg">
+        <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-6">
+          <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-lg animate-in fade-in-50">
             Error loading leases. Please try again later.
           </div>
         </div>
@@ -72,7 +72,7 @@ const AdminLeases = () => {
   if (isLoading) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
+        <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       </AdminLayout>
