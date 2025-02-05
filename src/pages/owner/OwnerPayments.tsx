@@ -1,7 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DollarSign, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { DollarSign, ArrowUpRight, ArrowDownRight, Download, Filter, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const OwnerPayments = () => {
   return (
@@ -48,69 +58,99 @@ const OwnerPayments = () => {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
+      <Card className="mb-6">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Payment History</CardTitle>
+          <div className="flex items-center gap-2">
+            <Input
+              type="date"
+              className="w-[150px]"
+            />
+            <span>to</span>
+            <Input
+              type="date"
+              className="w-[150px]"
+            />
+            <Button variant="outline" className="gap-2">
+              <Filter className="h-4 w-4" />
+              Filter
+            </Button>
+            <Button className="gap-2">
+              <Download className="h-4 w-4" />
+              Export
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {[
-              {
-                description: "Rent Payment - 123 Main St",
-                amount: 2500,
-                type: "income",
-                date: "Feb 1, 2024",
-              },
-              {
-                description: "Maintenance Repair",
-                amount: 450,
-                type: "expense",
-                date: "Jan 30, 2024",
-              },
-              {
-                description: "Rent Payment - 456 Oak Ave",
-                amount: 1800,
-                type: "income",
-                date: "Jan 28, 2024",
-              },
-            ].map((transaction) => (
-              <div
-                key={transaction.description}
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  {transaction.type === "income" ? (
-                    <ArrowUpRight className="h-5 w-5 text-green-500" />
-                  ) : (
-                    <ArrowDownRight className="h-5 w-5 text-red-500" />
-                  )}
-                  <div>
-                    <p className="font-medium">{transaction.description}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {transaction.date}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`font-medium ${
-                      transaction.type === "income"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {transaction.type === "income" ? "+" : "-"}$
-                    {transaction.amount}
-                  </span>
-                  <Badge
-                    variant={transaction.type === "income" ? "default" : "outline"}
-                  >
-                    {transaction.type}
-                  </Badge>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ScrollArea className="h-[400px]">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Property</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {[
+                  {
+                    date: "2024-02-01",
+                    description: "Rent Payment - Unit 101",
+                    property: "123 Main St",
+                    type: "income",
+                    amount: 2500,
+                    status: "completed"
+                  },
+                  {
+                    date: "2024-01-30",
+                    description: "Maintenance Repair",
+                    property: "456 Oak Ave",
+                    type: "expense",
+                    amount: 450,
+                    status: "completed"
+                  },
+                  {
+                    date: "2024-01-28",
+                    description: "Rent Payment - Unit 202",
+                    property: "789 Pine Rd",
+                    type: "income",
+                    amount: 1800,
+                    status: "pending"
+                  },
+                ].map((payment, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{payment.date}</TableCell>
+                    <TableCell>{payment.description}</TableCell>
+                    <TableCell>{payment.property}</TableCell>
+                    <TableCell>
+                      <Badge variant={payment.type === "income" ? "default" : "outline"}>
+                        {payment.type}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className={payment.type === "income" ? "text-green-600" : "text-red-600"}>
+                      {payment.type === "income" ? "+" : "-"}${payment.amount}
+                    </TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant={payment.status === "completed" ? "default" : "secondary"}
+                      >
+                        {payment.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="ghost" size="icon">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </ScrollArea>
         </CardContent>
       </Card>
     </div>
