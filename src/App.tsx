@@ -39,6 +39,9 @@ import OwnerMaintenanceDetail from "@/pages/owner/OwnerMaintenanceDetail";
 import Notifications from "@/pages/Notifications";
 import Help from "@/pages/Help";
 
+import Applications from "@/pages/Applications";
+import LeaseRenewals from "@/pages/owner/LeaseRenewals";
+
 // Create a new QueryClient instance outside of the component
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,31 +58,39 @@ const App: React.FC = () => {
       <QueryClientProvider client={queryClient}>
         <Router>
           <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={<Login />} />
-          
-          {/* Redirect root to login */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            
+            {/* Redirect root to login */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
 
-          {/* Common protected routes */}
-          <Route
-            path="/notifications"
-            element={
-              <ProtectedRoute>
-                <Notifications />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/help"
-            element={
-              <ProtectedRoute>
-                <Help />
-              </ProtectedRoute>
-            }
-          />
+            {/* Common protected routes */}
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <Notifications />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/help"
+              element={
+                <ProtectedRoute>
+                  <Help />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/applications"
+              element={
+                <ProtectedRoute>
+                  <Applications />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Property Manager routes - protected */}
+            {/* Property Manager routes - protected */}
           <Route
             path="/dashboard"
             element={
@@ -153,14 +164,14 @@ const App: React.FC = () => {
             }
           />
 
-          {/* Owner routes - protected and wrapped in OwnerLayout */}
-          <Route
-            element={
-              <ProtectedRoute>
-                <OwnerLayout />
-              </ProtectedRoute>
-            }
-          >
+            {/* Owner routes - protected and wrapped in OwnerLayout */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <OwnerLayout />
+                </ProtectedRoute>
+              }
+            >
             <Route path="/owner/dashboard" element={<OwnerDashboard />} />
             <Route path="/owner/properties" element={<OwnerProperties />} />
             <Route path="/owner/statements" element={<OwnerStatements />} />
@@ -171,9 +182,10 @@ const App: React.FC = () => {
             <Route path="/owner/maintenance" element={<OwnerMaintenance />} />
             <Route path="/owner/maintenance/:id" element={<OwnerMaintenanceDetail />} />
             <Route path="/owner/payments" element={<OwnerPayments />} />
-          </Route>
+              <Route path="/owner/lease-renewals" element={<LeaseRenewals />} />
+            </Route>
 
-          {/* Tenant routes - protected and wrapped in TenantLayout */}
+            {/* Tenant routes - protected and wrapped in TenantLayout */}
           <Route
             element={
               <ProtectedRoute>
@@ -205,8 +217,8 @@ const App: React.FC = () => {
             <Route path="/tenant/settings" element={<TenantSettings />} />
           </Route>
 
-          {/* Catch all route for 404 */}
-          <Route path="*" element={<NotFound />} />
+            {/* Catch all route for 404 */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster />
         </Router>
