@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Shi Shi Kokoro Property Management',
   webDir: 'dist',
   server: {
-    url: 'https://zpprexurqzixebfuneni.lovableproject.com?forceHideBadge=true',
+    url: 'https://shishikokoroventures.com',
     cleartext: true
   },
   ios: {
