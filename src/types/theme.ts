@@ -16,4 +16,3 @@ export interface ThemeSettings {
 }
 
 export type ColorScheme = 'light' | 'dark' | 'system';
-
