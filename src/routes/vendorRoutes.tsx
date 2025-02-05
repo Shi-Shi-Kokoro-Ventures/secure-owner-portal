@@ -12,15 +12,17 @@ import VendorSettings from "@/pages/vendor/VendorSettings";
 
 export const vendorRoutes: RouteObject[] = [
   {
+    path: "/vendor",
     element: <ProtectedRoute><VendorLayout /></ProtectedRoute>,
     children: [
-      { path: "/vendor/dashboard", element: <VendorDashboard /> },
-      { path: "/vendor/work-orders", element: <VendorWorkOrders /> },
-      { path: "/vendor/schedule", element: <VendorSchedule /> },
-      { path: "/vendor/payments", element: <VendorPayments /> },
-      { path: "/vendor/documents", element: <VendorDocuments /> },
-      { path: "/vendor/communications", element: <VendorCommunications /> },
-      { path: "/vendor/settings", element: <VendorSettings /> }
+      { path: "dashboard", element: <VendorDashboard /> },
+      { path: "work-orders", element: <VendorWorkOrders /> },
+      { path: "schedule", element: <VendorSchedule /> },
+      { path: "payments", element: <VendorPayments /> },
+      { path: "documents", element: <VendorDocuments /> },
+      { path: "communications", element: <VendorCommunications /> },
+      { path: "settings", element: <VendorSettings /> }
     ]
   }
 ];
+
