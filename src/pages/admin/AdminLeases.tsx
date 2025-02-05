@@ -13,6 +13,22 @@ const AdminLeases = () => {
   const { toast } = useToast();
   const [selectedLeaseId, setSelectedLeaseId] = useState<string | null>(null);
 
+  const { data: userRole } = useQuery({
+    queryKey: ['userRole'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      
+      const { data } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
+      
+      return data?.role;
+    }
+  });
+
   const { data: leases, isLoading, error } = useQuery({
     queryKey: ['leases'],
     queryFn: async () => {
