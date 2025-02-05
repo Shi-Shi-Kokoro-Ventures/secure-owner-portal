@@ -815,7 +815,7 @@ export type Database = {
       payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal"
       payment_status: "pending" | "completed" | "failed"
       unit_status: "vacant" | "occupied" | "under_maintenance"
-      user_role: "tenant" | "property_manager" | "owner" | "admin"
+      user_role: "tenant" | "property_manager" | "owner" | "admin" | "vendor"
       user_status: "active" | "pending_approval" | "suspended" | "archived"
       vendor_type:
         | "plumbing"

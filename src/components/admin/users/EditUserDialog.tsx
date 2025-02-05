@@ -77,6 +77,7 @@ export const EditUserDialog = ({
                 <SelectItem value="property_manager">Property Manager</SelectItem>
                 <SelectItem value="owner">Owner</SelectItem>
                 <SelectItem value="tenant">Tenant</SelectItem>
+                <SelectItem value="vendor">Vendor</SelectItem>
               </SelectContent>
             </Select>
           </div>
