@@ -39,9 +39,11 @@ export const ComposeMessageDialog = () => {
       // First create a new conversation
       const { data: conversationData, error: conversationError } = await supabase
         .from('conversations')
-        .insert([
-          { type: 'direct' }
-        ])
+        .insert({
+          type: 'tenant-manager',  // Changed from 'direct' to a valid type
+          last_message: content,
+          last_message_at: new Date().toISOString()
+        })
         .select()
         .single();
 
@@ -54,6 +56,7 @@ export const ComposeMessageDialog = () => {
           {
             conversation_id: conversationData.id,
             sender_id: (await supabase.auth.getUser()).data.user?.id,
+            receiver_id: recipient, // Added receiver_id
             message_content: content,
             status: 'sent',
             message_type: 'text'

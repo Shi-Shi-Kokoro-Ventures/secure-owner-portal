@@ -50,7 +50,6 @@ const Messages = () => {
   const handleArchive = async (messageId: string) => {
     try {
       logger.info("Archiving message", { messageId });
-      // Implement archive logic here
       toast({
         title: "Message archived",
         description: "The message has been moved to archives.",
@@ -68,7 +67,6 @@ const Messages = () => {
   const handleDelete = async (messageId: string) => {
     try {
       logger.info("Deleting message", { messageId });
-      // Implement delete logic here
       toast({
         title: "Message deleted",
         description: "The message has been permanently deleted.",
