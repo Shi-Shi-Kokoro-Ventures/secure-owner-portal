@@ -6,19 +6,29 @@ import { Button } from "@/components/ui/button";
 import { UserPlus, Pencil, Trash2, UserCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+type UserRole = 'admin' | 'property_manager' | 'owner' | 'tenant';
 
 interface User {
   id: string;
   first_name: string;
   last_name: string;
   email: string;
-  role: 'admin' | 'property_manager' | 'owner' | 'tenant';
+  role: UserRole;
   phone: string | null;
   created_at: string;
+}
+
+interface EditFormState {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  role: UserRole;
 }
 
 const AdminUsers = () => {
@@ -27,12 +37,12 @@ const AdminUsers = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [editForm, setEditForm] = useState({
+  const [editForm, setEditForm] = useState<EditFormState>({
     first_name: "",
     last_name: "",
     email: "",
     phone: "",
-    role: ""
+    role: "tenant" // Set a default role that matches the UserRole type
   });
   const { toast } = useToast();
 
@@ -293,7 +303,7 @@ const AdminUsers = () => {
                 <Label htmlFor="role">Role</Label>
                 <Select
                   value={editForm.role}
-                  onValueChange={(value) => setEditForm({ ...editForm, role: value })}
+                  onValueChange={(value: UserRole) => setEditForm({ ...editForm, role: value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select role" />
