@@ -1,8 +1,27 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, Upload } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const OwnerDocuments = () => {
+  const { toast } = useToast();
+
+  const handleUpload = () => {
+    // This is a placeholder for the upload functionality
+    toast({
+      title: "Upload initiated",
+      description: "Document upload feature will be implemented with backend integration",
+    });
+  };
+
+  const handleDownload = (documentName: string) => {
+    // This is a placeholder for the download functionality
+    toast({
+      title: "Download initiated",
+      description: `Downloading ${documentName}`,
+    });
+  };
+
   return (
     <div className="container mx-auto px-4">
       <div className="mb-6">
@@ -16,7 +35,7 @@ const OwnerDocuments = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Property Documents</CardTitle>
-            <Button>
+            <Button onClick={handleUpload}>
               <Upload className="h-4 w-4 mr-2" />
               Upload New
             </Button>
@@ -41,7 +60,11 @@ const OwnerDocuments = () => {
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleDownload(doc)}
+                  >
                     <Download className="h-4 w-4 mr-2" />
                     Download
                   </Button>
