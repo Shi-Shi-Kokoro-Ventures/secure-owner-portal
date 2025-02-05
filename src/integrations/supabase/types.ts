@@ -574,6 +574,47 @@ export type Database = {
           },
         ]
       }
+      payment_methods: {
+        Row: {
+          card_brand: string
+          card_last4: string
+          created_at: string
+          id: string
+          is_default: boolean | null
+          stripe_payment_method_id: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          card_brand: string
+          card_last4: string
+          created_at?: string
+          id?: string
+          is_default?: boolean | null
+          stripe_payment_method_id: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          card_brand?: string
+          card_last4?: string
+          created_at?: string
+          id?: string
+          is_default?: boolean | null
+          stripe_payment_method_id?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_methods_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount_paid: number
@@ -582,7 +623,9 @@ export type Database = {
           lease_id: string | null
           method: Database["public"]["Enums"]["payment_method"]
           payment_date: string
+          payment_method_id: string | null
           status: Database["public"]["Enums"]["payment_status"]
+          stripe_payment_intent_id: string | null
           tenant_id: string | null
         }
         Insert: {
@@ -592,7 +635,9 @@ export type Database = {
           lease_id?: string | null
           method: Database["public"]["Enums"]["payment_method"]
           payment_date: string
+          payment_method_id?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
+          stripe_payment_intent_id?: string | null
           tenant_id?: string | null
         }
         Update: {
@@ -602,7 +647,9 @@ export type Database = {
           lease_id?: string | null
           method?: Database["public"]["Enums"]["payment_method"]
           payment_date?: string
+          payment_method_id?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
+          stripe_payment_intent_id?: string | null
           tenant_id?: string | null
         }
         Relationships: [
@@ -611,6 +658,13 @@ export type Database = {
             columns: ["lease_id"]
             isOneToOne: false
             referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_payment_method_id_fkey"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
             referencedColumns: ["id"]
           },
           {
@@ -684,6 +738,38 @@ export type Database = {
             foreignKeyName: "reward_redemptions_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stripe_customers: {
+        Row: {
+          created_at: string
+          id: string
+          stripe_customer_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          stripe_customer_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          stripe_customer_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stripe_customers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
