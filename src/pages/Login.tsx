@@ -3,33 +3,62 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AtSign, Key } from "lucide-react";
+import { AtSign, Key, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [userType, setUserType] = useState<"tenant" | "manager">("manager");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Simplified navigation logic for development
-    if (userType === "manager") {
-      navigate("/dashboard");
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Store user type preference if remember me is checked
+      if (rememberMe) {
+        localStorage.setItem('userType', userType);
+      }
+
       toast({
         title: "Welcome back",
-        description: "You have successfully logged in as a property manager.",
+        description: `You have successfully logged in as a ${userType}.`,
       });
-    } else {
-      navigate("/tenant/dashboard");
+
+      // Navigate based on user type
+      if (userType === "manager") {
+        navigate("/dashboard");
+      } else {
+        navigate("/tenant/dashboard");
+      }
+    } catch (error) {
       toast({
-        title: "Welcome back",
-        description: "You have successfully logged in as a tenant.",
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -117,8 +146,15 @@ const Login = () => {
             </div>
           </div>
 
-          <Button type="submit" className="w-full">
-            Sign in
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              'Sign in'
+            )}
           </Button>
         </form>
       </div>
