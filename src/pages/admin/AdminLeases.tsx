@@ -16,7 +16,7 @@ const AdminLeases = () => {
   const { data: leases, isLoading } = useQuery({
     queryKey: ['leases'],
     queryFn: async () => {
-      logger.info("Fetching leases data");
+      logger.info(`Fetching leases data`);
       const { data, error } = await supabase
         .from('leases')
         .select(`
