@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, ArrowRight, CheckCircle2, AlertCircle, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export function StripeConnectSetup() {
@@ -44,7 +44,6 @@ export function StripeConnectSetup() {
 
       if (error) throw error;
 
-      // Redirect to Stripe Connect onboarding
       if (data.url) {
         window.location.href = data.url;
       }
@@ -55,6 +54,30 @@ export function StripeConnectSetup() {
         title: "Error",
         description: "Failed to set up Stripe Connect",
       });
+      setIsLoading(false);
+    }
+  };
+
+  const handleOpenDashboard = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase.functions.invoke('stripe-connect', {
+        body: { action: 'create_login_link' },
+      });
+
+      if (error) throw error;
+
+      if (data.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error opening Stripe dashboard:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to open Stripe dashboard",
+      });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -79,9 +102,15 @@ export function StripeConnectSetup() {
       </CardHeader>
       <CardContent>
         {accountStatus === 'complete' ? (
-          <div className="flex items-center gap-2 text-green-600">
-            <CheckCircle2 className="h-5 w-5" />
-            <span>Your Stripe Connect account is set up and ready to receive payments</span>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-green-600">
+              <CheckCircle2 className="h-5 w-5" />
+              <span>Your Stripe Connect account is set up and ready to receive payments</span>
+            </div>
+            <Button onClick={handleOpenDashboard} className="w-full">
+              Open Stripe Dashboard
+              <ExternalLink className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         ) : accountStatus === 'pending' ? (
           <div className="space-y-4">

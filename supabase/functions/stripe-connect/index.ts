@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 import Stripe from 'https://esm.sh/stripe@12.5.0?target=deno';
@@ -14,34 +13,25 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Create Supabase client with the request's authorization header
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
-        global: {
-          headers: {
-            Authorization: req.headers.get('Authorization') ?? '',
-          },
-        },
+        global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
       }
     );
 
-    // Get authenticated user
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
-    
     if (userError || !user) {
       console.error('Auth error:', userError);
       throw new Error('Unauthorized');
     }
 
-    // Get user role from the users table
     const { data: userData, error: roleError } = await supabaseClient
       .from('users')
       .select('role')
@@ -53,7 +43,6 @@ serve(async (req) => {
       throw new Error('Failed to get user role');
     }
 
-    // Verify user is an owner
     if (userData.role !== 'owner') {
       throw new Error('Only property owners can access Stripe Connect');
     }
@@ -146,6 +135,28 @@ serve(async (req) => {
             status: account.charges_enabled ? 'complete' : 'pending',
             accountId: account.id,
           }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
+
+      case 'create_login_link': {
+        const { data: connectAccount } = await supabaseClient
+          .from('stripe_connect_accounts')
+          .select('stripe_account_id')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!connectAccount) {
+          throw new Error('No Stripe Connect account found');
+        }
+
+        const loginLink = await stripe.accounts.createLoginLink(
+          connectAccount.stripe_account_id
+        );
+
+        console.log('Login link created:', loginLink.url);
+        return new Response(
+          JSON.stringify({ url: loginLink.url }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         );
       }
