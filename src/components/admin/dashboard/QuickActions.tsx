@@ -96,7 +96,7 @@ export const QuickActions = () => {
             <Button 
               key={action.title}
               variant="outline"
-              className="group flex h-auto flex-col items-start gap-4 p-6 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-100 dark:border-gray-700 transition-all duration-200"
+              className="group flex h-full min-h-[140px] w-full flex-col items-start gap-4 p-6 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-100 dark:border-gray-700 transition-all duration-200"
               onClick={() => handleAction(action.route)}
             >
               <div className={cn(
@@ -105,9 +105,9 @@ export const QuickActions = () => {
               )}>
                 <action.icon className={cn("h-6 w-6", action.color)} />
               </div>
-              <div className="space-y-1">
-                <div className="font-medium text-gray-900 dark:text-gray-100">{action.title}</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">{action.description}</div>
+              <div className="space-y-1 w-full">
+                <div className="font-medium text-gray-900 dark:text-gray-100 text-sm break-words">{action.title}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 break-words">{action.description}</div>
               </div>
             </Button>
           ))}
