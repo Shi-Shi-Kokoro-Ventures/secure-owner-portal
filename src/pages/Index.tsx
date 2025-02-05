@@ -53,6 +53,10 @@ const Index = () => {
     navigate("/login");
   };
 
+  const handleTenantServicesClick = () => {
+    navigate("/tenant-services");
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <nav className="fixed top-0 w-full bg-white shadow-sm z-50">
@@ -343,7 +347,14 @@ const Index = () => {
               <h3 className="text-lg font-semibold mb-4">Services</h3>
               <ul className="space-y-2">
                 <li><a href="#" className="hover:text-primary">Property Management</a></li>
-                <li><a href="#" className="hover:text-primary">Tenant Services</a></li>
+                <li>
+                  <button 
+                    onClick={handleTenantServicesClick}
+                    className="hover:text-primary"
+                  >
+                    Tenant Services
+                  </button>
+                </li>
                 <li><a href="#" className="hover:text-primary">Maintenance</a></li>
                 <li><a href="#" className="hover:text-primary">Investment Consulting</a></li>
               </ul>
