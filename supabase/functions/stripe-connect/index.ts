@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 import Stripe from 'https://esm.sh/stripe@12.5.0?target=deno';
@@ -13,38 +14,67 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Initialize Supabase client with auth context from request
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
-        global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
+        global: { 
+          headers: { 
+            Authorization: req.headers.get('Authorization') ?? '',
+            // Include the client's original headers
+            ...Object.fromEntries(req.headers)
+          }
+        },
       }
     );
 
+    // Get authenticated user
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    
     if (userError || !user) {
       console.error('Auth error:', userError);
-      throw new Error('Unauthorized');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }), 
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
+    // Get user role
     const { data: userData, error: roleError } = await supabaseClient
       .from('users')
       .select('role')
       .eq('id', user.id)
       .single();
 
-    if (roleError) {
+    if (roleError || !userData) {
       console.error('Role error:', roleError);
-      throw new Error('Failed to get user role');
+      return new Response(
+        JSON.stringify({ error: 'Failed to get user role' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     if (userData.role !== 'owner') {
-      throw new Error('Only property owners can access Stripe Connect');
+      return new Response(
+        JSON.stringify({ error: 'Only property owners can access Stripe Connect' }),
+        { 
+          status: 403, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     const { action } = await req.json();
@@ -63,7 +93,7 @@ serve(async (req) => {
           console.log('Existing account found:', existingAccount);
           return new Response(
             JSON.stringify({ accountId: existingAccount.stripe_account_id }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
 
@@ -108,7 +138,7 @@ serve(async (req) => {
         console.log('Account link created');
         return new Response(
           JSON.stringify({ url: accountLink.url }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 
@@ -123,7 +153,7 @@ serve(async (req) => {
           console.log('No connect account found');
           return new Response(
             JSON.stringify({ status: 'not_created' }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
 
@@ -135,7 +165,7 @@ serve(async (req) => {
             status: account.charges_enabled ? 'complete' : 'pending',
             accountId: account.id,
           }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 
@@ -147,7 +177,13 @@ serve(async (req) => {
           .single();
 
         if (!connectAccount) {
-          throw new Error('No Stripe Connect account found');
+          return new Response(
+            JSON.stringify({ error: 'No Stripe Connect account found' }),
+            { 
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            }
+          );
         }
 
         const loginLink = await stripe.accounts.createLoginLink(
@@ -157,20 +193,26 @@ serve(async (req) => {
         console.log('Login link created:', loginLink.url);
         return new Response(
           JSON.stringify({ url: loginLink.url }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 
       default:
-        throw new Error('Invalid action');
+        return new Response(
+          JSON.stringify({ error: 'Invalid action' }),
+          { 
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
     }
   } catch (error) {
     console.error('Error in stripe-connect function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }, 
-        status: error.message === 'Unauthorized' ? 401 : 400 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: error.message === 'Unauthorized' ? 401 : 400
       }
     );
   }
