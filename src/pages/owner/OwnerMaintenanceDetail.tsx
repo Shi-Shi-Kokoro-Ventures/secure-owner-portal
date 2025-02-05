@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Wrench, Calendar, MapPin, MessageSquare, Loader2 } from "lucide-react";
+import { Wrench, Calendar, MapPin, MessageSquare, Loader2, Check, X, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +12,7 @@ const OwnerMaintenanceDetail = () => {
   const { toast } = useToast();
   const [newUpdate, setNewUpdate] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [requestStatus, setRequestStatus] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const [updates, setUpdates] = useState([
     {
       date: "Feb 1, 2024",
@@ -21,7 +22,7 @@ const OwnerMaintenanceDetail = () => {
     {
       date: "Feb 1, 2024",
       message: "Request received and assigned to maintenance team",
-      author: "Property Management"
+      author: "Property Owner"
     }
   ]);
 
@@ -30,13 +31,50 @@ const OwnerMaintenanceDetail = () => {
     id,
     title: "HVAC Repair",
     property: "123 Main St, Unit 4",
-    status: "urgent",
+    status: requestStatus,
     date: "Feb 1, 2024",
     description: "The air conditioning unit is not cooling properly and making unusual noises.",
     tenant: "John Smith",
     priority: "High",
     category: "HVAC",
     updates: updates
+  };
+
+  const handleStatusUpdate = async (newStatus: 'approved' | 'rejected') => {
+    try {
+      // TODO: Replace with actual API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const currentDate = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+
+      const statusMessage = newStatus === 'approved' 
+        ? "Maintenance request approved"
+        : "Maintenance request rejected";
+
+      const newUpdateObj = {
+        date: currentDate,
+        message: statusMessage,
+        author: "Property Owner",
+      };
+
+      setUpdates(prev => [...prev, newUpdateObj]);
+      setRequestStatus(newStatus);
+      
+      toast({
+        title: "Status Updated",
+        description: `Maintenance request has been ${newStatus}.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `Failed to ${newStatus} request. Please try again.`,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleAddUpdate = async () => {
@@ -113,11 +151,11 @@ const OwnerMaintenanceDetail = () => {
             </div>
             <Badge
               variant={
-                request.status === "urgent"
-                  ? "destructive"
-                  : request.status === "completed"
-                  ? "secondary"
-                  : "default"
+                request.status === "pending"
+                  ? "default"
+                  : request.status === "approved"
+                  ? "success"
+                  : "destructive"
               }
             >
               {request.status}
@@ -140,6 +178,27 @@ const OwnerMaintenanceDetail = () => {
                 <p className="text-sm text-muted-foreground">{request.category}</p>
               </div>
             </div>
+
+            {requestStatus === 'pending' && (
+              <div className="flex gap-2 mt-4">
+                <Button
+                  onClick={() => handleStatusUpdate('approved')}
+                  className="flex items-center gap-2"
+                  variant="default"
+                >
+                  <Check className="h-4 w-4" />
+                  Approve
+                </Button>
+                <Button
+                  onClick={() => handleStatusUpdate('rejected')}
+                  className="flex items-center gap-2"
+                  variant="destructive"
+                >
+                  <X className="h-4 w-4" />
+                  Reject
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
 
