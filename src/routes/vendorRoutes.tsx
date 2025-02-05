@@ -1,5 +1,5 @@
 
-import { RouteObject } from "react-router-dom";
+import { Navigate, RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import VendorLayout from "@/components/VendorLayout";
 import VendorDashboard from "@/pages/vendor/VendorDashboard";
@@ -15,6 +15,7 @@ export const vendorRoutes: RouteObject[] = [
     path: "/vendor",
     element: <ProtectedRoute><VendorLayout /></ProtectedRoute>,
     children: [
+      { path: "", element: <Navigate to="/vendor/dashboard" replace /> },
       { path: "dashboard", element: <VendorDashboard /> },
       { path: "work-orders", element: <VendorWorkOrders /> },
       { path: "schedule", element: <VendorSchedule /> },
@@ -25,4 +26,3 @@ export const vendorRoutes: RouteObject[] = [
     ]
   }
 ];
-
