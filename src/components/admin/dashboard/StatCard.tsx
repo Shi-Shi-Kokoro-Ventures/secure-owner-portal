@@ -12,19 +12,24 @@ interface StatCardProps {
     positive: boolean;
   };
   className?: string;
+  onClick?: () => void;
 }
 
-export const StatCard = ({ title, value, description, icon: Icon, trend, className }: StatCardProps) => (
-  <Card className={cn(
-    "relative overflow-hidden bg-white dark:bg-gray-800/50",
-    "transition-all duration-300 hover:shadow-lg",
-    "before:content-[''] before:absolute before:inset-0",
-    "before:bg-gradient-radial before:from-primary-100/20 before:to-transparent",
-    "before:opacity-0 hover:before:opacity-100 before:transition-opacity",
-    "animate-in fade-in slide-in-from-bottom-3 duration-500",
-    "hover:translate-y-[-2px] transform transition-transform",
-    className
-  )}>
+export const StatCard = ({ title, value, description, icon: Icon, trend, className, onClick }: StatCardProps) => (
+  <Card 
+    className={cn(
+      "relative overflow-hidden bg-white dark:bg-gray-800/50",
+      "transition-all duration-300 hover:shadow-lg",
+      "before:content-[''] before:absolute before:inset-0",
+      "before:bg-gradient-radial before:from-primary-100/20 before:to-transparent",
+      "before:opacity-0 hover:before:opacity-100 before:transition-opacity",
+      "animate-in fade-in slide-in-from-bottom-3 duration-500",
+      "hover:translate-y-[-2px] transform transition-transform",
+      onClick && "cursor-pointer",
+      className
+    )}
+    onClick={onClick}
+  >
     <div className="p-6 relative z-10">
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
