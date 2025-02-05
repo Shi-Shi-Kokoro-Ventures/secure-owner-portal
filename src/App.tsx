@@ -35,6 +35,8 @@ import OwnerSettings from "@/pages/owner/OwnerSettings";
 import OwnerMaintenance from "@/pages/owner/OwnerMaintenance";
 import OwnerPayments from "@/pages/owner/OwnerPayments";
 import OwnerMaintenanceDetail from "@/pages/owner/OwnerMaintenanceDetail";
+import Notifications from "@/pages/Notifications";
+import Help from "@/pages/Help";
 
 const queryClient = new QueryClient({
   defaultOptions: {
