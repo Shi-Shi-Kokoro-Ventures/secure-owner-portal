@@ -1,42 +1,61 @@
-import { Layout } from "@/components/Layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FileText, Upload, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Upload, FolderOpen } from "lucide-react";
 
 const Files = () => {
   return (
-    <Layout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Files</h1>
-          <Button className="gap-2">
-            <Upload className="h-4 w-4" />
-            Upload Files
-          </Button>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Placeholder for file folders */}
-          <div className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
-            <div className="flex items-center gap-2">
-              <FolderOpen className="h-6 w-6 text-primary" />
-              <span>Contracts</span>
-            </div>
-          </div>
-          <div className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
-            <div className="flex items-center gap-2">
-              <FolderOpen className="h-6 w-6 text-primary" />
-              <span>Inspection Reports</span>
-            </div>
-          </div>
-          <div className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
-            <div className="flex items-center gap-2">
-              <FolderOpen className="h-6 w-6 text-primary" />
-              <span>Invoices</span>
-            </div>
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Files</h1>
+        <p className="text-muted-foreground">Manage your documents and files</p>
+      </div>
+
+      <div className="mb-8">
+        <Button className="flex items-center space-x-2">
+          <Upload className="h-5 w-5" />
+          <span>Upload Files</span>
+        </Button>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Documents</CardTitle>
+            <FileText className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No documents uploaded</p>
+          </CardContent>
+        </Card>
+
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Images</CardTitle>
+            <FileText className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No images uploaded</p>
+          </CardContent>
+        </Card>
+
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Other Files</CardTitle>
+            <FileText className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No other files uploaded</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="mt-8">
+        <div className="flex items-center space-x-2 text-muted-foreground">
+          <FolderOpen className="h-5 w-5" />
+          <span className="text-sm">Storage usage: 0 MB</span>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

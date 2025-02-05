@@ -1,82 +1,57 @@
-import { Layout } from "@/components/Layout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Archive, Download, Filter, Printer, Search, Trash } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Archive, Clock, Filter } from "lucide-react";
 
 const Archives = () => {
   return (
-    <Layout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Archives</h1>
-          <p className="text-muted-foreground">
-            View and manage archived items
-          </p>
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Archives</h1>
+        <p className="text-muted-foreground">View and manage archived items</p>
+      </div>
 
-        <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
-            <Input
-              placeholder="Search archives..."
-              className="pl-10"
-            />
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-            <Button variant="outline" size="sm">
-              <Printer className="h-4 w-4 mr-2" />
-              Print
-            </Button>
-            <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-          </div>
-        </div>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Archived Properties</CardTitle>
+            <Archive className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No archived properties</p>
+          </CardContent>
+        </Card>
 
-        <div className="border rounded-lg">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Item</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Archive Date</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>January 2024 Statement</TableCell>
-                <TableCell>Document</TableCell>
-                <TableCell>2024-02-01</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="sm">
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Trash className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Archived Tenants</CardTitle>
+            <Archive className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No archived tenants</p>
+          </CardContent>
+        </Card>
+
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Archived Documents</CardTitle>
+            <Archive className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No archived documents</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="mt-8 flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Filter className="h-5 w-5 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Filter archives</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Clock className="h-5 w-5 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Last updated: Never</span>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

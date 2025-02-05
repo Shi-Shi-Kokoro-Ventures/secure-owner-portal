@@ -1,42 +1,59 @@
-import { Layout } from "@/components/Layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FileText, Download, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Download, Filter } from "lucide-react";
 
 const Statements = () => {
   return (
-    <Layout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Financial Statements</h1>
-          <div className="flex items-center gap-2">
-            <Input
-              type="date"
-              className="w-[200px]"
-            />
-            <span>to</span>
-            <Input
-              type="date"
-              className="w-[200px]"
-            />
-            <Button variant="outline" className="gap-2">
-              <Filter className="h-4 w-4" />
-              Filter
-            </Button>
-            <Button className="gap-2">
-              <Download className="h-4 w-4" />
-              Download Statement
-            </Button>
-          </div>
-        </div>
-        
-        <div className="border rounded-lg p-4">
-          <p className="text-center text-gray-500">
-            Select a date range to view statements
-          </p>
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Statements</h1>
+        <p className="text-muted-foreground">View and download your financial statements</p>
       </div>
-    </Layout>
+
+      <div className="mb-8">
+        <Button className="flex items-center space-x-2">
+          <Download className="h-5 w-5" />
+          <span>Download All</span>
+        </Button>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Monthly Statements</CardTitle>
+            <FileText className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No statements available</p>
+          </CardContent>
+        </Card>
+
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Annual Reports</CardTitle>
+            <FileText className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No reports available</p>
+          </CardContent>
+        </Card>
+
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Tax Documents</CardTitle>
+            <FileText className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No tax documents available</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="mt-8 flex items-center space-x-4">
+        <Filter className="h-5 w-5 text-muted-foreground" />
+        <span className="text-sm text-muted-foreground">Filter statements by date</span>
+      </div>
+    </div>
   );
 };
 

@@ -1,93 +1,54 @@
-import { Layout } from "@/components/Layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ClipboardCheck, Calendar, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download, Filter, Printer, Search } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 
 const Inspections = () => {
-  const { toast } = useToast();
-
-  const handleAction = (action: string) => {
-    toast({
-      title: action,
-      description: `${action} functionality coming soon`,
-    });
-  };
-
   return (
-    <Layout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Inspections</h1>
-          <p className="text-muted-foreground">
-            Schedule and manage property inspections
-          </p>
-        </div>
-
-        {/* Summary Cards */}
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg border p-4">
-            <div className="flex items-center gap-2">
-              <Search className="h-5 w-5 text-primary" />
-              <span className="text-sm font-medium">Scheduled</span>
-            </div>
-            <p className="mt-2 text-2xl font-bold">0</p>
-          </div>
-          <div className="rounded-lg border p-4">
-            <div className="flex items-center gap-2">
-              <Search className="h-5 w-5 text-yellow-600" />
-              <span className="text-sm font-medium">In Progress</span>
-            </div>
-            <p className="mt-2 text-2xl font-bold">0</p>
-          </div>
-          <div className="rounded-lg border p-4">
-            <div className="flex items-center gap-2">
-              <Search className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium">Completed</span>
-            </div>
-            <p className="mt-2 text-2xl font-bold">0</p>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => handleAction('Filter')}>
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => handleAction('Print')}>
-            <Printer className="h-4 w-4 mr-2" />
-            Print
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => handleAction('Export')}>
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
-        </div>
-
-        {/* Inspections Table */}
-        <div className="rounded-lg border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Property</TableHead>
-                <TableHead>Inspector</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                  No inspections found
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Inspections</h1>
+        <p className="text-muted-foreground">Schedule and manage property inspections</p>
       </div>
-    </Layout>
+
+      <div className="mb-8">
+        <Button className="flex items-center space-x-2">
+          <Calendar className="h-5 w-5" />
+          <span>Schedule Inspection</span>
+        </Button>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Upcoming Inspections</CardTitle>
+            <Calendar className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No upcoming inspections</p>
+          </CardContent>
+        </Card>
+
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Completed Inspections</CardTitle>
+            <ClipboardCheck className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No completed inspections</p>
+          </CardContent>
+        </Card>
+
+        <Card className="transition-all duration-300 hover:shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-lg font-medium">Issues Found</CardTitle>
+            <AlertCircle className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">No issues found</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 };
 
