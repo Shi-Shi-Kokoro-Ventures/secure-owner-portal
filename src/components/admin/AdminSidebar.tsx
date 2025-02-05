@@ -11,6 +11,8 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { logger } from "@/utils/logger";
+import { useEffect } from "react";
 
 interface SidebarProps {
   open: boolean;
@@ -30,9 +32,12 @@ const navigation = [
 export const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
   const location = useLocation();
 
+  useEffect(() => {
+    logger.info("Sidebar mounted", { open, currentPath: location.pathname });
+  }, [open, location.pathname]);
+
   return (
     <>
-      {/* Mobile backdrop */}
       {open && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -40,7 +45,6 @@ export const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
         />
       )}
 
-      {/* Sidebar */}
       <div
         className={cn(
           "fixed inset-y-0 left-0 z-50",
@@ -57,6 +61,10 @@ export const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
             className="h-8 w-auto transition-transform hover:scale-105"
             src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png"
             alt="Shi Shi Kokoro"
+            onError={(e) => {
+              logger.error("Failed to load logo", { src: e.currentTarget.src });
+              e.currentTarget.style.display = 'none';
+            }}
           />
           <Button
             variant="ghost"
@@ -82,6 +90,7 @@ export const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
                     ? "bg-gray-100 dark:bg-gray-800 text-primary"
                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary"
                 )}
+                onClick={() => logger.info("Navigation clicked", { name: item.name, href: item.href })}
               >
                 <item.icon
                   className={cn(

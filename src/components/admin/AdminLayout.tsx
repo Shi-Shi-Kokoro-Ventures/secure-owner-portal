@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sidebar } from "./AdminSidebar";
 import { Header } from "@/components/Header";
 import { VapiAssistant } from "./VapiAssistant";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { logger } from "@/utils/logger";
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [aiChatOpen, setAiChatOpen] = useState(false);
+
+  useEffect(() => {
+    logger.info("AdminLayout mounted", { sidebarOpen, aiChatOpen });
+  }, [sidebarOpen, aiChatOpen]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -27,11 +32,13 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </main>
         </div>
 
-        {/* Floating AI Chat Button */}
         <div className="fixed bottom-4 right-4 z-50">
           {!aiChatOpen ? (
             <Button
-              onClick={() => setAiChatOpen(true)}
+              onClick={() => {
+                logger.info("Opening AI chat");
+                setAiChatOpen(true);
+              }}
               size="lg"
               className="rounded-full h-14 w-14 shadow-lg hover:shadow-xl transition-all duration-200"
             >
@@ -44,7 +51,10 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setAiChatOpen(false)}
+                  onClick={() => {
+                    logger.info("Closing AI chat");
+                    setAiChatOpen(false);
+                  }}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -58,4 +68,4 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
     </div>
   );
-};
+}

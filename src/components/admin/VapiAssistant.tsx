@@ -1,16 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Loader2, Send, Mic, MicOff, AlertCircle } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { cn } from '@/lib/utils'
+import { logger } from '@/utils/logger'
 
 export const VapiAssistant = () => {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
+
+  useEffect(() => {
+    logger.info("VapiAssistant mounted");
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,21 +27,27 @@ export const VapiAssistant = () => {
     setIsLoading(true)
 
     try {
+      logger.info("Calling Vapi assistant", { message: userMessage });
       const { data: { data }, error } = await supabase.functions.invoke('vapi-assistant', {
         body: { message: userMessage }
       })
 
-      if (error) throw error
+      if (error) {
+        logger.error("Error from Vapi assistant", error);
+        throw error;
+      }
 
+      logger.info("Received response from Vapi assistant", { response: data });
       setMessages(prev => [...prev, { role: 'assistant', content: data.choices[0].message.content }])
     } catch (error) {
-      console.error('Error calling Vapi assistant:', error)
+      logger.error('Error calling Vapi assistant:', error)
     } finally {
       setIsLoading(false)
     }
   }
 
   const toggleRecording = () => {
+    logger.info("Toggling recording", { wasRecording: isRecording });
     setIsRecording(!isRecording)
   }
 
@@ -63,7 +74,10 @@ export const VapiAssistant = () => {
                     key={i}
                     variant="outline"
                     className="justify-start text-left h-auto py-2 px-3"
-                    onClick={() => setMessage(suggestion)}
+                    onClick={() => {
+                      logger.info("Selected suggestion", { suggestion });
+                      setMessage(suggestion);
+                    }}
                   >
                     {suggestion}
                   </Button>
