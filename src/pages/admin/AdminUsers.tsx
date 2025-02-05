@@ -33,7 +33,7 @@ const INITIAL_FORM_STATE: UserFormState = {
 };
 
 const AdminUsers = () => {
-  const { users, isLoading, fetchUsers, deleteUser, updateUser, uploadProfilePicture } = useUsers();
+  const { users, isLoading, refetch, deleteUser, updateUser, uploadProfilePicture } = useUsers();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -174,7 +174,7 @@ const AdminUsers = () => {
         if (vendorError) throw vendorError;
       }
 
-      fetchUsers();
+      refetch();
       setIsAddDialogOpen(false);
       setAddForm(INITIAL_FORM_STATE);
     } catch (error) {
