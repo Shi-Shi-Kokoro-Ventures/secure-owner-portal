@@ -1,50 +1,54 @@
 import { RouteObject } from "react-router-dom";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import Dashboard from "@/pages/Dashboard";
-import Owners from "@/pages/Owners";
-import Properties from "@/pages/Properties";
-import Tenants from "@/pages/Tenants";
-import WorkOrders from "@/pages/WorkOrders";
-import Reports from "@/pages/Reports";
-import Banking from "@/pages/Banking";
-import { AddPropertyForm } from "@/components/AddPropertyForm";
-import { PlaceNewTenant } from "@/components/PlaceNewTenant";
+import Archives from "@/pages/Archives";
+import Files from "@/pages/Files";
+import Inspections from "@/pages/Inspections";
+import Mailing from "@/pages/Mailing";
+import Statements from "@/pages/Statements";
+import OwnerSignatures from "@/pages/OwnerSignatures";
+import OwnerArchives from "@/pages/OwnerArchives";
+import PropertyArchives from "@/pages/PropertyArchives";
+import TenantArchives from "@/pages/TenantArchives";
+import TenantSignatures from "@/pages/TenantSignatures";
 
 export const propertyManagerRoutes: RouteObject[] = [
   {
-    path: "/dashboard",
-    element: <ProtectedRoute><Dashboard /></ProtectedRoute>
+    path: "/archives",
+    element: <Archives />,
   },
   {
-    path: "/owners",
-    element: <ProtectedRoute><Owners /></ProtectedRoute>
+    path: "/files",
+    element: <Files />,
   },
   {
-    path: "/properties",
-    element: <ProtectedRoute><Properties /></ProtectedRoute>
+    path: "/inspections",
+    element: <Inspections />,
   },
   {
-    path: "/properties/add",
-    element: <ProtectedRoute><AddPropertyForm /></ProtectedRoute>
+    path: "/mailing",
+    element: <Mailing />,
   },
   {
-    path: "/tenants",
-    element: <ProtectedRoute><Tenants /></ProtectedRoute>
+    path: "/statements",
+    element: <Statements />,
   },
   {
-    path: "/tenant/place",
-    element: <ProtectedRoute><PlaceNewTenant /></ProtectedRoute>
+    path: "/owner-signatures",
+    element: <OwnerSignatures />,
   },
   {
-    path: "/work-orders",
-    element: <ProtectedRoute><WorkOrders /></ProtectedRoute>
+    path: "/owner-archives",
+    element: <OwnerArchives />,
   },
   {
-    path: "/reports",
-    element: <ProtectedRoute><Reports /></ProtectedRoute>
+    path: "/property-archives",
+    element: <PropertyArchives />,
   },
   {
-    path: "/banking",
-    element: <ProtectedRoute><Banking /></ProtectedRoute>
-  }
+    path: "/tenant-archives",
+    element: <TenantArchives />,
+  },
+  {
+    path: "/tenant-signatures",
+    element: <TenantSignatures />,
+  },
 ];
