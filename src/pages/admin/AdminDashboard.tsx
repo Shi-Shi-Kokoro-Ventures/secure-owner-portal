@@ -11,9 +11,13 @@ import {
   Plus,
   FileText,
   MessageSquare,
+  UserPlus,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -26,9 +30,12 @@ const AdminDashboard = () => {
 
         {/* Quick Actions */}
         <div className="flex flex-wrap gap-4">
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            Add Property Manager
+          <Button 
+            className="gap-2"
+            onClick={() => navigate('/admin/users')}
+          >
+            <UserPlus className="h-4 w-4" />
+            Manage Property Managers
           </Button>
           <Button className="gap-2">
             <FileText className="h-4 w-4" />
@@ -57,13 +64,13 @@ const AdminDashboard = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+              <CardTitle className="text-sm font-medium">Property Managers</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">1,234</div>
+              <div className="text-2xl font-bold">24</div>
               <p className="text-xs text-muted-foreground">
-                Across all roles
+                Active managers
               </p>
             </CardContent>
           </Card>
@@ -108,7 +115,7 @@ const AdminDashboard = () => {
               <ul className="space-y-4">
                 <li className="flex items-center gap-2 text-sm">
                   <span className="h-2 w-2 rounded-full bg-red-500" />
-                  5 leases expiring this month
+                  5 property manager approvals pending
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <span className="h-2 w-2 rounded-full bg-yellow-500" />
