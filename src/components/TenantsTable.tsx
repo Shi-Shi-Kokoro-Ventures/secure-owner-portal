@@ -9,12 +9,43 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, UserPlus, Mail, Building, Calendar } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface TenantsTableProps {
   onAddTenant: () => void;
 }
 
 export const TenantsTable = ({ onAddTenant }: TenantsTableProps) => {
+  const { toast } = useToast();
+
+  const handleFilter = () => {
+    toast({
+      title: "Filters",
+      description: "Filter functionality coming soon",
+    });
+  };
+
+  const handleEmailSelected = () => {
+    toast({
+      title: "Email Selected",
+      description: "Email functionality coming soon",
+    });
+  };
+
+  const handleMoveUnits = () => {
+    toast({
+      title: "Move Units",
+      description: "Unit transfer functionality coming soon",
+    });
+  };
+
+  const handleEndLease = () => {
+    toast({
+      title: "End Lease",
+      description: "Lease termination functionality coming soon",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -33,7 +64,7 @@ export const TenantsTable = ({ onAddTenant }: TenantsTableProps) => {
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Search tenants..." className="pl-9" />
         </div>
-        <Button variant="outline" className="gap-2 w-full sm:w-auto">
+        <Button variant="outline" className="gap-2 w-full sm:w-auto" onClick={handleFilter}>
           <Filter className="h-4 w-4" />
           Filters
         </Button>
@@ -75,15 +106,15 @@ export const TenantsTable = ({ onAddTenant }: TenantsTableProps) => {
 
       <div className="flex justify-between items-center pt-4">
         <div className="flex gap-4">
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2" onClick={handleEmailSelected}>
             <Mail className="h-4 w-4" />
             Email Selected
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2" onClick={handleMoveUnits}>
             <Building className="h-4 w-4" />
             Move Units
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2" onClick={handleEndLease}>
             <Calendar className="h-4 w-4" />
             End Lease
           </Button>
