@@ -17,7 +17,8 @@ import {
   Users,
   FileText,
   Wrench,
-  Shield 
+  Shield,
+  ArrowRight 
 } from "lucide-react";
 
 const Index = () => {
@@ -46,6 +47,10 @@ const Index = () => {
 
   const handleLearnMoreClick = () => {
     navigate("/services");
+  };
+
+  const handleTenantServicesClick = () => {
+    navigate("/tenant-services");
   };
 
   return (
@@ -226,10 +231,11 @@ const Index = () => {
                   </CardContent>
                 </Card>
                 <Button 
-                  className="w-full"
-                  onClick={() => navigate("/tenant-services")}
+                  className="w-full group"
+                  onClick={handleTenantServicesClick}
                 >
                   Learn More About Tenant Services
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </div>
             </div>
