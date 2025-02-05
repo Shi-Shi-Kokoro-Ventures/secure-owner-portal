@@ -73,17 +73,15 @@ const AdminLeases = () => {
           </p>
         </div>
 
+        {/* Add LeaseMetrics component here */}
         <LeaseMetrics leases={leases || []} />
         
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Active Leases</h2>
-            <LeasesTable 
-              leases={leases || []} 
-              isLoading={isLoading}
-              onLeaseSelect={setSelectedLeaseId}
-            />
-          </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+          <LeasesTable 
+            leases={leases || []} 
+            isLoading={isLoading}
+            onLeaseSelect={setSelectedLeaseId}
+          />
         </div>
       </div>
     </AdminLayout>
