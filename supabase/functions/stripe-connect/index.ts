@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 import Stripe from 'https://esm.sh/stripe@12.5.0?target=deno';
@@ -20,17 +19,15 @@ serve(async (req) => {
   }
 
   try {
-    // Initialize Supabase client with auth context from request
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
+    
+    // Initialize Supabase client with auth context
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         global: { 
-          headers: { 
-            Authorization: req.headers.get('Authorization') ?? '',
-            // Include the client's original headers
-            ...Object.fromEntries(req.headers)
-          }
+          headers: { Authorization: req.headers.get('Authorization') ?? '' }
         },
       }
     );
@@ -41,13 +38,15 @@ serve(async (req) => {
     if (userError || !user) {
       console.error('Auth error:', userError);
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }), 
+        JSON.stringify({ error: 'Unauthorized', details: userError?.message }),
         { 
-          status: 401, 
+          status: 401,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
     }
+
+    console.log('Authenticated user:', user.id);
 
     // Get user role
     const { data: userData, error: roleError } = await supabaseClient
@@ -59,19 +58,21 @@ serve(async (req) => {
     if (roleError || !userData) {
       console.error('Role error:', roleError);
       return new Response(
-        JSON.stringify({ error: 'Failed to get user role' }),
+        JSON.stringify({ error: 'Failed to get user role', details: roleError?.message }),
         { 
-          status: 400, 
+          status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
     }
 
+    console.log('User role:', userData.role);
+
     if (userData.role !== 'owner') {
       return new Response(
         JSON.stringify({ error: 'Only property owners can access Stripe Connect' }),
         { 
-          status: 403, 
+          status: 403,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
@@ -206,13 +207,18 @@ serve(async (req) => {
           }
         );
     }
+
   } catch (error) {
     console.error('Error in stripe-connect function:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        stack: error.stack,
+        details: 'An unexpected error occurred'
+      }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: error.message === 'Unauthorized' ? 401 : 400
+        status: error.message === 'Unauthorized' ? 401 : 500
       }
     );
   }
