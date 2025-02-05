@@ -37,12 +37,20 @@ const AdminUsers = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<EditFormState>({
     first_name: "",
     last_name: "",
     email: "",
     phone: "",
-    role: "tenant" // Set a default role that matches the UserRole type
+    role: "tenant"
+  });
+  const [addForm, setAddForm] = useState<EditFormState>({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    role: "tenant"
   });
   const { toast } = useToast();
 
@@ -146,6 +154,44 @@ const AdminUsers = () => {
     }
   };
 
+  const handleAddUser = async () => {
+    try {
+      const { error } = await supabase
+        .from('users')
+        .insert([{
+          first_name: addForm.first_name,
+          last_name: addForm.last_name,
+          email: addForm.email,
+          phone: addForm.phone,
+          role: addForm.role
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "User added successfully",
+      });
+      
+      fetchUsers();
+      setIsAddDialogOpen(false);
+      setAddForm({
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        role: "tenant"
+      });
+    } catch (error) {
+      console.error('Error adding user:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add user. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getRoleBadgeColor = (role: string) => {
     const colors = {
       admin: 'bg-red-100 text-red-800',
@@ -169,7 +215,10 @@ const AdminUsers = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">User Management</h1>
-          <Button className="bg-[#4C8DAE] hover:bg-[#3a7a9b]">
+          <Button 
+            className="bg-[#4C8DAE] hover:bg-[#3a7a9b]"
+            onClick={() => setIsAddDialogOpen(true)}
+          >
             <UserPlus className="h-4 w-4 mr-2" />
             Add User
           </Button>
@@ -256,6 +305,75 @@ const AdminUsers = () => {
             </Table>
           </CardContent>
         </Card>
+
+        {/* Add User Dialog */}
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New User</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="add_first_name">First Name</Label>
+                  <Input
+                    id="add_first_name"
+                    value={addForm.first_name}
+                    onChange={(e) => setAddForm({ ...addForm, first_name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="add_last_name">Last Name</Label>
+                  <Input
+                    id="add_last_name"
+                    value={addForm.last_name}
+                    onChange={(e) => setAddForm({ ...addForm, last_name: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="add_email">Email</Label>
+                <Input
+                  id="add_email"
+                  type="email"
+                  value={addForm.email}
+                  onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="add_phone">Phone</Label>
+                <Input
+                  id="add_phone"
+                  value={addForm.phone}
+                  onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="add_role">Role</Label>
+                <Select
+                  value={addForm.role}
+                  onValueChange={(value: UserRole) => setAddForm({ ...addForm, role: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="property_manager">Property Manager</SelectItem>
+                    <SelectItem value="owner">Owner</SelectItem>
+                    <SelectItem value="tenant">Tenant</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddUser}>Add User</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Edit User Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
