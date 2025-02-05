@@ -1,4 +1,4 @@
-import { PaymentForm } from "@/components/PaymentForm";
+import { SquarePaymentForm } from "@/components/SquarePaymentForm";
 
 const NewPayment = () => {
   return (
@@ -11,9 +11,7 @@ const NewPayment = () => {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <div className="rounded-lg border p-6">
-          <PaymentForm />
-        </div>
+        <SquarePaymentForm />
       </div>
 
       <div className="max-w-2xl mx-auto mt-4">
