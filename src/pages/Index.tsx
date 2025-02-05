@@ -2,7 +2,22 @@ import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Building2, CheckCircle2, Clock, DollarSign, Heart, Home, Mail, MapPin, Phone, Star, Users } from "lucide-react";
+import { 
+  Building2, 
+  CheckCircle2, 
+  Clock, 
+  DollarSign, 
+  Heart, 
+  Home, 
+  Mail, 
+  MapPin, 
+  Phone, 
+  Star, 
+  Users,
+  FileText,
+  Tool,
+  Shield 
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -132,42 +147,77 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-12">
             <div>
               <h3 className="text-2xl font-semibold mb-6 flex items-center">
-                <Home className="mr-2 text-primary" />
+                <Building2 className="mr-2 text-primary" />
                 For Property Owners
               </h3>
-              <ul className="space-y-4">
-                {[
-                  "Full-Service Property Management",
-                  "Tenant Screening & Lease Management",
-                  "Rent Collection & Financial Reporting",
-                  "Maintenance & Repairs Coordination",
-                  "Evictions & Legal Compliance"
-                ].map((service, index) => (
-                  <li key={index} className="flex items-center">
-                    <CheckCircle2 className="w-5 h-5 text-primary mr-2" />
-                    <span>{service}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="space-y-6">
+                <Card>
+                  <CardContent className="p-6">
+                    <ul className="space-y-4">
+                      <li className="flex items-center">
+                        <Home className="w-5 h-5 text-primary mr-2" />
+                        <span>Full-Service Property Management</span>
+                      </li>
+                      <li className="flex items-center">
+                        <FileText className="w-5 h-5 text-primary mr-2" />
+                        <span>Tenant Screening & Lease Management</span>
+                      </li>
+                      <li className="flex items-center">
+                        <DollarSign className="w-5 h-5 text-primary mr-2" />
+                        <span>Rent Collection & Financial Reporting</span>
+                      </li>
+                      <li className="flex items-center">
+                        <Tool className="w-5 h-5 text-primary mr-2" />
+                        <span>Maintenance & Repairs Coordination</span>
+                      </li>
+                      <li className="flex items-center">
+                        <Shield className="w-5 h-5 text-primary mr-2" />
+                        <span>Evictions & Legal Compliance</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
             <div>
               <h3 className="text-2xl font-semibold mb-6 flex items-center">
-                <Heart className="mr-2 text-primary" />
+                <Users className="mr-2 text-primary" />
                 For Tenants
               </h3>
-              <ul className="space-y-4">
-                {[
-                  "Easy Online Rental Applications",
-                  "Well-Maintained Properties",
-                  "Tenant Rewards Program",
-                  "24/7 Maintenance Support"
-                ].map((service, index) => (
-                  <li key={index} className="flex items-center">
-                    <CheckCircle2 className="w-5 h-5 text-primary mr-2" />
-                    <span>{service}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="space-y-6">
+                <Card>
+                  <CardContent className="p-6">
+                    <ul className="space-y-4">
+                      <li className="flex items-center">
+                        <FileText className="w-5 h-5 text-primary mr-2" />
+                        <span>Easy Online Rental Applications</span>
+                      </li>
+                      <li className="flex items-center">
+                        <Home className="w-5 h-5 text-primary mr-2" />
+                        <span>Well-Maintained Properties</span>
+                      </li>
+                      <li className="flex items-center">
+                        <Star className="w-5 h-5 text-primary mr-2" />
+                        <span>Tenant Rewards Program</span>
+                      </li>
+                      <li className="flex items-center">
+                        <Phone className="w-5 h-5 text-primary mr-2" />
+                        <span>24/7 Maintenance Support</span>
+                      </li>
+                      <li className="flex items-center">
+                        <Mail className="w-5 h-5 text-primary mr-2" />
+                        <span>Dedicated Communication Portal</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+                <Button 
+                  className="w-full"
+                  onClick={() => navigate("/login")}
+                >
+                  Access Tenant Portal
+                </Button>
+              </div>
             </div>
           </div>
         </div>
