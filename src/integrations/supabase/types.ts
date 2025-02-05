@@ -9,6 +9,44 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      addresses: {
+        Row: {
+          city: string
+          created_at: string
+          id: string
+          state: string
+          street_address: string
+          user_id: string | null
+          zip_code: string
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          id?: string
+          state: string
+          street_address: string
+          user_id?: string | null
+          zip_code: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          id?: string
+          state?: string
+          street_address?: string
+          user_id?: string | null
+          zip_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "addresses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_settings: {
         Row: {
           created_at: string
@@ -97,6 +135,38 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emergency_contacts: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          phone: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          phone: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          phone?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_contacts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -541,9 +611,42 @@ export type Database = {
           },
         ]
       }
+      user_documents: {
+        Row: {
+          created_at: string
+          document_type: string
+          file_url: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_type: string
+          file_url: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_type?: string
+          file_url?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_documents_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           created_at: string
+          date_of_birth: string | null
           email: string
           first_name: string
           id: string
@@ -551,9 +654,14 @@ export type Database = {
           phone: string | null
           profile_picture_url: string | null
           role: Database["public"]["Enums"]["user_role"]
+          ssn_last_four: string | null
+          status: Database["public"]["Enums"]["user_status"]
+          temporary_password: string | null
+          two_factor_enabled: boolean
         }
         Insert: {
           created_at?: string
+          date_of_birth?: string | null
           email: string
           first_name: string
           id?: string
@@ -561,9 +669,14 @@ export type Database = {
           phone?: string | null
           profile_picture_url?: string | null
           role: Database["public"]["Enums"]["user_role"]
+          ssn_last_four?: string | null
+          status?: Database["public"]["Enums"]["user_status"]
+          temporary_password?: string | null
+          two_factor_enabled?: boolean
         }
         Update: {
           created_at?: string
+          date_of_birth?: string | null
           email?: string
           first_name?: string
           id?: string
@@ -571,8 +684,44 @@ export type Database = {
           phone?: string | null
           profile_picture_url?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          ssn_last_four?: string | null
+          status?: Database["public"]["Enums"]["user_status"]
+          temporary_password?: string | null
+          two_factor_enabled?: boolean
         }
         Relationships: []
+      }
+      vendor_details: {
+        Row: {
+          company_name: string
+          created_at: string
+          id: string
+          user_id: string | null
+          vendor_type: Database["public"]["Enums"]["vendor_type"]
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+          vendor_type: Database["public"]["Enums"]["vendor_type"]
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+          vendor_type?: Database["public"]["Enums"]["vendor_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_details_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vendors: {
         Row: {
@@ -667,6 +816,16 @@ export type Database = {
       payment_status: "pending" | "completed" | "failed"
       unit_status: "vacant" | "occupied" | "under_maintenance"
       user_role: "tenant" | "property_manager" | "owner" | "admin"
+      user_status: "active" | "pending_approval" | "suspended" | "archived"
+      vendor_type:
+        | "plumbing"
+        | "electrical"
+        | "cleaning"
+        | "general_maintenance"
+        | "hvac"
+        | "landscaping"
+        | "pest_control"
+        | "security"
     }
     CompositeTypes: {
       [_ in never]: never

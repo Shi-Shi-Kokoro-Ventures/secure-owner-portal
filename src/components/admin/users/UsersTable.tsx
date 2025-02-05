@@ -1,4 +1,3 @@
-
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2, UserCheck, Upload } from "lucide-react";
@@ -47,6 +46,7 @@ export const UsersTable = ({
           <TableHead className="text-white font-semibold">Name</TableHead>
           <TableHead className="text-white font-semibold">Email</TableHead>
           <TableHead className="text-white font-semibold">Role</TableHead>
+          <TableHead className="text-white font-semibold">Status</TableHead>
           <TableHead className="text-white font-semibold">Phone</TableHead>
           <TableHead className="text-white font-semibold">Joined</TableHead>
           <TableHead className="text-white font-semibold text-right">Actions</TableHead>
@@ -102,6 +102,11 @@ export const UsersTable = ({
                   {user.role}
                 </span>
               </TableCell>
+              <TableCell>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeColor(user.status)}`}>
+                  {user.status}
+                </span>
+              </TableCell>
               <TableCell>{user.phone || '-'}</TableCell>
               <TableCell>{formatDate(user.created_at)}</TableCell>
               <TableCell className="text-right">
@@ -138,4 +143,14 @@ export const UsersTable = ({
       </TableBody>
     </Table>
   );
+
+  const getStatusBadgeColor = (status: string) => {
+    const colors = {
+      active: 'bg-green-100 text-green-800',
+      pending_approval: 'bg-yellow-100 text-yellow-800',
+      suspended: 'bg-red-100 text-red-800',
+      archived: 'bg-gray-100 text-gray-800',
+    };
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+  };
 };
