@@ -1,19 +1,25 @@
-
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Info, CreditCard } from "lucide-react";
+import { Loader2, Info, CreditCard, Clock } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { supabase } from "@/integrations/supabase/client";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
-const PaymentForm = ({ amount = 1200, leaseId = "" }) => {
+const PaymentForm = ({ amount = 1200, leaseId = "", onSuccess }: { 
+  amount: number;
+  leaseId: string;
+  onSuccess?: () => void;
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
+  const [enableAutoPay, setEnableAutoPay] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,6 +34,12 @@ const PaymentForm = ({ amount = 1200, leaseId = "" }) => {
         elements,
         confirmParams: {
           return_url: `${window.location.origin}/payment-confirmation`,
+          payment_method_data: {
+            metadata: {
+              leaseId,
+              enableAutoPay: enableAutoPay ? 'true' : 'false'
+            }
+          }
         },
       });
 
@@ -39,6 +51,10 @@ const PaymentForm = ({ amount = 1200, leaseId = "" }) => {
         title: "Payment Successful",
         description: "Your payment has been processed successfully.",
       });
+
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       console.error('Payment error:', error);
       toast({
@@ -54,6 +70,16 @@ const PaymentForm = ({ amount = 1200, leaseId = "" }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <PaymentElement />
+      
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="autopay"
+          checked={enableAutoPay}
+          onCheckedChange={setEnableAutoPay}
+        />
+        <Label htmlFor="autopay">Enable AutoPay for future rent payments</Label>
+      </div>
+
       <Button
         type="submit"
         disabled={!stripe || isLoading}
@@ -75,25 +101,49 @@ const PaymentForm = ({ amount = 1200, leaseId = "" }) => {
   );
 };
 
-export function StripePaymentForm() {
+export function StripePaymentForm({ amount = 1200, leaseId = "" }) {
   const [clientSecret, setClientSecret] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     const createPaymentIntent = async () => {
-      const { data, error } = await supabase.functions.invoke('stripe-payment', {
-        body: { amount: 1200, leaseId: "YOUR_LEASE_ID" }, // Replace with actual lease ID
-      });
+      try {
+        const { data, error } = await supabase.functions.invoke('stripe-payment', {
+          body: { amount, leaseId },
+        });
 
-      if (error) {
+        if (error) {
+          throw error;
+        }
+
+        setClientSecret(data.clientSecret);
+      } catch (error) {
         console.error('Error creating payment intent:', error);
-        return;
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to initialize payment. Please try again.",
+        });
+      } finally {
+        setIsLoading(false);
       }
-
-      setClientSecret(data.clientSecret);
     };
 
     createPaymentIntent();
-  }, []);
+  }, [amount, leaseId, toast]);
+
+  if (isLoading) {
+    return (
+      <Card className="w-full max-w-md mx-auto">
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -117,7 +167,7 @@ export function StripePaymentForm() {
       <CardContent>
         {clientSecret && (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
-            <PaymentForm />
+            <PaymentForm amount={amount} leaseId={leaseId} />
           </Elements>
         )}
       </CardContent>
