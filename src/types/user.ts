@@ -1,5 +1,5 @@
 
-export type UserRole = 'admin' | 'property_manager' | 'owner' | 'tenant';
+export type UserRole = 'admin' | 'property_manager' | 'owner' | 'tenant' | 'vendor';
 export type UserStatus = 'active' | 'pending_approval' | 'suspended' | 'archived';
 export type VendorType = 'plumbing' | 'electrical' | 'cleaning' | 'general_maintenance' | 'hvac' | 'landscaping' | 'pest_control' | 'security';
 
