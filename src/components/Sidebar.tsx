@@ -1,112 +1,111 @@
-import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Users,
-  Building2,
-  Wrench,
-  FileText,
-  DollarSign,
-  Settings,
+import { 
+  Home, 
+  Users, 
+  Building,
+  Settings, 
   HelpCircle,
-  Bell,
   Mail,
-  FileArchive,
+  FileSignature,
+  Archive,
+  Wallet,
+  FileText,
+  List,
+  ClipboardCheck,
+  Search,
+  Wrench
 } from "lucide-react";
-
-const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Owners", href: "/owners", icon: Users },
-  { name: "Properties", href: "/properties", icon: Building2 },
-  { name: "Tenants", href: "/tenants", icon: Users },
-  { name: "Work Orders", href: "/work-orders", icon: Wrench },
-  { name: "Reports", href: "/reports", icon: FileText },
-  { name: "Banking", href: "/banking", icon: DollarSign },
-];
-
-const secondaryNavigation = [
-  { name: "Settings", href: "/settings", icon: Settings },
-  { name: "Help & Support", href: "/help", icon: HelpCircle },
-  { name: "Notifications", href: "/notifications", icon: Bell },
-  { name: "Messages", href: "/messages", icon: Mail },
-  { name: "Archives", href: "/archives", icon: FileArchive },
-];
+import { cn } from "@/lib/utils";
 
 export const Sidebar = () => {
   const location = useLocation();
+  
+  const navigationGroups = [
+    {
+      items: [
+        { name: "Summary", href: "/", icon: Home }
+      ]
+    },
+    {
+      label: "Properties",
+      items: [
+        { name: "Properties List", href: "/properties", icon: Building },
+        { name: "Applications", href: "/applications", icon: ClipboardCheck },
+        { name: "Inspections", href: "/inspections", icon: Search },
+        { name: "Work Orders", href: "/work-orders", icon: Wrench },
+        { name: "Property Archives", href: "/property-archives", icon: Archive }
+      ]
+    },
+    {
+      label: "Tenants",
+      items: [
+        { name: "Tenant List", href: "/tenants", icon: Users },
+        { name: "Mailing Wizard", href: "/mailing", icon: Mail },
+        { name: "Signature Requests", href: "/tenant-signatures", icon: FileSignature },
+        { name: "Tenant Archives", href: "/tenant-archives", icon: Archive }
+      ]
+    },
+    {
+      label: "Banking",
+      items: [
+        { name: "Banking", href: "/banking", icon: Wallet }
+      ]
+    },
+    {
+      label: "Owners",
+      items: [
+        { name: "Owner List", href: "/owners", icon: Users },
+        { name: "Signature Requests", href: "/owner-signatures", icon: FileSignature },
+        { name: "Owner Archives", href: "/owner-archives", icon: Archive }
+      ]
+    },
+    {
+      label: "Reports",
+      items: [
+        { name: "Reports", href: "/reports", icon: FileText }
+      ]
+    },
+    {
+      label: "Other",
+      items: [
+        { name: "Settings", href: "/settings", icon: Settings },
+        { name: "Help", href: "/help", icon: HelpCircle }
+      ]
+    }
+  ];
 
   return (
-    <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
-      <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
-        <div className="flex h-16 shrink-0 items-center">
-          <img
-            className="h-12 w-12 object-contain transition-transform hover:scale-105"
-            src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png"
-            alt="Shi Shi Kokoro Property Management"
-          />
+    <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
+      <div className="flex flex-col flex-grow bg-primary px-2 pb-4">
+        <div className="flex h-16 items-center px-4">
+          <img src="/lovable-uploads/1ab03cf0-3373-4f12-80ac-d96a64aeb0de.png" alt="Logo" className="h-8 w-8" />
+          <h1 className="text-white text-xl font-bold ml-2">Property Manager</h1>
         </div>
-        <nav className="flex flex-1 flex-col">
-          <ul role="list" className="flex flex-1 flex-col gap-y-7">
-            <li>
-              <ul role="list" className="-mx-2 space-y-1">
-                {navigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <li key={item.name}>
-                      <Link
-                        to={item.href}
-                        className={cn(
-                          isActive
-                            ? "bg-gray-50 text-primary"
-                            : "text-gray-700 hover:text-primary hover:bg-gray-50",
-                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200 hover:translate-x-1"
-                        )}
-                      >
-                        <item.icon
-                          className={cn(
-                            isActive ? "text-primary" : "text-gray-400 group-hover:text-primary",
-                            "h-6 w-6 shrink-0 transition-colors duration-200"
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </li>
-            <li>
-              <div className="text-xs font-semibold leading-6 text-gray-400">Quick Access</div>
-              <ul role="list" className="-mx-2 mt-2 space-y-1">
-                {secondaryNavigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <li key={item.name}>
-                      <Link
-                        to={item.href}
-                        className={cn(
-                          isActive
-                            ? "bg-gray-50 text-primary"
-                            : "text-gray-700 hover:text-primary hover:bg-gray-50",
-                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200 hover:translate-x-1"
-                        )}
-                      >
-                        <item.icon
-                          className={cn(
-                            isActive ? "text-primary" : "text-gray-400 group-hover:text-primary",
-                            "h-6 w-6 shrink-0 transition-colors duration-200"
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </li>
-          </ul>
+        <nav className="mt-5 flex-1 space-y-8 px-2">
+          {navigationGroups.map((group, index) => (
+            <div key={index}>
+              {group.label && (
+                <h3 className="px-3 text-sm font-semibold text-gray-200 mb-2">
+                  {group.label}
+                </h3>
+              )}
+              <div className="space-y-1">
+                {group.items.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={cn(
+                      "group flex items-center px-3 py-2 text-sm font-medium rounded-md text-white hover:bg-primary-700",
+                      location.pathname === item.href && "bg-primary-700"
+                    )}
+                  >
+                    <item.icon className="mr-3 h-5 w-5" aria-hidden="true" />
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
         </nav>
       </div>
     </div>
