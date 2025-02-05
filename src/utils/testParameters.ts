@@ -82,6 +82,31 @@ export const testDocuments = {
   },
 };
 
+// Test messages
+export const testMessages = {
+  standard: {
+    id: '1',
+    from: 'Property Manager',
+    subject: 'Monthly Statement Available',
+    content: 'Your monthly statement for February 2024 is now available.',
+    date: '2024-02-05',
+  },
+  maintenance: {
+    id: '2',
+    from: 'Maintenance Team',
+    subject: 'Maintenance Request Update',
+    content: 'Your maintenance request #1234 has been completed.',
+    date: '2024-02-04',
+  },
+  urgent: {
+    id: '3',
+    from: 'System',
+    subject: 'Urgent: Building Notice',
+    content: 'Important notice regarding building maintenance tomorrow.',
+    date: '2024-02-03',
+  },
+};
+
 // Test notifications
 export const testNotifications = {
   payment: {

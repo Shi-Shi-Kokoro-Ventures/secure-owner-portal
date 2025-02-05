@@ -10,14 +10,82 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Archive, Mail, Search, Trash } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+
+interface Message {
+  id: string;
+  from: string;
+  subject: string;
+  date: string;
+}
 
 const Messages = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // Implement search logic here
+  };
+
+  const handleArchive = async (messageId: string) => {
+    try {
+      setIsLoading(true);
+      // Implement archive logic here
+      toast({
+        title: "Message archived",
+        description: "The message has been moved to archives.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to archive message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async (messageId: string) => {
+    try {
+      setIsLoading(true);
+      // Implement delete logic here
+      toast({
+        title: "Message deleted",
+        description: "The message has been permanently deleted.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCompose = () => {
+    // Implement compose logic here
+    toast({
+      title: "Coming soon",
+      description: "This feature is under development.",
+    });
+  };
+
   return (
     <Layout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight">Messages</h1>
-          <Button className="gap-2">
+          <Button 
+            className="gap-2" 
+            onClick={handleCompose}
+            disabled={isLoading}
+          >
             <Mail className="h-4 w-4" />
             Compose
           </Button>
@@ -29,12 +97,31 @@ const Messages = () => {
             <Input
               placeholder="Search messages..."
               className="pl-10"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              aria-label="Search messages"
             />
           </div>
-          <Button variant="outline" size="icon">
+          <Button 
+            variant="outline" 
+            size="icon"
+            disabled={isLoading}
+            onClick={() => toast({
+              title: "Coming soon",
+              description: "This feature is under development.",
+            })}
+          >
             <Archive className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon">
+          <Button 
+            variant="outline" 
+            size="icon"
+            disabled={isLoading}
+            onClick={() => toast({
+              title: "Coming soon",
+              description: "This feature is under development.",
+            })}
+          >
             <Trash className="h-4 w-4" />
           </Button>
         </div>
@@ -56,13 +143,31 @@ const Messages = () => {
                 <TableCell>2024-02-05</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="sm">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      disabled={isLoading}
+                      onClick={() => toast({
+                        title: "Coming soon",
+                        description: "This feature is under development.",
+                      })}
+                    >
                       <Mail className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      disabled={isLoading}
+                      onClick={() => handleArchive("1")}
+                    >
                       <Archive className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      disabled={isLoading}
+                      onClick={() => handleDelete("1")}
+                    >
                       <Trash className="h-4 w-4" />
                     </Button>
                   </div>

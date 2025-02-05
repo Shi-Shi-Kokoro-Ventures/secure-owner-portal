@@ -9,6 +9,41 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          last_message: string | null
+          last_message_at: string
+          property_id: string | null
+          type: Database["public"]["Enums"]["conversation_type"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_message?: string | null
+          last_message_at?: string
+          property_id?: string | null
+          type: Database["public"]["Enums"]["conversation_type"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_message?: string | null
+          last_message_at?: string
+          property_id?: string | null
+          type?: Database["public"]["Enums"]["conversation_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       evictions: {
         Row: {
           court_date: string | null
@@ -153,6 +188,61 @@ export type Database = {
             columns: ["unit_id"]
             isOneToOne: false
             referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          message_content: string
+          message_type: Database["public"]["Enums"]["message_type"]
+          receiver_id: string | null
+          sender_id: string
+          status: Database["public"]["Enums"]["message_status"]
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          message_content: string
+          message_type?: Database["public"]["Enums"]["message_type"]
+          receiver_id?: string | null
+          sender_id: string
+          status?: Database["public"]["Enums"]["message_status"]
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          message_content?: string
+          message_type?: Database["public"]["Enums"]["message_type"]
+          receiver_id?: string | null
+          sender_id?: string
+          status?: Database["public"]["Enums"]["message_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -448,9 +538,17 @@ export type Database = {
       }
     }
     Enums: {
+      conversation_type:
+        | "tenant-manager"
+        | "tenant-owner"
+        | "owner-manager"
+        | "maintenance-vendor"
+        | "group"
       eviction_status: "initiated" | "court_pending" | "completed" | "dismissed"
       lease_status: "active" | "terminated" | "pending"
       maintenance_status: "pending" | "in_progress" | "completed"
+      message_status: "sent" | "delivered" | "read"
+      message_type: "text" | "image" | "video" | "file"
       payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal"
       payment_status: "pending" | "completed" | "failed"
       unit_status: "vacant" | "occupied" | "under_maintenance"
