@@ -6,6 +6,7 @@ import AdminFinancials from "@/pages/admin/AdminFinancials";
 import AdminMaintenance from "@/pages/admin/AdminMaintenance";
 import AdminLeases from "@/pages/admin/AdminLeases";
 import AdminSettings from "@/pages/admin/AdminSettings";
+import Messages from "@/pages/Messages";
 
 export const adminRoutes = [
   {
@@ -39,5 +40,9 @@ export const adminRoutes = [
   {
     path: "/admin/settings",
     element: <AdminSettings />,
+  },
+  {
+    path: "/admin/messages",
+    element: <Messages />,
   },
 ];
