@@ -216,41 +216,202 @@ export type Database = {
           },
         ]
       }
+      lease_addendums: {
+        Row: {
+          content: string
+          created_at: string | null
+          created_by: string | null
+          document_url: string | null
+          effective_date: string
+          id: string
+          lease_id: string | null
+          status: string | null
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          created_by?: string | null
+          document_url?: string | null
+          effective_date: string
+          id?: string
+          lease_id?: string | null
+          status?: string | null
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          created_by?: string | null
+          document_url?: string | null
+          effective_date?: string
+          id?: string
+          lease_id?: string | null
+          status?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lease_addendums_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lease_addendums_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lease_renewals: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          lease_id: string | null
+          new_end_date: string
+          new_monthly_rent: number
+          notes: string | null
+          previous_end_date: string
+          status: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          lease_id?: string | null
+          new_end_date: string
+          new_monthly_rent: number
+          notes?: string | null
+          previous_end_date: string
+          status?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          lease_id?: string | null
+          new_end_date?: string
+          new_monthly_rent?: number
+          notes?: string | null
+          previous_end_date?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lease_renewals_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lease_renewals_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lease_renewals_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leases: {
         Row: {
+          auto_renewal: boolean | null
           created_at: string
           deposit_amount: number
+          documents: string[] | null
           end_date: string
           id: string
+          last_modified_at: string | null
+          last_modified_by: string | null
+          late_fee_grace_period_days: number | null
+          late_fee_percentage: number | null
+          lease_number: string | null
+          lease_type: string | null
           monthly_rent: number
+          notice_period_days: number | null
+          rent_due_day: number | null
+          security_deposit_status: string | null
+          special_terms: string | null
           start_date: string
           status: Database["public"]["Enums"]["lease_status"]
           tenant_id: string | null
           unit_id: string | null
+          utilities_included: string[] | null
         }
         Insert: {
+          auto_renewal?: boolean | null
           created_at?: string
           deposit_amount: number
+          documents?: string[] | null
           end_date: string
           id?: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          late_fee_grace_period_days?: number | null
+          late_fee_percentage?: number | null
+          lease_number?: string | null
+          lease_type?: string | null
           monthly_rent: number
+          notice_period_days?: number | null
+          rent_due_day?: number | null
+          security_deposit_status?: string | null
+          special_terms?: string | null
           start_date: string
           status?: Database["public"]["Enums"]["lease_status"]
           tenant_id?: string | null
           unit_id?: string | null
+          utilities_included?: string[] | null
         }
         Update: {
+          auto_renewal?: boolean | null
           created_at?: string
           deposit_amount?: number
+          documents?: string[] | null
           end_date?: string
           id?: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          late_fee_grace_period_days?: number | null
+          late_fee_percentage?: number | null
+          lease_number?: string | null
+          lease_type?: string | null
           monthly_rent?: number
+          notice_period_days?: number | null
+          rent_due_day?: number | null
+          security_deposit_status?: string | null
+          special_terms?: string | null
           start_date?: string
           status?: Database["public"]["Enums"]["lease_status"]
           tenant_id?: string | null
           unit_id?: string | null
+          utilities_included?: string[] | null
         }
         Relationships: [
+          {
+            foreignKeyName: "leases_last_modified_by_fkey"
+            columns: ["last_modified_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "leases_tenant_id_fkey"
             columns: ["tenant_id"]
