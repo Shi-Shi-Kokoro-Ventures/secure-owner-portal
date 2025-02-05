@@ -22,13 +22,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Dispatch, SetStateAction } from "react";
 
 interface LeasesTableProps {
   leases: Lease[];
   isLoading: boolean;
+  onLeaseSelect?: Dispatch<SetStateAction<string | null>>;
 }
 
-export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
+export const LeasesTable = ({ leases, isLoading, onLeaseSelect }: LeasesTableProps) => {
   const { toast } = useToast();
 
   const { data: userRole } = useQuery({
@@ -78,6 +80,9 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
   };
 
   const handleAction = (action: string, leaseId: string) => {
+    if (action === "View Details" && onLeaseSelect) {
+      onLeaseSelect(leaseId);
+    }
     toast({
       title: action,
       description: `${action} for lease ${leaseId} will be available in the next update.`,
