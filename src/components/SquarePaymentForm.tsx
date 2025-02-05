@@ -36,10 +36,10 @@ const PaymentForm = ({ amount = 1200, leaseId = "", onSuccess }: {
           return_url: `${window.location.origin}/payment-confirmation`,
           payment_method_data: {
             metadata: {
-              leaseId,
-              enableAutoPay: enableAutoPay ? 'true' : 'false'
+              lease_id: leaseId,
+              auto_pay_enabled: enableAutoPay ? 'true' : 'false'
             }
-          }
+          } as any // Type assertion needed due to Stripe types limitation
         },
       });
 
