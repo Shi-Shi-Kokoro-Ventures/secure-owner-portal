@@ -1,26 +1,16 @@
-
 import { useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { LeaseMetrics } from "@/components/admin/leases/LeaseMetrics";
 import { LeasesTable } from "@/components/admin/leases/LeasesTable";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 import type { Lease } from "@/types/lease";
 
 const AdminLeases = () => {
   const { toast } = useToast();
-  const [isNewLeaseDialogOpen, setIsNewLeaseDialogOpen] = useState(false);
+  const [selectedLeaseId, setSelectedLeaseId] = useState<string | null>(null);
 
   const { data: leases, isLoading } = useQuery({
     queryKey: ['leases'],
@@ -63,43 +53,38 @@ const AdminLeases = () => {
     },
   });
 
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </AdminLayout>
+    );
+  }
+
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">Lease Management</h1>
-            <p className="text-muted-foreground mt-1">
-              Manage and track all property leases
-            </p>
-          </div>
-          <Button onClick={() => setIsNewLeaseDialogOpen(true)} className="gap-2">
-            <Plus className="h-4 w-4" />
-            New Lease
-          </Button>
+      <div className="space-y-6 p-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Lease Management</h1>
+          <p className="text-muted-foreground mt-2">
+            Manage and track all property leases
+          </p>
         </div>
 
         <LeaseMetrics leases={leases || []} />
-
-        <Card>
-          <CardHeader>
-            <CardTitle>All Leases</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <LeasesTable leases={leases || []} isLoading={isLoading} />
-          </CardContent>
-        </Card>
-
-        <Dialog open={isNewLeaseDialogOpen} onOpenChange={setIsNewLeaseDialogOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Create New Lease</DialogTitle>
-              <DialogDescription>
-                This feature will be implemented in the next phase.
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+        
+        <div className="bg-white rounded-lg shadow">
+          <div className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Active Leases</h2>
+            <LeasesTable 
+              leases={leases || []} 
+              isLoading={isLoading}
+              onLeaseSelect={setSelectedLeaseId}
+            />
+          </div>
+        </div>
       </div>
     </AdminLayout>
   );

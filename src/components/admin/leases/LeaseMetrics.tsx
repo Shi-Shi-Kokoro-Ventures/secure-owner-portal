@@ -1,7 +1,6 @@
 import { 
-  CheckCircle2, Clock, FileText, Shield, 
-  AlertTriangle, DollarSign, Users, Ban,
-  Building2, UserCheck, Home, Award
+  FileText, Clock, Shield, AlertTriangle, 
+  DollarSign, Users, Ban, Building2 
 } from "lucide-react";
 import { LeaseMetricCard } from "./LeaseMetricCard";
 import { Lease } from "@/types/lease";
@@ -66,7 +65,7 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
         <LeaseMetricCard
           title="Active Leases"
           value={activeLeases}
-          icon={CheckCircle2}
+          icon={FileText}
           iconColor="text-emerald-500"
           description="Currently active lease agreements"
           tooltip="Click to view all active leases"
