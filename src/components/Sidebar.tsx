@@ -1,3 +1,4 @@
+
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -12,7 +13,15 @@ import {
   Bell,
   Mail,
   FileArchive,
+  ChevronLeft,
+  Menu,
 } from "lucide-react";
+import { Button } from "./ui/button";
+
+interface SidebarProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -32,83 +41,110 @@ const secondaryNavigation = [
   { name: "Archives", href: "/archives", icon: FileArchive },
 ];
 
-export const Sidebar = () => {
+export const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
   const location = useLocation();
 
   return (
-    <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
-      <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
-        <div className="flex h-16 shrink-0 items-center">
+    <>
+      {/* Mobile backdrop */}
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => onOpenChange(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={cn(
+          "fixed inset-y-0 left-0 z-50",
+          "flex w-64 flex-col",
+          "bg-white dark:bg-gray-900",
+          "border-r border-gray-200 dark:border-gray-800",
+          "transition-transform duration-300 ease-in-out",
+          "lg:translate-x-0",
+          open ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="flex h-16 shrink-0 items-center justify-between px-4">
           <img
-            className="h-12 w-12 object-contain transition-transform hover:scale-105"
+            className="h-8 w-auto transition-transform hover:scale-105"
             src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png"
-            alt="Shi Shi Kokoro Property Management"
+            alt="Shi Shi Kokoro"
           />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => onOpenChange(false)}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
         </div>
-        <nav className="flex flex-1 flex-col">
-          <ul role="list" className="flex flex-1 flex-col gap-y-7">
-            <li>
-              <ul role="list" className="-mx-2 space-y-1">
-                {navigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <li key={item.name}>
-                      <Link
-                        to={item.href}
-                        className={cn(
-                          isActive
-                            ? "bg-gray-50 text-primary"
-                            : "text-gray-700 hover:text-primary hover:bg-gray-50",
-                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200 hover:translate-x-1"
-                        )}
-                      >
-                        <item.icon
-                          className={cn(
-                            isActive ? "text-primary" : "text-gray-400 group-hover:text-primary",
-                            "h-6 w-6 shrink-0 transition-colors duration-200"
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </li>
-            <li>
-              <div className="text-xs font-semibold leading-6 text-gray-400">Quick Access</div>
-              <ul role="list" className="-mx-2 mt-2 space-y-1">
-                {secondaryNavigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <li key={item.name}>
-                      <Link
-                        to={item.href}
-                        className={cn(
-                          isActive
-                            ? "bg-gray-50 text-primary"
-                            : "text-gray-700 hover:text-primary hover:bg-gray-50",
-                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200 hover:translate-x-1"
-                        )}
-                      >
-                        <item.icon
-                          className={cn(
-                            isActive ? "text-primary" : "text-gray-400 group-hover:text-primary",
-                            "h-6 w-6 shrink-0 transition-colors duration-200"
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </li>
-          </ul>
-        </nav>
+
+        <div className="flex flex-1 flex-col overflow-y-auto">
+          <nav className="flex-1 space-y-1 px-2 py-4">
+            {navigation.map((item) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={cn(
+                    "group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+                    "transition-all duration-200",
+                    isActive
+                      ? "bg-gray-100 dark:bg-gray-800 text-primary"
+                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary"
+                  )}
+                >
+                  <item.icon
+                    className={cn(
+                      "mr-3 h-5 w-5 flex-shrink-0",
+                      isActive
+                        ? "text-primary"
+                        : "text-gray-400 group-hover:text-primary"
+                    )}
+                  />
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="border-t border-gray-200 dark:border-gray-800">
+            <nav className="space-y-1 px-2 py-4">
+              {secondaryNavigation.map((item) => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={cn(
+                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+                      "transition-all duration-200",
+                      isActive
+                        ? "bg-gray-100 dark:bg-gray-800 text-primary"
+                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary"
+                    )}
+                  >
+                    <item.icon
+                      className={cn(
+                        "mr-3 h-5 w-5 flex-shrink-0",
+                        isActive
+                          ? "text-primary"
+                          : "text-gray-400 group-hover:text-primary"
+                      )}
+                    />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
+
