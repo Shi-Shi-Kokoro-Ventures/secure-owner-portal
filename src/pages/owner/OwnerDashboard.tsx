@@ -3,6 +3,7 @@ import { DashboardMetrics } from "@/components/owner/DashboardMetrics";
 import { QuickActions } from "@/components/owner/QuickActions";
 import { LeaseReviewSection } from "@/components/owner/LeaseReviewSection";
 import { ApplicationReviewSection } from "@/components/owner/ApplicationReviewSection";
+import { PropertyStats } from "@/components/owner/PropertyStats";
 import {
   LineChart,
   Line,
@@ -27,12 +28,14 @@ const OwnerDashboard = () => {
     <div className="container mx-auto px-4 py-8 space-y-8 animate-fade-in">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
-          Owner Dashboard
+          Welcome Back
         </h1>
         <p className="text-muted-foreground text-lg">
-          Welcome back! Here's an overview of your properties
+          Here's an overview of your property portfolio
         </p>
       </div>
+
+      <PropertyStats />
 
       <div className="space-y-8">
         <DashboardMetrics />
@@ -40,7 +43,7 @@ const OwnerDashboard = () => {
         <div className="grid gap-8 md:grid-cols-2">
           <Card className="transition-all duration-300 hover:shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold">Performance Overview</CardTitle>
+              <CardTitle className="text-xl font-semibold">Financial Performance</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[400px]">
