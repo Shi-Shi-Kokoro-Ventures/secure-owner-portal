@@ -17,14 +17,38 @@ export const QuickActions = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleAction = (route: string | null, action: string) => {
-    if (route) {
-      navigate(route);
-    } else {
-      toast({
-        title: action,
-        description: `${action} functionality coming soon`,
-      });
+  const handleAction = (route: string, action: string) => {
+    switch (action) {
+      case 'Request Funds Transfer':
+        navigate('/banking');
+        break;
+      case 'View Maintenance Requests':
+        navigate('/work-orders');
+        break;
+      case 'View Lease Renewals':
+        navigate('/tenants');
+        break;
+      case 'Review Applications':
+        navigate('/applications');
+        break;
+      case 'Send Messages':
+        navigate('/messages');
+        break;
+      case 'Upload Documents':
+        navigate('/files');
+        break;
+      case 'View Alerts':
+        navigate('/notifications');
+        break;
+      case 'Approve Applications':
+        navigate('/applications');
+        break;
+      default:
+        toast({
+          title: "Navigation",
+          description: `Navigating to ${route}`,
+        });
+        navigate(route);
     }
   };
 
@@ -38,7 +62,7 @@ export const QuickActions = () => {
           <Button 
             variant="outline" 
             className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('/owner/payments', 'Request Funds Transfer')}
+            onClick={() => handleAction('/banking', 'Request Funds Transfer')}
           >
             <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <BanknoteIcon className="h-5 w-5 text-primary" />
@@ -52,7 +76,7 @@ export const QuickActions = () => {
           <Button 
             variant="outline" 
             className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('/owner/maintenance', 'View Maintenance Requests')}
+            onClick={() => handleAction('/work-orders', 'View Maintenance Requests')}
           >
             <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <Wrench className="h-5 w-5 text-primary" />
@@ -66,7 +90,7 @@ export const QuickActions = () => {
           <Button 
             variant="outline" 
             className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('/owner/lease-renewals', 'View Lease Renewals')}
+            onClick={() => handleAction('/tenants', 'View Lease Renewals')}
           >
             <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <FileText className="h-5 w-5 text-primary" />
@@ -80,7 +104,7 @@ export const QuickActions = () => {
           <Button 
             variant="outline" 
             className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('/owner/applications', 'Review Applications')}
+            onClick={() => handleAction('/applications', 'Review Applications')}
           >
             <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <UserPlus className="h-5 w-5 text-primary" />
@@ -94,7 +118,7 @@ export const QuickActions = () => {
           <Button 
             variant="outline" 
             className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('/owner/communications', 'Send Messages')}
+            onClick={() => handleAction('/messages', 'Send Messages')}
           >
             <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <MessageSquare className="h-5 w-5 text-primary" />
@@ -108,7 +132,7 @@ export const QuickActions = () => {
           <Button 
             variant="outline" 
             className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('/owner/documents', 'Upload Documents')}
+            onClick={() => handleAction('/files', 'Upload Documents')}
           >
             <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <Upload className="h-5 w-5 text-primary" />
@@ -136,7 +160,7 @@ export const QuickActions = () => {
           <Button 
             variant="outline" 
             className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('/owner/applications', 'Approve Applications')}
+            onClick={() => handleAction('/applications', 'Approve Applications')}
           >
             <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <ClipboardCheck className="h-5 w-5 text-primary" />
