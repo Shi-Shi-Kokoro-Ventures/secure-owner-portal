@@ -15,14 +15,38 @@ export const vendorRoutes: RouteObject[] = [
     path: "/vendor",
     element: <ProtectedRoute><VendorLayout /></ProtectedRoute>,
     children: [
-      { path: "", element: <Navigate to="/vendor/dashboard" replace /> },
-      { path: "dashboard", element: <VendorDashboard /> },
-      { path: "work-orders", element: <VendorWorkOrders /> },
-      { path: "schedule", element: <VendorSchedule /> },
-      { path: "payments", element: <VendorPayments /> },
-      { path: "documents", element: <VendorDocuments /> },
-      { path: "communications", element: <VendorCommunications /> },
-      { path: "settings", element: <VendorSettings /> }
+      {
+        index: true,
+        element: <Navigate to="/vendor/dashboard" replace />
+      },
+      {
+        path: "dashboard",
+        element: <VendorDashboard />
+      },
+      {
+        path: "work-orders",
+        element: <VendorWorkOrders />
+      },
+      {
+        path: "schedule",
+        element: <VendorSchedule />
+      },
+      {
+        path: "payments",
+        element: <VendorPayments />
+      },
+      {
+        path: "documents",
+        element: <VendorDocuments />
+      },
+      {
+        path: "communications",
+        element: <VendorCommunications />
+      },
+      {
+        path: "settings",
+        element: <VendorSettings />
+      }
     ]
   }
 ];
