@@ -34,6 +34,8 @@ import OwnerCommunications from "@/pages/owner/OwnerCommunications";
 import OwnerSettings from "@/pages/owner/OwnerSettings";
 import OwnerMaintenance from "@/pages/owner/OwnerMaintenance";
 import OwnerPayments from "@/pages/owner/OwnerPayments";
+import Notifications from "@/pages/Notifications";
+import Help from "@/pages/Help";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +56,24 @@ export default function App() {
           
           {/* Redirect root to login */}
           <Route path="/" element={<Navigate to="/login" replace />} />
+
+          {/* Common protected routes */}
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/help"
+            element={
+              <ProtectedRoute>
+                <Help />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Property Manager routes - protected */}
           <Route
