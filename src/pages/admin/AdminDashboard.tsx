@@ -37,7 +37,7 @@ export default function AdminDashboard() {
             icon={Wrench}
             trend={{
               value: "5%",
-              negative: true
+              positive: false
             }}
           />
           <StatCard
