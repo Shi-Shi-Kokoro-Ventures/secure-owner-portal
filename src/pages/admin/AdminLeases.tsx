@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import type { Lease } from "@/types/lease";
+import { logger } from "@/utils/logger";
 
 const AdminLeases = () => {
   const { toast } = useToast();
@@ -15,6 +16,7 @@ const AdminLeases = () => {
   const { data: leases, isLoading } = useQuery({
     queryKey: ['leases'],
     queryFn: async () => {
+      logger.info("Fetching leases data");
       const { data, error } = await supabase
         .from('leases')
         .select(`
@@ -41,6 +43,7 @@ const AdminLeases = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
+        logger.error("Error fetching leases:", error);
         toast({
           variant: "destructive",
           title: "Error fetching leases",
@@ -49,6 +52,7 @@ const AdminLeases = () => {
         return [];
       }
 
+      logger.info("Leases data fetched:", data?.length || 0, "leases found");
       return data as Lease[];
     },
   });
@@ -63,6 +67,8 @@ const AdminLeases = () => {
     );
   }
 
+  logger.info("Rendering AdminLeases with", leases?.length || 0, "leases");
+
   return (
     <AdminLayout>
       <div className="space-y-6 p-6">
@@ -73,7 +79,7 @@ const AdminLeases = () => {
           </p>
         </div>
 
-        <LeaseMetrics leases={leases || []} />
+        {Array.isArray(leases) && <LeaseMetrics leases={leases} />}
         
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
           <LeasesTable 
