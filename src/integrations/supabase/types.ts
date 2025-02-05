@@ -9,16 +9,452 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      evictions: {
+        Row: {
+          court_date: string | null
+          created_at: string
+          id: string
+          lease_id: string | null
+          reason: string
+          status: Database["public"]["Enums"]["eviction_status"]
+          tenant_id: string | null
+        }
+        Insert: {
+          court_date?: string | null
+          created_at?: string
+          id?: string
+          lease_id?: string | null
+          reason: string
+          status?: Database["public"]["Enums"]["eviction_status"]
+          tenant_id?: string | null
+        }
+        Update: {
+          court_date?: string | null
+          created_at?: string
+          id?: string
+          lease_id?: string | null
+          reason?: string
+          status?: Database["public"]["Enums"]["eviction_status"]
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evictions_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evictions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leases: {
+        Row: {
+          created_at: string
+          deposit_amount: number
+          end_date: string
+          id: string
+          monthly_rent: number
+          start_date: string
+          status: Database["public"]["Enums"]["lease_status"]
+          tenant_id: string | null
+          unit_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          deposit_amount: number
+          end_date: string
+          id?: string
+          monthly_rent: number
+          start_date: string
+          status?: Database["public"]["Enums"]["lease_status"]
+          tenant_id?: string | null
+          unit_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          deposit_amount?: number
+          end_date?: string
+          id?: string
+          monthly_rent?: number
+          start_date?: string
+          status?: Database["public"]["Enums"]["lease_status"]
+          tenant_id?: string | null
+          unit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leases_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leases_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maintenance_requests: {
+        Row: {
+          assigned_vendor: string | null
+          created_at: string
+          description: string
+          id: string
+          status: Database["public"]["Enums"]["maintenance_status"]
+          tenant_id: string | null
+          unit_id: string | null
+        }
+        Insert: {
+          assigned_vendor?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          status?: Database["public"]["Enums"]["maintenance_status"]
+          tenant_id?: string | null
+          unit_id?: string | null
+        }
+        Update: {
+          assigned_vendor?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          status?: Database["public"]["Enums"]["maintenance_status"]
+          tenant_id?: string | null
+          unit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_requests_assigned_vendor_fkey"
+            columns: ["assigned_vendor"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          id: string
+          lease_id: string | null
+          method: Database["public"]["Enums"]["payment_method"]
+          payment_date: string
+          status: Database["public"]["Enums"]["payment_status"]
+          tenant_id: string | null
+        }
+        Insert: {
+          amount_paid: number
+          created_at?: string
+          id?: string
+          lease_id?: string | null
+          method: Database["public"]["Enums"]["payment_method"]
+          payment_date: string
+          status?: Database["public"]["Enums"]["payment_status"]
+          tenant_id?: string | null
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          id?: string
+          lease_id?: string | null
+          method?: Database["public"]["Enums"]["payment_method"]
+          payment_date?: string
+          status?: Database["public"]["Enums"]["payment_status"]
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      properties: {
+        Row: {
+          address: string
+          created_at: string
+          id: string
+          owner_id: string | null
+          property_name: string
+          unit_count: number
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          id?: string
+          owner_id?: string | null
+          property_name: string
+          unit_count: number
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          id?: string
+          owner_id?: string | null
+          property_name?: string
+          unit_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "properties_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reward_redemptions: {
+        Row: {
+          created_at: string
+          id: string
+          points_used: number
+          reward_item: string
+          tenant_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          points_used: number
+          reward_item: string
+          tenant_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          points_used?: number
+          reward_item?: string
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_redemptions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_rewards: {
+        Row: {
+          id: string
+          last_updated: string
+          points: number
+          tenant_id: string | null
+        }
+        Insert: {
+          id?: string
+          last_updated?: string
+          points?: number
+          tenant_id?: string | null
+        }
+        Update: {
+          id?: string
+          last_updated?: string
+          points?: number
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_rewards_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      units: {
+        Row: {
+          created_at: string
+          id: string
+          property_id: string | null
+          rent_amount: number
+          status: Database["public"]["Enums"]["unit_status"]
+          tenant_id: string | null
+          unit_number: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          property_id?: string | null
+          rent_amount: number
+          status?: Database["public"]["Enums"]["unit_status"]
+          tenant_id?: string | null
+          unit_number: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          property_id?: string | null
+          rent_amount?: number
+          status?: Database["public"]["Enums"]["unit_status"]
+          tenant_id?: string | null
+          unit_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "units_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "units_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          phone?: string | null
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+        }
+        Relationships: []
+      }
+      vendors: {
+        Row: {
+          company_name: string
+          contact_name: string
+          created_at: string
+          email: string
+          id: string
+          phone: string
+          services_offered: string | null
+        }
+        Insert: {
+          company_name: string
+          contact_name: string
+          created_at?: string
+          email: string
+          id?: string
+          phone: string
+          services_offered?: string | null
+        }
+        Update: {
+          company_name?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          phone?: string
+          services_offered?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      apply_late_fees: {
+        Args: {
+          p_tenant_id: string
+        }
+        Returns: undefined
+      }
+      approve_maintenance: {
+        Args: {
+          p_request_id: string
+          p_vendor_id: string
+        }
+        Returns: undefined
+      }
+      collect_rent: {
+        Args: {
+          p_tenant_id: string
+          p_amount: number
+        }
+        Returns: undefined
+      }
+      redeem_rewards: {
+        Args: {
+          p_tenant_id: string
+          p_points: number
+          p_reward_item: string
+        }
+        Returns: undefined
+      }
+      update_tenant_rewards: {
+        Args: {
+          p_tenant_id: string
+          p_points: number
+        }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      eviction_status: "initiated" | "court_pending" | "completed" | "dismissed"
+      lease_status: "active" | "terminated" | "pending"
+      maintenance_status: "pending" | "in_progress" | "completed"
+      payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal"
+      payment_status: "pending" | "completed" | "failed"
+      unit_status: "vacant" | "occupied" | "under_maintenance"
+      user_role: "tenant" | "property_manager" | "owner"
     }
     CompositeTypes: {
       [_ in never]: never

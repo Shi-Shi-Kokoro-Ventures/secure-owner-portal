@@ -2,30 +2,31 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// Property Manager Routes
+import Dashboard from "@/pages/Dashboard";
+import Owners from "@/pages/Owners";
+import Properties from "@/pages/Properties";
+import Tenants from "@/pages/Tenants";
+import WorkOrders from "@/pages/WorkOrders";
+import Reports from "@/pages/Reports";
+import Banking from "@/pages/Banking";
+import { AddPropertyForm } from "@/components/AddPropertyForm";
+import { PlaceNewTenant } from "@/components/PlaceNewTenant";
+
+// Tenant Routes
+import TenantDashboard from "@/pages/tenant/TenantDashboard";
 import TenantMaintenance from "@/pages/tenant/TenantMaintenance";
 import NewMaintenanceRequest from "@/pages/tenant/NewMaintenanceRequest";
 import MaintenanceRequestDetail from "@/pages/tenant/MaintenanceRequestDetail";
-import TenantDashboard from "@/pages/tenant/TenantDashboard";
 import TenantPayments from "@/pages/tenant/TenantPayments";
 import NewPayment from "@/pages/tenant/NewPayment";
 import TenantDocuments from "@/pages/tenant/TenantDocuments";
 import TenantCommunications from "@/pages/tenant/TenantCommunications";
-import TenantSettings from "@/pages/tenant/TenantSettings";
-import WorkOrders from "@/pages/WorkOrders";
-import { AddPropertyForm } from "@/components/AddPropertyForm";
-import { PlaceNewTenant } from "@/components/PlaceNewTenant";
-import Dashboard from "@/pages/Dashboard";
-import Login from "@/pages/Login";
-import Owners from "@/pages/Owners";
-import Properties from "@/pages/Properties";
-import Tenants from "@/pages/Tenants";
-import Reports from "@/pages/Reports";
-import Banking from "@/pages/Banking";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import TenantLayout from "@/components/TenantLayout";
 import TenantCommunicationDetail from "@/pages/tenant/TenantCommunicationDetail";
-import NotFound from "@/pages/NotFound";
-import OwnerLayout from "@/components/OwnerLayout";
+import TenantSettings from "@/pages/tenant/TenantSettings";
+
+// Owner Routes
 import OwnerDashboard from "@/pages/owner/OwnerDashboard";
 import OwnerProperties from "@/pages/owner/OwnerProperties";
 import OwnerStatements from "@/pages/owner/OwnerStatements";
@@ -34,17 +35,25 @@ import OwnerReports from "@/pages/owner/OwnerReports";
 import OwnerCommunications from "@/pages/owner/OwnerCommunications";
 import OwnerSettings from "@/pages/owner/OwnerSettings";
 import OwnerMaintenance from "@/pages/owner/OwnerMaintenance";
-import OwnerPayments from "@/pages/owner/OwnerPayments";
 import OwnerMaintenanceDetail from "@/pages/owner/OwnerMaintenanceDetail";
+import OwnerPayments from "@/pages/owner/OwnerPayments";
+import LeaseRenewals from "@/pages/owner/LeaseRenewals";
+
+// Common Routes
+import Login from "@/pages/Login";
+import NotFound from "@/pages/NotFound";
+import Applications from "@/pages/Applications";
 import Notifications from "@/pages/Notifications";
 import Help from "@/pages/Help";
-import Applications from "@/pages/Applications";
-import LeaseRenewals from "@/pages/owner/LeaseRenewals";
 import Messages from "@/pages/Messages";
 import Archives from "@/pages/Archives";
 import Settings from "@/pages/Settings";
 
-// Create a new QueryClient instance outside of the component
+// Layouts and Protection
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import TenantLayout from "@/components/TenantLayout";
+import OwnerLayout from "@/components/OwnerLayout";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -62,8 +71,6 @@ const App: React.FC = () => {
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
-            
-            {/* Redirect root to login */}
             <Route path="/" element={<Navigate to="/login" replace />} />
 
             {/* Common protected routes */}
@@ -222,25 +229,13 @@ const App: React.FC = () => {
             >
               <Route path="/tenant/dashboard" element={<TenantDashboard />} />
               <Route path="/tenant/maintenance" element={<TenantMaintenance />} />
-              <Route
-                path="/tenant/maintenance/new"
-                element={<NewMaintenanceRequest />}
-              />
-              <Route
-                path="/tenant/maintenance/:id"
-                element={<MaintenanceRequestDetail />}
-              />
+              <Route path="/tenant/maintenance/new" element={<NewMaintenanceRequest />} />
+              <Route path="/tenant/maintenance/:id" element={<MaintenanceRequestDetail />} />
               <Route path="/tenant/payments" element={<TenantPayments />} />
               <Route path="/tenant/payments/new" element={<NewPayment />} />
               <Route path="/tenant/documents" element={<TenantDocuments />} />
-              <Route
-                path="/tenant/communications"
-                element={<TenantCommunications />}
-              />
-              <Route
-                path="/tenant/communications/:id"
-                element={<TenantCommunicationDetail />}
-              />
+              <Route path="/tenant/communications" element={<TenantCommunications />} />
+              <Route path="/tenant/communications/:id" element={<TenantCommunicationDetail />} />
               <Route path="/tenant/settings" element={<TenantSettings />} />
             </Route>
 
