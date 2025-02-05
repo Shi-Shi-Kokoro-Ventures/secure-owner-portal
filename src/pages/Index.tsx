@@ -15,7 +15,7 @@ import {
   Star, 
   Users,
   FileText,
-  Tool,
+  Wrench,
   Shield 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -167,7 +167,7 @@ const Index = () => {
                         <span>Rent Collection & Financial Reporting</span>
                       </li>
                       <li className="flex items-center">
-                        <Tool className="w-5 h-5 text-primary mr-2" />
+                        <Wrench className="w-5 h-5 text-primary mr-2" />
                         <span>Maintenance & Repairs Coordination</span>
                       </li>
                       <li className="flex items-center">
