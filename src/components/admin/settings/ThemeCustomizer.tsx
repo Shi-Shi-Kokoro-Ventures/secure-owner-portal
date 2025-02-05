@@ -21,19 +21,9 @@ export const ThemeCustomizer = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const checkAuthAndFetchSettings = async () => {
+    const fetchSettings = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          toast({
-            title: "Authentication required",
-            description: "Please log in to access theme settings.",
-            variant: "destructive",
-          });
-          navigate("/auth");
-          return;
-        }
-
+        // Temporarily skip auth check for development
         const { data, error } = await supabase
           .from('theme_settings')
           .select('*')
@@ -73,7 +63,7 @@ export const ThemeCustomizer = () => {
           }
         }
       } catch (error) {
-        console.error('Error in auth check or fetching settings:', error);
+        console.error('Error fetching settings:', error);
         toast({
           title: "Error",
           description: "An unexpected error occurred.",
@@ -82,8 +72,8 @@ export const ThemeCustomizer = () => {
       }
     };
 
-    checkAuthAndFetchSettings();
-  }, [navigate, toast]);
+    fetchSettings();
+  }, [toast]);
 
   const handleColorChange = (key: keyof ThemeSettings, value: string) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
@@ -95,17 +85,6 @@ export const ThemeCustomizer = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to save theme settings.",
-          variant: "destructive",
-        });
-        navigate("/auth");
-        return;
-      }
-
       const { error } = await supabase
         .from('theme_settings')
         .upsert({ 
