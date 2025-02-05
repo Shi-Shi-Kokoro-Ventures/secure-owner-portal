@@ -1,11 +1,29 @@
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Wrench, Calendar, MapPin, MessageSquare } from "lucide-react";
+import { Wrench, Calendar, MapPin, MessageSquare, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
 const OwnerMaintenanceDetail = () => {
   const { id } = useParams();
+  const { toast } = useToast();
+  const [newUpdate, setNewUpdate] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [updates, setUpdates] = useState([
+    {
+      date: "Feb 1, 2024",
+      message: "Maintenance request submitted",
+      author: "John Smith (Tenant)"
+    },
+    {
+      date: "Feb 1, 2024",
+      message: "Request received and assigned to maintenance team",
+      author: "Property Management"
+    }
+  ]);
 
   // This would typically fetch the maintenance request details using the ID
   const request = {
@@ -18,18 +36,52 @@ const OwnerMaintenanceDetail = () => {
     tenant: "John Smith",
     priority: "High",
     category: "HVAC",
-    updates: [
-      {
-        date: "Feb 1, 2024",
-        message: "Maintenance request submitted",
-        author: "John Smith (Tenant)"
-      },
-      {
-        date: "Feb 1, 2024",
-        message: "Request received and assigned to maintenance team",
-        author: "Property Management"
-      }
-    ]
+    updates: updates
+  };
+
+  const handleAddUpdate = async () => {
+    if (!newUpdate.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter an update message",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // TODO: Replace with actual API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const currentDate = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+
+      const newUpdateObj = {
+        date: currentDate,
+        message: newUpdate,
+        author: "Property Manager",
+      };
+
+      setUpdates(prev => [...prev, newUpdateObj]);
+      setNewUpdate("");
+      
+      toast({
+        title: "Update Added",
+        description: "Your update has been successfully added to the maintenance request.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add update. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -99,25 +151,45 @@ const OwnerMaintenanceDetail = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {request.updates.map((update, index) => (
-                <div
-                  key={index}
-                  className="border-l-2 border-primary pl-4 pb-4"
+            <div className="space-y-6">
+              <div className="space-y-4">
+                {updates.map((update, index) => (
+                  <div
+                    key={index}
+                    className="border-l-2 border-primary pl-4 pb-4"
+                  >
+                    <p className="text-sm font-medium">{update.date}</p>
+                    <p className="text-sm">{update.message}</p>
+                    <p className="text-sm text-muted-foreground">{update.author}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-4">
+                <Textarea
+                  placeholder="Add an update to this maintenance request..."
+                  value={newUpdate}
+                  onChange={(e) => setNewUpdate(e.target.value)}
+                  className="min-h-[100px]"
+                />
+                <Button 
+                  onClick={handleAddUpdate} 
+                  className="w-full"
+                  disabled={isSubmitting}
                 >
-                  <p className="text-sm font-medium">{update.date}</p>
-                  <p className="text-sm">{update.message}</p>
-                  <p className="text-sm text-muted-foreground">{update.author}</p>
-                </div>
-              ))}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Adding Update...
+                    </>
+                  ) : (
+                    'Add Update'
+                  )}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
-      </div>
-
-      <div className="mt-6 flex justify-end gap-4">
-        <Button variant="outline">Add Update</Button>
-        <Button>Mark as Resolved</Button>
       </div>
     </div>
   );
