@@ -1,8 +1,10 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DollarSign, ArrowUpRight, ArrowDownRight, Download, Filter, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { StripeConnectSetup } from "@/components/owner/StripeConnectSetup";
 import {
   Table,
   TableBody,
@@ -21,6 +23,10 @@ const OwnerPayments = () => {
         <p className="text-muted-foreground">
           Track your income and payment history
         </p>
+      </div>
+
+      <div className="grid gap-4 mb-6">
+        <StripeConnectSetup />
       </div>
 
       <div className="grid gap-4 md:grid-cols-3 mb-6">
