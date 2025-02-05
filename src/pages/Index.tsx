@@ -61,21 +61,30 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <nav className="fixed top-0 w-full bg-white shadow-sm z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
+          <div className="flex justify-between h-20 items-center">
+            <div className="flex items-center space-x-4">
               <img 
                 src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png" 
                 alt="Shi Shi Kokoro Property Management" 
-                className="h-10 w-auto object-contain transition-transform hover:scale-105"
+                className="h-16 w-auto object-contain transition-transform hover:scale-105"
               />
-              <span className="ml-3 text-xl font-semibold text-gray-900">Shi Shi Kokoro</span>
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold text-primary">Shi Shi Kokoro</span>
+                <span className="text-sm text-gray-600">Property Management</span>
+              </div>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#about" className="text-gray-600 hover:text-primary">About Us</a>
-              <a href="#services" className="text-gray-600 hover:text-primary">Services</a>
-              <a href="#locations" className="text-gray-600 hover:text-primary">Locations</a>
-              <a href="#contact" className="text-gray-600 hover:text-primary">Contact</a>
-              <Button onClick={handleLoginClick} variant="outline">Login</Button>
+              <a href="#about" className="text-gray-600 hover:text-primary transition-colors duration-200">About Us</a>
+              <a href="#services" className="text-gray-600 hover:text-primary transition-colors duration-200">Services</a>
+              <a href="#locations" className="text-gray-600 hover:text-primary transition-colors duration-200">Locations</a>
+              <a href="#contact" className="text-gray-600 hover:text-primary transition-colors duration-200">Contact</a>
+              <Button 
+                onClick={handleLoginClick} 
+                variant="outline"
+                className="font-semibold hover:bg-primary hover:text-white transition-colors duration-200"
+              >
+                Login
+              </Button>
             </div>
           </div>
         </div>
