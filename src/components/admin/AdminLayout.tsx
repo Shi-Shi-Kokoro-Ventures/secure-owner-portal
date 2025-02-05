@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { VapiAssistant } from "./VapiAssistant";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -12,7 +13,10 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
-      <div className="lg:pl-64">
+      <div className={cn(
+        "transition-all duration-300 ease-in-out",
+        sidebarOpen ? "lg:pl-64" : "lg:pl-0"
+      )}>
         <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
         <main className="py-8 px-4 sm:px-6 lg:px-8">{children}</main>
       </div>
