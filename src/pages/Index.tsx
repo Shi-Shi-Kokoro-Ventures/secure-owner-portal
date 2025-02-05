@@ -1,15 +1,273 @@
 import { Layout } from "@/components/Layout";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Building2, CheckCircle2, Clock, DollarSign, Heart, Home, Mail, MapPin, Phone, Star, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+
+  const handleConsultationClick = () => {
+    // Implement consultation booking logic
+    console.log("Booking consultation");
+  };
+
   return (
-    <Layout>
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900">Welcome to Property Manager</h1>
-        <p className="mt-4 text-gray-600">
-          Please use the navigation menu to access different sections of the application.
-        </p>
+    <div className="min-h-screen bg-white">
+      {/* Navigation Bar */}
+      <nav className="fixed top-0 w-full bg-white shadow-sm z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <div className="flex items-center">
+              <img 
+                src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png" 
+                alt="Shi Shi Kokoro Property Management" 
+                className="h-12 w-12 object-contain"
+              />
+              <span className="ml-2 text-lg font-semibold text-gray-900">Shi Shi Kokoro</span>
+            </div>
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#about" className="text-gray-600 hover:text-primary">About Us</a>
+              <a href="#services" className="text-gray-600 hover:text-primary">Services</a>
+              <a href="#locations" className="text-gray-600 hover:text-primary">Locations</a>
+              <a href="#contact" className="text-gray-600 hover:text-primary">Contact</a>
+              <Button onClick={handleLoginClick} variant="outline">Login</Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <div className="relative pt-16">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70 z-10" />
+        <div 
+          className="relative h-[600px] bg-cover bg-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1487958449943-2429e8be8625')" }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center z-20">
+            <div className="text-center text-white px-4">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                Stress-Free Property Management.<br />
+                Maximizing Your Rental Income.
+              </h1>
+              <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                At Shi Shi Kokoro Property Management, we provide expert property management services 
+                designed to maximize ROI and keep tenants happy.
+              </p>
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Button 
+                  size="lg" 
+                  onClick={handleConsultationClick}
+                  className="bg-white text-primary hover:bg-gray-100"
+                >
+                  Schedule a Free Consultation
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="border-white text-white hover:bg-white/10"
+                >
+                  Learn More About Our Services
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </Layout>
+
+      {/* About Us Section */}
+      <section id="about" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">About Us</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Founded in 2020, Shi Shi Kokoro Property Management helps property owners manage their 
+              investments while ensuring tenants feel safe, secure, and comfortable in a place they can call home.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                icon: Building2,
+                title: "Automated Property Management",
+                description: "We handle everything from rent collection to maintenance."
+              },
+              {
+                icon: Users,
+                title: "Tenant-Centric Approach",
+                description: "We prioritize tenant satisfaction, reducing vacancy rates."
+              },
+              {
+                icon: Clock,
+                title: "Advanced Technology",
+                description: "Our platform provides real-time property insights and automated processes."
+              },
+              {
+                icon: Star,
+                title: "Experienced Team",
+                description: "Licensed real estate professionals with 5+ years of experience."
+              }
+            ].map((feature, index) => (
+              <Card key={index} className="border-none shadow-lg">
+                <CardContent className="pt-6 text-center">
+                  <feature.icon className="w-12 h-12 mx-auto text-primary mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-16">Our Services</h2>
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <h3 className="text-2xl font-semibold mb-6 flex items-center">
+                <Home className="mr-2 text-primary" />
+                For Property Owners
+              </h3>
+              <ul className="space-y-4">
+                {[
+                  "Full-Service Property Management",
+                  "Tenant Screening & Lease Management",
+                  "Rent Collection & Financial Reporting",
+                  "Maintenance & Repairs Coordination",
+                  "Evictions & Legal Compliance"
+                ].map((service, index) => (
+                  <li key={index} className="flex items-center">
+                    <CheckCircle2 className="w-5 h-5 text-primary mr-2" />
+                    <span>{service}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-2xl font-semibold mb-6 flex items-center">
+                <Heart className="mr-2 text-primary" />
+                For Tenants
+              </h3>
+              <ul className="space-y-4">
+                {[
+                  "Easy Online Rental Applications",
+                  "Well-Maintained Properties",
+                  "Tenant Rewards Program",
+                  "24/7 Maintenance Support"
+                ].map((service, index) => (
+                  <li key={index} className="flex items-center">
+                    <CheckCircle2 className="w-5 h-5 text-primary mr-2" />
+                    <span>{service}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <h2 className="text-3xl font-bold mb-8">Contact Us</h2>
+              <div className="space-y-6">
+                <div className="flex items-center">
+                  <MapPin className="w-6 h-6 text-primary mr-4" />
+                  <div>
+                    <h3 className="font-semibold">Our Locations</h3>
+                    <p>Pennsylvania (HQ), Georgia, Delaware, Maryland, Arizona</p>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <Phone className="w-6 h-6 text-primary mr-4" />
+                  <div>
+                    <h3 className="font-semibold">Phone</h3>
+                    <p>(555) 123-4567</p>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <Mail className="w-6 h-6 text-primary mr-4" />
+                  <div>
+                    <h3 className="font-semibold">Email</h3>
+                    <p>contact@shishikokoro.com</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-2xl font-semibold mb-6">Get in Touch</h3>
+              <form className="space-y-4">
+                <Input placeholder="Your Name" />
+                <Input type="email" placeholder="Your Email" />
+                <Input placeholder="Phone Number" />
+                <textarea 
+                  className="w-full p-3 border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+                  rows={4}
+                  placeholder="Message"
+                />
+                <Button className="w-full">Send Message</Button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:text-primary">Home</a></li>
+                <li><a href="#about" className="hover:text-primary">About Us</a></li>
+                <li><a href="#services" className="hover:text-primary">Services</a></li>
+                <li><a href="#contact" className="hover:text-primary">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Services</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:text-primary">Property Management</a></li>
+                <li><a href="#" className="hover:text-primary">Tenant Services</a></li>
+                <li><a href="#" className="hover:text-primary">Maintenance</a></li>
+                <li><a href="#" className="hover:text-primary">Investment Consulting</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Locations</h3>
+              <ul className="space-y-2">
+                <li>Pennsylvania (HQ)</li>
+                <li>Georgia</li>
+                <li>Delaware</li>
+                <li>Maryland</li>
+                <li>Arizona</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
+              <p className="mb-4">Subscribe to get property management tips & market updates</p>
+              <div className="flex gap-2">
+                <Input placeholder="Your Email" className="bg-white" />
+                <Button>Subscribe</Button>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center">
+            <p>&copy; 2024 Shi Shi Kokoro Property Management. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 };
 
