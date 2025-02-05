@@ -18,18 +18,18 @@ interface LeasesTableProps {
 export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
   const getStatusBadge = (status: Lease['status']) => {
     const variants = {
-      active: <Badge className="bg-green-500">Active</Badge>,
-      terminated: <Badge variant="destructive">Terminated</Badge>,
-      pending: <Badge variant="secondary">Pending</Badge>,
+      active: <Badge className="bg-emerald-500 hover:bg-emerald-600">Active</Badge>,
+      terminated: <Badge variant="destructive" className="hover:bg-red-600">Terminated</Badge>,
+      pending: <Badge variant="secondary" className="hover:bg-gray-600">Pending</Badge>,
     };
     return variants[status];
   };
 
   const getSecurityDepositBadge = (status: Lease['security_deposit_status']) => {
     const variants = {
-      pending: <Badge variant="secondary">Pending</Badge>,
-      received: <Badge className="bg-green-500">Received</Badge>,
-      returned: <Badge variant="destructive">Returned</Badge>,
+      pending: <Badge variant="secondary" className="hover:bg-gray-600">Pending</Badge>,
+      received: <Badge className="bg-emerald-500 hover:bg-emerald-600">Received</Badge>,
+      returned: <Badge variant="destructive" className="hover:bg-red-600">Returned</Badge>,
     };
     return variants[status];
   };
@@ -55,10 +55,10 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
   }
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border animate-in fade-in duration-500">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-muted/50">
             <TableHead>Lease #</TableHead>
             <TableHead>Property</TableHead>
             <TableHead>Unit</TableHead>
@@ -73,7 +73,10 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
         </TableHeader>
         <TableBody>
           {leases?.map((lease) => (
-            <TableRow key={lease.id} className="hover:bg-muted/50 cursor-pointer">
+            <TableRow 
+              key={lease.id} 
+              className="hover:bg-muted/50 cursor-pointer transition-colors duration-200"
+            >
               <TableCell className="font-medium">{lease.lease_number}</TableCell>
               <TableCell>{lease.unit.property.property_name}</TableCell>
               <TableCell>{lease.unit.unit_number}</TableCell>
@@ -86,7 +89,7 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
                   </span>
                 </div>
               </TableCell>
-              <TableCell>${lease.monthly_rent.toLocaleString()}</TableCell>
+              <TableCell className="font-medium">${lease.monthly_rent.toLocaleString()}</TableCell>
               <TableCell>
                 <div className="flex flex-col gap-1">
                   <span>${lease.deposit_amount.toLocaleString()}</span>
@@ -95,9 +98,9 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
               </TableCell>
               <TableCell>
                 {lease.auto_renewal ? (
-                  <Badge variant="outline" className="bg-blue-50">Yes</Badge>
+                  <Badge variant="outline" className="bg-blue-50 hover:bg-blue-100">Yes</Badge>
                 ) : (
-                  <Badge variant="outline">No</Badge>
+                  <Badge variant="outline" className="hover:bg-gray-100">No</Badge>
                 )}
               </TableCell>
               <TableCell>{getStatusBadge(lease.status)}</TableCell>

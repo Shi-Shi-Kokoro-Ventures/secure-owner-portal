@@ -22,18 +22,20 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
     ((leases.filter(lease => lease.auto_renewal).length / leases.length) * 100).toFixed(1) : 0;
 
   return (
-    <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-6">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-6 animate-in fade-in duration-700">
       <LeaseMetricCard
         title="Active Leases"
         value={activeLeases}
         icon={CheckCircle2}
-        iconColor="text-green-500"
+        iconColor="text-emerald-500"
+        description="Currently active lease agreements"
       />
       <LeaseMetricCard
         title="Pending Approvals"
         value={pendingLeases}
         icon={Clock}
-        iconColor="text-yellow-500"
+        iconColor="text-amber-500"
+        description="Awaiting review and approval"
       />
       <LeaseMetricCard
         title="Expiring Soon"
@@ -47,12 +49,14 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
         value={`$${totalDeposits.toLocaleString()}`}
         icon={Shield}
         iconColor="text-blue-500"
+        description="Total deposits held"
       />
       <LeaseMetricCard
         title="Monthly Revenue"
         value={`$${monthlyRevenue.toLocaleString()}`}
         icon={DollarSign}
         iconColor="text-emerald-500"
+        description="Total monthly rent collection"
       />
       <LeaseMetricCard
         title="Retention Rate"
