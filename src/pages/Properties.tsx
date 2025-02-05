@@ -79,7 +79,8 @@ const Properties = () => {
 
   return (
     <Layout>
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-4 animate-fade-in">
+        {/* Summary Section */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">Summary</h1>
           <div className="flex items-center gap-4">
@@ -103,7 +104,7 @@ const Properties = () => {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <Card className="p-4 bg-gradient-to-br from-blue-600 to-blue-700 text-white hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <div className="flex justify-between items-center">
               <div>
@@ -142,9 +143,9 @@ const Properties = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Property Summary Chart */}
-          <Card className="p-6 hover:shadow-lg transition-all duration-300">
+          <Card className="p-4 hover:shadow-lg transition-all duration-300">
             <h2 className="text-lg font-semibold mb-4 text-gray-900">Property Summary</h2>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -166,7 +167,7 @@ const Properties = () => {
           </Card>
 
           {/* Net Income Summary */}
-          <Card className="p-6 hover:shadow-lg transition-all duration-300">
+          <Card className="p-4 hover:shadow-lg transition-all duration-300">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Net Income Summary</h2>
               <select className="rounded-md border border-gray-300 px-3 py-1.5 bg-white shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors">
@@ -191,8 +192,8 @@ const Properties = () => {
         </div>
 
         {/* System Updates & News */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="p-6 hover:shadow-lg transition-all duration-300">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Card className="p-4 hover:shadow-lg transition-all duration-300">
             <h2 className="text-lg font-semibold mb-4 text-gray-900">System Updates</h2>
             <div className="space-y-4">
               {systemUpdates.map((update, index) => (
@@ -204,7 +205,7 @@ const Properties = () => {
             </div>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-all duration-300">
+          <Card className="p-4 hover:shadow-lg transition-all duration-300">
             <h2 className="text-lg font-semibold mb-4 text-gray-900">News & Tips</h2>
             <div className="space-y-4">
               {newsAndTips.map((news, index) => (
@@ -221,7 +222,7 @@ const Properties = () => {
         </div>
 
         {/* Quick Access */}
-        <Card className="p-6 hover:shadow-lg transition-all duration-300">
+        <Card className="p-4 hover:shadow-lg transition-all duration-300">
           <h2 className="text-lg font-semibold mb-4 text-gray-900">Quick Access</h2>
           <div className="flex flex-wrap gap-4">
             {['File Library', 'Inspections', 'Signature Requests', 'Tenant Screening'].map((action) => (
@@ -240,7 +241,7 @@ const Properties = () => {
         {/* Properties Table Section */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <h2 className="text-xl font-semibold text-gray-900">Properties</h2>
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-2">
               <select 
                 className="rounded-md border border-gray-300 px-3 py-1.5 bg-white shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
@@ -282,11 +283,11 @@ const Properties = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+          <div className="xl:col-span-2">
             <PropertiesTable />
           </div>
-          <div>
+          <div className="w-full">
             <PropertyDetails />
           </div>
         </div>
