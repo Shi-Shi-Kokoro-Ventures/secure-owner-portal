@@ -43,7 +43,7 @@ const AdminLeases = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        logger.error("Error fetching leases: " + error.message);
+        logger.info(`Error fetching leases: ${error.message}`);
         toast({
           variant: "destructive",
           title: "Error fetching leases",
@@ -52,7 +52,7 @@ const AdminLeases = () => {
         return [];
       }
 
-      logger.info(`Leases data fetched: ${data?.length || 0} leases found`);
+      logger.info(`Leases data fetched successfully: ${data?.length || 0} leases found`);
       return data as Lease[];
     },
   });
@@ -67,23 +67,21 @@ const AdminLeases = () => {
     );
   }
 
-  logger.info(`Rendering AdminLeases with ${leases?.length || 0} leases`);
-
   return (
     <AdminLayout>
       <div className="space-y-6 p-6 animate-in fade-in duration-500">
-        <div>
+        <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
             Lease Management
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground">
             Manage and track all property leases
           </p>
         </div>
 
         {Array.isArray(leases) && <LeaseMetrics leases={leases} />}
         
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+        <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
           <LeasesTable 
             leases={leases || []} 
             isLoading={isLoading}
