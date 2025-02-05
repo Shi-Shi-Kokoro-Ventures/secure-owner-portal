@@ -22,7 +22,10 @@ const Messages = () => {
         .from('messages')
         .select(`
           id,
-          sender:sender_id(first_name, last_name),
+          sender:sender_id(
+            first_name,
+            last_name
+          ),
           message_content,
           created_at
         `)
