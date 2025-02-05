@@ -38,9 +38,11 @@ import OwnerPayments from "@/pages/owner/OwnerPayments";
 import OwnerMaintenanceDetail from "@/pages/owner/OwnerMaintenanceDetail";
 import Notifications from "@/pages/Notifications";
 import Help from "@/pages/Help";
-
 import Applications from "@/pages/Applications";
 import LeaseRenewals from "@/pages/owner/LeaseRenewals";
+import Messages from "@/pages/Messages";
+import Archives from "@/pages/Archives";
+import Settings from "@/pages/Settings";
 
 // Create a new QueryClient instance outside of the component
 const queryClient = new QueryClient({
@@ -82,6 +84,30 @@ const App: React.FC = () => {
               }
             />
             <Route
+              path="/messages"
+              element={
+                <ProtectedRoute>
+                  <Messages />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/archives"
+              element={
+                <ProtectedRoute>
+                  <Archives />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/applications"
               element={
                 <ProtectedRoute>
@@ -91,78 +117,78 @@ const App: React.FC = () => {
             />
 
             {/* Property Manager routes - protected */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/owners"
-            element={
-              <ProtectedRoute>
-                <Owners />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/properties"
-            element={
-              <ProtectedRoute>
-                <Properties />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/properties/add"
-            element={
-              <ProtectedRoute>
-                <AddPropertyForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/tenants"
-            element={
-              <ProtectedRoute>
-                <Tenants />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/tenant/place"
-            element={
-              <ProtectedRoute>
-                <PlaceNewTenant />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/work-orders"
-            element={
-              <ProtectedRoute>
-                <WorkOrders />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/reports"
-            element={
-              <ProtectedRoute>
-                <Reports />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/banking"
-            element={
-              <ProtectedRoute>
-                <Banking />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/owners"
+              element={
+                <ProtectedRoute>
+                  <Owners />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/properties"
+              element={
+                <ProtectedRoute>
+                  <Properties />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/properties/add"
+              element={
+                <ProtectedRoute>
+                  <AddPropertyForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tenants"
+              element={
+                <ProtectedRoute>
+                  <Tenants />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tenant/place"
+              element={
+                <ProtectedRoute>
+                  <PlaceNewTenant />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/work-orders"
+              element={
+                <ProtectedRoute>
+                  <WorkOrders />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports"
+              element={
+                <ProtectedRoute>
+                  <Reports />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/banking"
+              element={
+                <ProtectedRoute>
+                  <Banking />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Owner routes - protected and wrapped in OwnerLayout */}
             <Route
@@ -172,50 +198,50 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             >
-            <Route path="/owner/dashboard" element={<OwnerDashboard />} />
-            <Route path="/owner/properties" element={<OwnerProperties />} />
-            <Route path="/owner/statements" element={<OwnerStatements />} />
-            <Route path="/owner/documents" element={<OwnerDocuments />} />
-            <Route path="/owner/reports" element={<OwnerReports />} />
-            <Route path="/owner/communications" element={<OwnerCommunications />} />
-            <Route path="/owner/settings" element={<OwnerSettings />} />
-            <Route path="/owner/maintenance" element={<OwnerMaintenance />} />
-            <Route path="/owner/maintenance/:id" element={<OwnerMaintenanceDetail />} />
-            <Route path="/owner/payments" element={<OwnerPayments />} />
+              <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+              <Route path="/owner/properties" element={<OwnerProperties />} />
+              <Route path="/owner/statements" element={<OwnerStatements />} />
+              <Route path="/owner/documents" element={<OwnerDocuments />} />
+              <Route path="/owner/reports" element={<OwnerReports />} />
+              <Route path="/owner/communications" element={<OwnerCommunications />} />
+              <Route path="/owner/settings" element={<OwnerSettings />} />
+              <Route path="/owner/maintenance" element={<OwnerMaintenance />} />
+              <Route path="/owner/maintenance/:id" element={<OwnerMaintenanceDetail />} />
+              <Route path="/owner/payments" element={<OwnerPayments />} />
               <Route path="/owner/lease-renewals" element={<LeaseRenewals />} />
             </Route>
 
             {/* Tenant routes - protected and wrapped in TenantLayout */}
-          <Route
-            element={
-              <ProtectedRoute>
-                <TenantLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/tenant/dashboard" element={<TenantDashboard />} />
-            <Route path="/tenant/maintenance" element={<TenantMaintenance />} />
             <Route
-              path="/tenant/maintenance/new"
-              element={<NewMaintenanceRequest />}
-            />
-            <Route
-              path="/tenant/maintenance/:id"
-              element={<MaintenanceRequestDetail />}
-            />
-            <Route path="/tenant/payments" element={<TenantPayments />} />
-            <Route path="/tenant/payments/new" element={<NewPayment />} />
-            <Route path="/tenant/documents" element={<TenantDocuments />} />
-            <Route
-              path="/tenant/communications"
-              element={<TenantCommunications />}
-            />
-            <Route
-              path="/tenant/communications/:id"
-              element={<TenantCommunicationDetail />}
-            />
-            <Route path="/tenant/settings" element={<TenantSettings />} />
-          </Route>
+              element={
+                <ProtectedRoute>
+                  <TenantLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/tenant/dashboard" element={<TenantDashboard />} />
+              <Route path="/tenant/maintenance" element={<TenantMaintenance />} />
+              <Route
+                path="/tenant/maintenance/new"
+                element={<NewMaintenanceRequest />}
+              />
+              <Route
+                path="/tenant/maintenance/:id"
+                element={<MaintenanceRequestDetail />}
+              />
+              <Route path="/tenant/payments" element={<TenantPayments />} />
+              <Route path="/tenant/payments/new" element={<NewPayment />} />
+              <Route path="/tenant/documents" element={<TenantDocuments />} />
+              <Route
+                path="/tenant/communications"
+                element={<TenantCommunications />}
+              />
+              <Route
+                path="/tenant/communications/:id"
+                element={<TenantCommunicationDetail />}
+              />
+              <Route path="/tenant/settings" element={<TenantSettings />} />
+            </Route>
 
             {/* Catch all route for 404 */}
             <Route path="*" element={<NotFound />} />
