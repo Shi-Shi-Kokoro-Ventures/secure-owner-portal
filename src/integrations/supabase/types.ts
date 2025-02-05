@@ -580,6 +580,7 @@ export type Database = {
           card_last4: string
           created_at: string
           id: string
+          is_active: boolean | null
           is_default: boolean | null
           stripe_payment_method_id: string
           tenant_id: string
@@ -590,6 +591,7 @@ export type Database = {
           card_last4: string
           created_at?: string
           id?: string
+          is_active?: boolean | null
           is_default?: boolean | null
           stripe_payment_method_id: string
           tenant_id: string
@@ -600,6 +602,7 @@ export type Database = {
           card_last4?: string
           created_at?: string
           id?: string
+          is_active?: boolean | null
           is_default?: boolean | null
           stripe_payment_method_id?: string
           tenant_id?: string
