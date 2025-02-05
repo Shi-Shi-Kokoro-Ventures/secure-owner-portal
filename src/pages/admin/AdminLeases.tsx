@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { Plus, FileText, AlertCircle, CheckCircle2, Clock, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -43,6 +43,13 @@ interface Lease {
   monthly_rent: number;
   status: 'active' | 'terminated' | 'pending';
   lease_type: 'fixed' | 'month-to-month' | 'short-term';
+  security_deposit_status: 'pending' | 'received' | 'returned';
+  deposit_amount: number;
+  auto_renewal: boolean;
+  notice_period_days: number;
+  rent_due_day: number;
+  late_fee_percentage: number;
+  late_fee_grace_period_days: number;
 }
 
 const AdminLeases = () => {
@@ -66,7 +73,14 @@ const AdminLeases = () => {
           end_date,
           monthly_rent,
           status,
-          lease_type
+          lease_type,
+          security_deposit_status,
+          deposit_amount,
+          auto_renewal,
+          notice_period_days,
+          rent_due_day,
+          late_fee_percentage,
+          late_fee_grace_period_days
         `)
         .order('created_at', { ascending: false });
 
@@ -88,6 +102,15 @@ const AdminLeases = () => {
       active: <Badge className="bg-green-500">Active</Badge>,
       terminated: <Badge variant="destructive">Terminated</Badge>,
       pending: <Badge variant="secondary">Pending</Badge>,
+    };
+    return variants[status];
+  };
+
+  const getSecurityDepositBadge = (status: Lease['security_deposit_status']) => {
+    const variants = {
+      pending: <Badge variant="secondary">Pending</Badge>,
+      received: <Badge className="bg-green-500">Received</Badge>,
+      returned: <Badge variant="destructive">Returned</Badge>,
     };
     return variants[status];
   };
@@ -133,23 +156,18 @@ const AdminLeases = () => {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Expiring Soon</CardTitle>
-              <AlertCircle className="h-4 w-4 text-orange-500" />
+              <CardTitle className="text-sm font-medium">Security Deposits</CardTitle>
+              <Shield className="h-4 w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {leases?.filter(lease => {
-                  const end = new Date(lease.end_date);
-                  const today = new Date();
-                  const days = Math.ceil((end.getTime() - today.getTime()) / (1000 * 3600 * 24));
-                  return days <= 30 && lease.status === 'active';
-                }).length || 0}
+                ${leases?.reduce((acc, lease) => acc + Number(lease.deposit_amount), 0).toLocaleString()}
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Value</CardTitle>
+              <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
               <FileText className="h-4 w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
@@ -181,6 +199,7 @@ const AdminLeases = () => {
                     <TableHead>Start Date</TableHead>
                     <TableHead>End Date</TableHead>
                     <TableHead>Monthly Rent</TableHead>
+                    <TableHead>Security Deposit</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -195,6 +214,12 @@ const AdminLeases = () => {
                       <TableCell>{new Date(lease.start_date).toLocaleDateString()}</TableCell>
                       <TableCell>{new Date(lease.end_date).toLocaleDateString()}</TableCell>
                       <TableCell>${lease.monthly_rent.toLocaleString()}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-1">
+                          <span>${lease.deposit_amount.toLocaleString()}</span>
+                          {getSecurityDepositBadge(lease.security_deposit_status)}
+                        </div>
+                      </TableCell>
                       <TableCell>{getStatusBadge(lease.status)}</TableCell>
                     </TableRow>
                   ))}

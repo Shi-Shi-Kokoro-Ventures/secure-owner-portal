@@ -267,6 +267,45 @@ export type Database = {
           },
         ]
       }
+      lease_history: {
+        Row: {
+          changes: Json
+          id: string
+          lease_id: string | null
+          modified_at: string | null
+          modified_by: string | null
+        }
+        Insert: {
+          changes: Json
+          id?: string
+          lease_id?: string | null
+          modified_at?: string | null
+          modified_by?: string | null
+        }
+        Update: {
+          changes?: Json
+          id?: string
+          lease_id?: string | null
+          modified_at?: string | null
+          modified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lease_history_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lease_history_modified_by_fkey"
+            columns: ["modified_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lease_renewals: {
         Row: {
           approved_at: string | null
@@ -970,11 +1009,13 @@ export type Database = {
         | "group"
       eviction_status: "initiated" | "court_pending" | "completed" | "dismissed"
       lease_status: "active" | "terminated" | "pending"
+      lease_type_enum: "fixed" | "month-to-month" | "short-term"
       maintenance_status: "pending" | "in_progress" | "completed"
       message_status: "sent" | "delivered" | "read"
       message_type: "text" | "image" | "video" | "file"
       payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal"
       payment_status: "pending" | "completed" | "failed"
+      security_deposit_status_enum: "pending" | "received" | "returned"
       unit_status: "vacant" | "occupied" | "under_maintenance"
       user_role: "tenant" | "property_manager" | "owner" | "admin" | "vendor"
       user_status: "active" | "pending_approval" | "suspended" | "archived"
