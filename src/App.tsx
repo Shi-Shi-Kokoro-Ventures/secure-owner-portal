@@ -209,6 +209,7 @@ const App: React.FC = () => {
               <Route path="/owner/maintenance/:id" element={<OwnerMaintenanceDetail />} />
               <Route path="/owner/payments" element={<OwnerPayments />} />
               <Route path="/owner/lease-renewals" element={<LeaseRenewals />} />
+              <Route path="/owner/applications" element={<Applications />} />
             </Route>
 
             {/* Tenant routes - protected and wrapped in TenantLayout */}

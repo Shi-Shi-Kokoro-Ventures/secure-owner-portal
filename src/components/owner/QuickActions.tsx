@@ -80,7 +80,7 @@ export const QuickActions = () => {
           <Button 
             variant="outline" 
             className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('/applications', 'Review Applications')}
+            onClick={() => handleAction('/owner/applications', 'Review Applications')}
           >
             <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <UserPlus className="h-5 w-5 text-primary" />
@@ -136,7 +136,7 @@ export const QuickActions = () => {
           <Button 
             variant="outline" 
             className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('/applications', 'Approve Applications')}
+            onClick={() => handleAction('/owner/applications', 'Approve Applications')}
           >
             <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <ClipboardCheck className="h-5 w-5 text-primary" />

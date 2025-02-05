@@ -9,6 +9,7 @@ import {
   Settings,
   Wrench,
   CreditCard,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +25,7 @@ export const OwnerSidebar = () => {
     { name: "Communications", href: "/owner/communications", icon: MessageSquare },
     { name: "Maintenance", href: "/owner/maintenance", icon: Wrench },
     { name: "Payments", href: "/owner/payments", icon: CreditCard },
+    { name: "Applications", href: "/owner/applications", icon: Users },
     { name: "Settings", href: "/owner/settings", icon: Settings },
   ];
 
