@@ -1,65 +1,117 @@
 
-import { Building2, FileText, UserPlus, Wrench } from "lucide-react";
+import { Building2, FileText, UserPlus, Wrench, AlertCircle, CreditCard, Users, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 
 export const QuickActions = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const actions = [
+    {
+      title: "Add Manager",
+      description: "Create new property manager",
+      icon: UserPlus,
+      route: "/admin/users",
+      color: "text-blue-600 dark:text-blue-400",
+      bgColor: "bg-blue-50 dark:bg-blue-900/20"
+    },
+    {
+      title: "Review Leases",
+      description: "3 leases pending review",
+      icon: FileText,
+      route: "/admin/leases",
+      color: "text-purple-600 dark:text-purple-400",
+      bgColor: "bg-purple-50 dark:bg-purple-900/20"
+    },
+    {
+      title: "Maintenance",
+      description: "View maintenance requests",
+      icon: Wrench,
+      route: "/admin/maintenance",
+      color: "text-amber-600 dark:text-amber-400",
+      bgColor: "bg-amber-50 dark:bg-amber-900/20"
+    },
+    {
+      title: "Properties",
+      description: "Manage properties",
+      icon: Building2,
+      route: "/admin/properties",
+      color: "text-emerald-600 dark:text-emerald-400",
+      bgColor: "bg-emerald-50 dark:bg-emerald-900/20"
+    },
+    {
+      title: "System Alerts",
+      description: "View important alerts",
+      icon: AlertCircle,
+      route: "/admin/alerts",
+      color: "text-red-600 dark:text-red-400",
+      bgColor: "bg-red-50 dark:bg-red-900/20"
+    },
+    {
+      title: "Payments",
+      description: "Process payments",
+      icon: CreditCard,
+      route: "/admin/payments",
+      color: "text-indigo-600 dark:text-indigo-400",
+      bgColor: "bg-indigo-50 dark:bg-indigo-900/20"
+    },
+    {
+      title: "Tenants",
+      description: "Manage tenants",
+      icon: Users,
+      route: "/admin/tenants",
+      color: "text-orange-600 dark:text-orange-400",
+      bgColor: "bg-orange-50 dark:bg-orange-900/20"
+    },
+    {
+      title: "Settings",
+      description: "System configuration",
+      icon: Settings,
+      route: "/admin/settings",
+      color: "text-gray-600 dark:text-gray-400",
+      bgColor: "bg-gray-50 dark:bg-gray-900/20"
+    }
+  ];
+
+  const handleAction = (route: string) => {
+    navigate(route);
+    toast({
+      title: "Navigation",
+      description: `Navigating to ${route}`,
+    });
+  };
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <Button 
-        variant="outline"
-        className="group flex h-auto flex-col items-start gap-4 p-6 bg-white hover:bg-gray-50 border-gray-100"
-        onClick={() => navigate('/admin/users')}
-      >
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F8FAFC]">
-          <UserPlus className="h-5 w-5 text-[#64748B]" />
+    <Card className="bg-white dark:bg-gray-800">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold">Quick Actions</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {actions.map((action) => (
+            <Button 
+              key={action.title}
+              variant="outline"
+              className="group flex h-auto flex-col items-start gap-4 p-6 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-100 dark:border-gray-700 transition-all duration-200"
+              onClick={() => handleAction(action.route)}
+            >
+              <div className={cn(
+                "flex h-12 w-12 items-center justify-center rounded-full transition-colors",
+                action.bgColor
+              )}>
+                <action.icon className={cn("h-6 w-6", action.color)} />
+              </div>
+              <div className="space-y-1">
+                <div className="font-medium text-gray-900 dark:text-gray-100">{action.title}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">{action.description}</div>
+              </div>
+            </Button>
+          ))}
         </div>
-        <div className="space-y-1">
-          <div className="font-medium text-gray-900">Add Manager</div>
-          <div className="text-sm text-[#64748B]">Create new property manager</div>
-        </div>
-      </Button>
-
-      <Button 
-        variant="outline"
-        className="group flex h-auto flex-col items-start gap-4 p-6 bg-white hover:bg-gray-50 border-gray-100"
-      >
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F8FAFC]">
-          <FileText className="h-5 w-5 text-[#64748B]" />
-        </div>
-        <div className="space-y-1">
-          <div className="font-medium text-gray-900">Review Leases</div>
-          <div className="text-sm text-[#64748B]">3 leases pending review</div>
-        </div>
-      </Button>
-
-      <Button 
-        variant="outline"
-        className="group flex h-auto flex-col items-start gap-4 p-6 bg-white hover:bg-gray-50 border-gray-100"
-      >
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F8FAFC]">
-          <Wrench className="h-5 w-5 text-[#64748B]" />
-        </div>
-        <div className="space-y-1">
-          <div className="font-medium text-gray-900">Maintenance</div>
-          <div className="text-sm text-[#64748B]">View maintenance requests</div>
-        </div>
-      </Button>
-
-      <Button 
-        variant="outline"
-        className="group flex h-auto flex-col items-start gap-4 p-6 bg-white hover:bg-gray-50 border-gray-100"
-      >
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F8FAFC]">
-          <Building2 className="h-5 w-5 text-[#64748B]" />
-        </div>
-        <div className="space-y-1">
-          <div className="font-medium text-gray-900">Properties</div>
-          <div className="text-sm text-[#64748B]">Manage properties</div>
-        </div>
-      </Button>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
