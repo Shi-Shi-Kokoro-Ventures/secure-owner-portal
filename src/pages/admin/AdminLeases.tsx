@@ -71,9 +71,11 @@ const AdminLeases = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-6 p-6">
+      <div className="space-y-6 p-6 animate-in fade-in duration-500">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Lease Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            Lease Management
+          </h1>
           <p className="text-muted-foreground mt-2">
             Manage and track all property leases
           </p>
@@ -81,7 +83,7 @@ const AdminLeases = () => {
 
         {Array.isArray(leases) && <LeaseMetrics leases={leases} />}
         
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
           <LeasesTable 
             leases={leases || []} 
             isLoading={isLoading}
