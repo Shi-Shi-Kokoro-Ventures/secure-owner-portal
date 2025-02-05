@@ -1,8 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardMetrics } from "@/components/owner/DashboardMetrics";
 import { QuickActions } from "@/components/owner/QuickActions";
-import { LeaseReviewSection } from "@/components/owner/LeaseReviewSection";
-import { ApplicationReviewSection } from "@/components/owner/ApplicationReviewSection";
 import {
   LineChart,
   Line,
@@ -89,11 +87,6 @@ const OwnerDashboard = () => {
           </Card>
 
           <QuickActions />
-        </div>
-
-        <div className="grid gap-8 md:grid-cols-2">
-          <LeaseReviewSection />
-          <ApplicationReviewSection />
         </div>
       </div>
     </div>
