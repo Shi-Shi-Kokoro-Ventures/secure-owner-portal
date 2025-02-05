@@ -7,7 +7,7 @@ import { MessageCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [aiChatOpen, setAiChatOpen] = useState(false);
 
   return (
