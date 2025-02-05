@@ -14,97 +14,30 @@ import {
 import {
   LayoutDashboard,
   FileText,
-  AlertTriangle,
-  UserPlus,
   DollarSign,
-  Wrench,
-  Award,
-  BarChart3,
+  ChartBar,
+  MessageSquare,
+  Settings,
 } from "lucide-react";
 import { logger } from "@/utils/logger";
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 
 interface SidebarProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const getNavigationItems = (role: string | undefined) => {
-  const baseItems = [
-    { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  ];
-
-  const adminPmOwnerItems = [
-    { name: "Active Leases", href: "/admin/leases", icon: FileText },
-    { name: "Expiring Leases", href: "/admin/leases/expiring", icon: AlertTriangle },
-    { name: "Lease Applications", href: "/admin/leases/applications", icon: UserPlus },
-  ];
-
-  const adminPmTenantItems = [
-    { name: "Payments & Stripe", href: "/admin/financials", icon: DollarSign },
-    { name: "Maintenance Requests", href: "/admin/maintenance", icon: Wrench },
-    { name: "Tenant Rewards", href: "/admin/rewards", icon: Award },
-  ];
-
-  const adminPmOwnerReportsItem = [
-    { name: "Reports & Compliance", href: "/admin/reports", icon: BarChart3 },
-  ];
-
-  if (!role) return baseItems;
-
-  switch (role) {
-    case 'admin':
-      return [
-        ...baseItems,
-        ...adminPmOwnerItems,
-        ...adminPmTenantItems,
-        ...adminPmOwnerReportsItem,
-      ];
-    case 'property_manager':
-      return [
-        ...baseItems,
-        ...adminPmOwnerItems,
-        ...adminPmTenantItems,
-        ...adminPmOwnerReportsItem,
-      ];
-    case 'owner':
-      return [
-        ...baseItems,
-        ...adminPmOwnerItems,
-        ...adminPmOwnerReportsItem,
-      ];
-    case 'tenant':
-      return [
-        ...baseItems,
-        ...adminPmTenantItems,
-      ];
-    default:
-      return baseItems;
-  }
-};
+const navigation = [
+  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+  { name: "Leases", href: "/admin/leases", icon: FileText },
+  { name: "Payments", href: "/admin/financials", icon: DollarSign },
+  { name: "Reports", href: "/admin/reports", icon: ChartBar },
+  { name: "Messages", href: "/admin/messages", icon: MessageSquare },
+  { name: "Settings", href: "/admin/settings", icon: Settings },
+];
 
 export const AdminSidebar = ({ open, onOpenChange }: SidebarProps) => {
   const location = useLocation();
-
-  const { data: userRole } = useQuery({
-    queryKey: ['userRole'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-      
-      const { data } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-      
-      return data?.role;
-    }
-  });
-
-  const navigation = getNavigationItems(userRole);
 
   useEffect(() => {
     logger.info("AdminSidebar mounted", { open, currentPath: location.pathname });
