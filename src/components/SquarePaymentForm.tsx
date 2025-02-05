@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Info } from "lucide-react";
+import { testPaymentMethods } from "@/utils/testParameters";
 
 declare global {
   interface Window {
@@ -14,10 +15,10 @@ export function SquarePaymentForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [paymentInstance, setPaymentInstance] = useState<any>(null);
   const [card, setCard] = useState<any>(null);
+  const [isTestMode, setIsTestMode] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    // Load Square.js script
     const script = document.createElement("script");
     script.src = "https://sandbox.web.squarecdn.com/v1/square.js";
     script.type = "text/javascript";
@@ -41,8 +42,7 @@ export function SquarePaymentForm() {
     }
 
     try {
-      // These will be replaced with actual credentials later
-      const payments = window.Square.payments("SANDBOX_APP_ID", "SANDBOX_LOCATION_ID");
+      const payments = window.Square.payments("sandbox-sq0idb-SANDBOX-APP-ID", "SANDBOX-LOCATION-ID");
       setPaymentInstance(payments);
 
       const cardInstance = await payments.card();
@@ -99,6 +99,19 @@ export function SquarePaymentForm() {
         <CardDescription>
           Enter your card details to process the payment securely
         </CardDescription>
+        {isTestMode && (
+          <div className="mt-2 p-2 bg-blue-50 rounded-md">
+            <div className="flex items-center gap-2 text-sm text-blue-700">
+              <Info className="h-4 w-4" />
+              <span>Test Mode Active - Use test card numbers:</span>
+            </div>
+            <div className="mt-2 text-sm text-blue-600 space-y-1">
+              <p>Success: {testPaymentMethods.creditCards.visa.success}</p>
+              <p>Decline: {testPaymentMethods.creditCards.visa.decline}</p>
+              <p>CVV Failure: {testPaymentMethods.creditCards.visa.cvvFailure}</p>
+            </div>
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-6">
         <div 
