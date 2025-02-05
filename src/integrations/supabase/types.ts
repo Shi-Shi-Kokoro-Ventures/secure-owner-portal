@@ -104,6 +104,45 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_form_submissions: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          message: string
+          phone: string | null
+          property_count: number | null
+          status: Database["public"]["Enums"]["contact_form_status"] | null
+          updated_at: string
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          message: string
+          phone?: string | null
+          property_count?: number | null
+          status?: Database["public"]["Enums"]["contact_form_status"] | null
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          message?: string
+          phone?: string | null
+          property_count?: number | null
+          status?: Database["public"]["Enums"]["contact_form_status"] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -1201,6 +1240,7 @@ export type Database = {
         | "property_managers"
         | "admins"
       announcement_urgency: "low" | "medium" | "high" | "critical"
+      contact_form_status: "pending" | "in_progress" | "completed"
       conversation_type:
         | "tenant-manager"
         | "tenant-owner"

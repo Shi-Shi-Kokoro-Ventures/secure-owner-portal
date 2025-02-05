@@ -11,17 +11,19 @@ import {
   DollarSign,
   Phone,
   Mail,
-  CheckCircle2
+  CheckCircle2,
+  ArrowRight
 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const Services = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleGetStarted = () => {
-    // For now, navigate to contact section and show toast
-    navigate("/#contact");
+    // Navigate to home page contact section
+    navigate('/?scrollTo=contact');
+    
     toast({
       title: "Thank you for your interest!",
       description: "We'll be in touch with you shortly to discuss our services.",
@@ -98,10 +100,11 @@ const Services = () => {
                     ))}
                   </ul>
                   <Button 
-                    className="w-full mt-6"
+                    className="w-full mt-6 gap-2"
                     onClick={handleGetStarted}
                   >
                     Get Started
+                    <ArrowRight className="w-4 h-4" />
                   </Button>
                 </CardContent>
               </Card>
