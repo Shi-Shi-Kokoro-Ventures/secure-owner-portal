@@ -24,31 +24,22 @@ const PaymentForm = ({ amount = 1200, leaseId = "" }) => {
     setIsLoading(true);
     
     try {
-      const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: elements.getElement(PaymentElement)!,
-      });
-
-      if (paymentMethodError) {
-        throw new Error(paymentMethodError.message);
-      }
-
-      const { data, error } = await supabase.functions.invoke('stripe-payment', {
-        body: {
-          amount,
-          paymentMethodId: paymentMethod.id,
-          leaseId,
+      // Use confirmPayment instead of createPaymentMethod
+      const result = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/payment-confirmation`,
         },
       });
 
-      if (error) throw error;
-
-      if (data.status === 'succeeded') {
-        toast({
-          title: "Payment Successful",
-          description: "Your payment has been processed successfully.",
-        });
+      if (result.error) {
+        throw new Error(result.error.message);
       }
+
+      toast({
+        title: "Payment Successful",
+        description: "Your payment has been processed successfully.",
+      });
     } catch (error) {
       console.error('Payment error:', error);
       toast({
@@ -77,7 +68,7 @@ const PaymentForm = ({ amount = 1200, leaseId = "" }) => {
         ) : (
           <>
             <CreditCard className="mr-2 h-4 w-4" />
-            Pay ${amount}
+            Pay ${amount / 100}
           </>
         )}
       </Button>
@@ -86,12 +77,23 @@ const PaymentForm = ({ amount = 1200, leaseId = "" }) => {
 };
 
 export function StripePaymentForm() {
-  const { toast } = useToast();
   const [clientSecret, setClientSecret] = useState("");
 
   useEffect(() => {
-    // Initialize Stripe payment intent here if needed
-    // This would typically happen when the component mounts
+    const createPaymentIntent = async () => {
+      const { data, error } = await supabase.functions.invoke('stripe-payment', {
+        body: { amount: 1200, mode: 'setup' },
+      });
+
+      if (error) {
+        console.error('Error creating payment intent:', error);
+        return;
+      }
+
+      setClientSecret(data.clientSecret);
+    };
+
+    createPaymentIntent();
   }, []);
 
   return (
