@@ -451,31 +451,46 @@ export type Database = {
       theme_settings: {
         Row: {
           accent_color: string
+          animation_speed: string | null
           background_color: string
+          border_radius: string | null
           created_at: string
+          dark_mode_enabled: boolean | null
+          font_size_base: string | null
           id: string
           primary_color: string
           secondary_color: string
+          spacing_unit: string | null
           text_color: string
           updated_at: string
         }
         Insert: {
           accent_color?: string
+          animation_speed?: string | null
           background_color?: string
+          border_radius?: string | null
           created_at?: string
+          dark_mode_enabled?: boolean | null
+          font_size_base?: string | null
           id?: string
           primary_color?: string
           secondary_color?: string
+          spacing_unit?: string | null
           text_color?: string
           updated_at?: string
         }
         Update: {
           accent_color?: string
+          animation_speed?: string | null
           background_color?: string
+          border_radius?: string | null
           created_at?: string
+          dark_mode_enabled?: boolean | null
+          font_size_base?: string | null
           id?: string
           primary_color?: string
           secondary_color?: string
+          spacing_unit?: string | null
           text_color?: string
           updated_at?: string
         }
