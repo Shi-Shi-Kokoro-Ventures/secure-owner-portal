@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 
@@ -7,6 +6,7 @@ interface LeaseMetricCardProps {
   value: string | number;
   icon: LucideIcon;
   iconColor?: string;
+  description?: string;
 }
 
 export const LeaseMetricCard = ({
@@ -14,6 +14,7 @@ export const LeaseMetricCard = ({
   value,
   icon: Icon,
   iconColor = "text-blue-500",
+  description,
 }: LeaseMetricCardProps) => {
   return (
     <Card>
@@ -23,6 +24,9 @@ export const LeaseMetricCard = ({
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
+        {description && (
+          <p className="text-xs text-muted-foreground mt-1">{description}</p>
+        )}
       </CardContent>
     </Card>
   );
