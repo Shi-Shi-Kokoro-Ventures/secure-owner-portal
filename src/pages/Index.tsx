@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,6 +22,19 @@ import {
 
 const Index = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Handle scrollTo parameter
+    const params = new URLSearchParams(location.search);
+    const scrollTo = params.get('scrollTo');
+    if (scrollTo === 'contact') {
+      const contactSection = document.getElementById('contact');
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location]);
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -34,8 +47,6 @@ const Index = () => {
   const handleLearnMoreClick = () => {
     navigate("/services");
   };
-
-  // ... keep existing code (JSX for navigation bar and hero section)
 
   return (
     <div className="min-h-screen bg-white">

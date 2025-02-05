@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,16 +15,16 @@ import {
   ArrowRight
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const Services = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleGetStarted = React.useCallback(() => {
+  const handleGetStarted = useCallback(() => {
     try {
-      // Navigate to home page contact section
-      navigate('/?scrollTo=contact');
+      // Navigate to home page and scroll to contact section
+      navigate('/?scrollTo=contact', { replace: true });
       
       toast({
         title: "Thank you for your interest!",
