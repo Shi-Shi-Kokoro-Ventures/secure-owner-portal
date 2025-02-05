@@ -2,8 +2,38 @@ import { Bell, HelpCircle, MessageCircle, Search, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "./ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handleMessages = () => {
+    navigate("/tenant/communications");
+    toast({
+      title: "Messages",
+      description: "Navigating to communications page",
+    });
+  };
+
+  const handleNotifications = () => {
+    navigate("/notifications");
+    toast({
+      title: "Notifications",
+      description: "Navigating to notifications page",
+    });
+  };
+
+  const handleHelp = () => {
+    toast({
+      title: "Help Center",
+      description: "Opening help documentation",
+    });
+    // This will be replaced with actual help documentation link
+    window.open("/help", "_blank");
+  };
+
   return (
     <div className="border-b bg-white shadow-sm">
       <div className="flex h-16 items-center px-4 gap-4">
@@ -26,7 +56,12 @@ export const Header = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:scale-110 transition-transform">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="hover:scale-110 transition-transform"
+                  onClick={handleMessages}
+                >
                   <MessageCircle className="h-5 w-5" />
                 </Button>
               </TooltipTrigger>
@@ -39,7 +74,12 @@ export const Header = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:scale-110 transition-transform">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="hover:scale-110 transition-transform"
+                  onClick={handleNotifications}
+                >
                   <Bell className="h-5 w-5" />
                 </Button>
               </TooltipTrigger>
@@ -52,7 +92,12 @@ export const Header = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:scale-110 transition-transform">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="hover:scale-110 transition-transform"
+                  onClick={handleHelp}
+                >
                   <HelpCircle className="h-5 w-5" />
                 </Button>
               </TooltipTrigger>
