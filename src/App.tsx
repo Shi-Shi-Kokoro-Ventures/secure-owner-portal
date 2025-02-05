@@ -1,6 +1,6 @@
 
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { commonRoutes } from "./routes/commonRoutes";
@@ -26,22 +26,22 @@ const App: React.FC = () => {
         <Router>
           <Routes>
             {commonRoutes.map((route) => (
-              <Route key={route.path || 'index'} path={route.path} element={route.element} />
+              <Route key={route.path || 'index'} {...route} />
             ))}
             {propertyManagerRoutes.map((route) => (
-              <Route key={route.path || 'pm-index'} path={route.path} element={route.element} />
+              <Route key={route.path || 'pm-index'} {...route} />
             ))}
             {tenantRoutes.map((route) => (
-              <Route key={route.path || 'tenant-index'} path={route.path} element={route.element} />
+              <Route key={route.path || 'tenant-index'} {...route} />
             ))}
             {ownerRoutes.map((route) => (
-              <Route key={route.path || 'owner-index'} path={route.path} element={route.element} />
+              <Route key={route.path || 'owner-index'} {...route} />
             ))}
             {adminRoutes.map((route) => (
-              <Route key={route.path || 'admin-index'} path={route.path} element={route.element} />
+              <Route key={route.path || 'admin-index'} {...route} />
             ))}
             {vendorRoutes.map((route) => (
-              <Route key={route.path || 'vendor-index'} path={route.path} element={route.element} />
+              <Route key={route.path || 'vendor-index'} {...route} />
             ))}
           </Routes>
           <Toaster />

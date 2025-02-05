@@ -12,12 +12,12 @@ import VendorSettings from "@/pages/vendor/VendorSettings";
 
 export const vendorRoutes: RouteObject[] = [
   {
-    path: "/vendor",
+    path: "vendor",
     element: <ProtectedRoute><VendorLayout /></ProtectedRoute>,
     children: [
       {
         index: true,
-        element: <Navigate to="/vendor/dashboard" replace />
+        element: <Navigate to="dashboard" replace />
       },
       {
         path: "dashboard",
