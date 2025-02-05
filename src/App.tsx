@@ -38,6 +38,8 @@ import OwnerMaintenanceDetail from "@/pages/owner/OwnerMaintenanceDetail";
 import Notifications from "@/pages/Notifications";
 import Help from "@/pages/Help";
 
+import Applications from "@/pages/owner/Applications";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -168,6 +170,7 @@ export default function App() {
             <Route path="/owner/maintenance" element={<OwnerMaintenance />} />
             <Route path="/owner/maintenance/:id" element={<OwnerMaintenanceDetail />} />
             <Route path="/owner/payments" element={<OwnerPayments />} />
+            <Route path="/owner/applications" element={<Applications />} />
           </Route>
 
           {/* Tenant routes - protected and wrapped in TenantLayout */}

@@ -1,147 +1,43 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  BanknoteIcon, 
-  ClipboardCheck, 
-  FileText, 
-  Wrench,
-  UserPlus,
-  MessageSquare,
-  Upload,
-  AlertCircle
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ClipboardCheck, FileText, Wrench } from "lucide-react";
 
 export const QuickActions = () => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
-  const handleAction = (action: string) => {
-    toast({
-      title: action,
-      description: `${action} functionality coming soon`,
-    });
-  };
-
   return (
     <Card className="transition-all duration-300 hover:shadow-lg">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">Quick Actions</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 gap-4">
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('Request Funds Transfer')}
-          >
-            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <BanknoteIcon className="h-5 w-5 text-primary" />
-            </div>
-            <div className="text-left">
-              <div className="font-medium text-gray-900">Request Funds Transfer</div>
-              <div className="text-sm text-muted-foreground">Transfer available funds to your account</div>
-            </div>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => navigate('/owner/maintenance')}
-          >
-            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <Wrench className="h-5 w-5 text-primary" />
-            </div>
-            <div className="text-left">
-              <div className="font-medium text-gray-900">Maintenance Requests</div>
-              <div className="text-sm text-muted-foreground">Review and approve work orders</div>
-            </div>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('View Lease Renewals')}
-          >
-            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <FileText className="h-5 w-5 text-primary" />
-            </div>
-            <div className="text-left">
-              <div className="font-medium text-gray-900">Lease Renewals</div>
-              <div className="text-sm text-muted-foreground">Review upcoming renewals</div>
-            </div>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('Review Applications')}
-          >
-            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <UserPlus className="h-5 w-5 text-primary" />
-            </div>
-            <div className="text-left">
-              <div className="font-medium text-gray-900">Review Applications</div>
-              <div className="text-sm text-muted-foreground">Screen new tenant applications</div>
-            </div>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('Send Messages')}
-          >
-            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <MessageSquare className="h-5 w-5 text-primary" />
-            </div>
-            <div className="text-left">
-              <div className="font-medium text-gray-900">Send Messages</div>
-              <div className="text-sm text-muted-foreground">Communicate with tenants</div>
-            </div>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('Upload Documents')}
-          >
-            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <Upload className="h-5 w-5 text-primary" />
-            </div>
-            <div className="text-left">
-              <div className="font-medium text-gray-900">Upload Documents</div>
-              <div className="text-sm text-muted-foreground">Add property documents</div>
-            </div>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('View Alerts')}
-          >
-            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <AlertCircle className="h-5 w-5 text-primary" />
-            </div>
-            <div className="text-left">
-              <div className="font-medium text-gray-900">View Alerts</div>
-              <div className="text-sm text-muted-foreground">Check important notifications</div>
-            </div>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-3 h-auto py-4 px-4 justify-start hover:bg-gray-50 transition-all duration-200 group"
-            onClick={() => handleAction('Approve Applications')}
-          >
-            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+        <div className="space-y-4">
+          <Link to="/owner/applications">
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2"
+            >
               <ClipboardCheck className="h-5 w-5 text-primary" />
-            </div>
-            <div className="text-left">
-              <div className="font-medium text-gray-900">Approve Applications</div>
-              <div className="text-sm text-muted-foreground">Review pending approvals</div>
-            </div>
-          </Button>
+              Review Applications
+            </Button>
+          </Link>
+          <Link to="/owner/maintenance">
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2"
+            >
+              <Wrench className="h-5 w-5 text-primary" />
+              View Maintenance Requests
+            </Button>
+          </Link>
+          <Link to="/owner/documents">
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2"
+            >
+              <FileText className="h-5 w-5 text-primary" />
+              Access Documents
+            </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>

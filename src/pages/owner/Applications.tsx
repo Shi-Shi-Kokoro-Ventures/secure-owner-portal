@@ -1,104 +1,92 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { User, Check, X, ArrowRight } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ClipboardCheck, Download, Filter, Printer } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Applications = () => {
   const { toast } = useToast();
 
-  const handleAction = (action: string, applicant: string) => {
+  const handleAction = (action: string) => {
     toast({
-      title: `Application ${action}`,
-      description: `${applicant}'s application has been ${action.toLowerCase()}`,
+      title: action,
+      description: `${action} functionality coming soon`,
     });
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
-          Application Reviews
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Review and manage tenant applications
-        </p>
-      </div>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Applications</h1>
+          <p className="text-muted-foreground">
+            Manage and review rental applications
+          </p>
+        </div>
 
-      <Card className="transition-all duration-300 hover:shadow-lg">
-        <CardContent className="pt-6">
-          <div className="space-y-4">
-            <div className="grid gap-4">
-              <div className="flex items-center justify-between p-4 rounded-lg bg-secondary/10">
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">Michael Brown</p>
-                  <p className="text-sm text-muted-foreground">Unit 304 - 2 Bed</p>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                    onClick={() => handleAction("Approved", "Michael Brown")}
-                  >
-                    <Check className="h-4 w-4 text-green-500" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                    onClick={() => handleAction("Declined", "Michael Brown")}
-                  >
-                    <X className="h-4 w-4 text-red-500" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                    onClick={() => handleAction("Reviewed", "Michael Brown")}
-                  >
-                    Details
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between p-4 rounded-lg bg-secondary/10">
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">Emily Wilson</p>
-                  <p className="text-sm text-muted-foreground">Unit 102 - 1 Bed</p>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                    onClick={() => handleAction("Approved", "Emily Wilson")}
-                  >
-                    <Check className="h-4 w-4 text-green-500" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                    onClick={() => handleAction("Declined", "Emily Wilson")}
-                  >
-                    <X className="h-4 w-4 text-red-500" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                    onClick={() => handleAction("Reviewed", "Emily Wilson")}
-                  >
-                    Details
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
+        {/* Summary Cards */}
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-lg border p-4">
+            <div className="flex items-center gap-2">
+              <ClipboardCheck className="h-5 w-5 text-primary" />
+              <span className="text-sm font-medium">New Applications</span>
             </div>
+            <p className="mt-2 text-2xl font-bold">0</p>
           </div>
-        </CardContent>
-      </Card>
+          <div className="rounded-lg border p-4">
+            <div className="flex items-center gap-2">
+              <ClipboardCheck className="h-5 w-5 text-yellow-600" />
+              <span className="text-sm font-medium">In Review</span>
+            </div>
+            <p className="mt-2 text-2xl font-bold">0</p>
+          </div>
+          <div className="rounded-lg border p-4">
+            <div className="flex items-center gap-2">
+              <ClipboardCheck className="h-5 w-5 text-green-600" />
+              <span className="text-sm font-medium">Approved</span>
+            </div>
+            <p className="mt-2 text-2xl font-bold">0</p>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => handleAction('Filter')}>
+            <Filter className="h-4 w-4 mr-2" />
+            Filter
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => handleAction('Print')}>
+            <Printer className="h-4 w-4 mr-2" />
+            Print
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => handleAction('Export')}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+        </div>
+
+        {/* Applications Table */}
+        <div className="rounded-lg border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Applicant Name</TableHead>
+                <TableHead>Property</TableHead>
+                <TableHead>Submission Date</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                  No applications found
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </div>
     </div>
   );
 };
