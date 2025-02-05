@@ -137,38 +137,38 @@ export const AddTenantForm = () => {
           </CollapsibleContent>
         </Collapsible>
 
-      <Collapsible defaultOpen className="border rounded-md">
-        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-[#4B7797] text-white rounded-t-md">
-          <span className="font-semibold">Tenant Portal</span>
-          <HelpCircle className="h-5 w-5" />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="p-4 space-y-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Checkbox id="portal-access" />
-            <label htmlFor="portal-access" className="flex items-center gap-1">
-              Tenant Portal Access
-              <Tooltip>
-                <TooltipTrigger>
-                  <HelpCircle className="h-4 w-4" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  Enable tenant portal access
-                </TooltipContent>
-              </Tooltip>
-            </label>
-          </div>
-          <div className="flex justify-between items-center">
-            <div className="text-gray-500">- not set up -</div>
-            <Button 
-              variant="secondary" 
-              className="bg-[#6B4E9D] text-white hover:bg-[#5a417f]"
-              onClick={handleLoginAsTenant}
-            >
-              Log in as Tenant
-            </Button>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+        <Collapsible defaultOpen className="border rounded-md">
+          <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-[#4B7797] text-white rounded-t-md">
+            <span className="font-semibold">Tenant Portal</span>
+            <HelpCircle className="h-5 w-5" />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="p-4 space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Checkbox id="portal-access" />
+              <label htmlFor="portal-access" className="flex items-center gap-1">
+                Tenant Portal Access
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HelpCircle className="h-4 w-4" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Enable tenant portal access
+                  </TooltipContent>
+                </Tooltip>
+              </label>
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="text-gray-500">- not set up -</div>
+              <Button 
+                variant="secondary" 
+                className="bg-[#6B4E9D] text-white hover:bg-[#5a417f]"
+                onClick={handleLoginAsTenant}
+              >
+                Log in as Tenant
+              </Button>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         <Collapsible defaultOpen className="border rounded-md">
           <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-[#4B7797] text-white rounded-t-md">
@@ -200,42 +200,43 @@ export const AddTenantForm = () => {
           </CollapsibleContent>
         </Collapsible>
 
-      <Collapsible defaultOpen className="border rounded-md">
-        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-[#4B7797] text-white rounded-t-md">
-          <span className="font-semibold">Custom Fields</span>
-          <HelpCircle className="h-5 w-5" />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="p-4">
-          <div className="text-center text-gray-500 py-4">
-            No custom fields found for this record.
+        <Collapsible defaultOpen className="border rounded-md">
+          <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-[#4B7797] text-white rounded-t-md">
+            <span className="font-semibold">Custom Fields</span>
+            <HelpCircle className="h-5 w-5" />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="p-4">
+            <div className="text-center text-gray-500 py-4">
+              No custom fields found for this record.
+            </div>
+            <div className="flex justify-center">
+              <Button 
+                variant="secondary"
+                onClick={handleManageCustomFields}
+              >
+                Manage Custom Fields
+              </Button>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        <div className="flex justify-between items-center pt-4 border-t">
+          <div className="space-x-4 text-sm text-[#0072bc]">
+            <a href="#" className="hover:underline">Terms & Conditions</a>
+            <span>|</span>
+            <a href="#" className="hover:underline">Knowledge Base</a>
+            <span>|</span>
+            <a href="#" className="hover:underline">Refer a Friend</a>
           </div>
-          <div className="flex justify-center">
+          <div className="space-x-4">
+            <Button variant="outline" onClick={handleCancel}>Cancel</Button>
             <Button 
-              variant="secondary"
-              onClick={handleManageCustomFields}
+              className="bg-[#0072bc] hover:bg-[#005a96]"
+              onClick={handleSubmit}
             >
-              Manage Custom Fields
+              Add Tenant
             </Button>
           </div>
-        </CollapsibleContent>
-      </Collapsible>
-
-      <div className="flex justify-between items-center pt-4 border-t">
-        <div className="space-x-4 text-sm text-[#0072bc]">
-          <a href="#" className="hover:underline">Terms & Conditions</a>
-          <span>|</span>
-          <a href="#" className="hover:underline">Knowledge Base</a>
-          <span>|</span>
-          <a href="#" className="hover:underline">Refer a Friend</a>
-        </div>
-        <div className="space-x-4">
-          <Button variant="outline" onClick={handleCancel}>Cancel</Button>
-          <Button 
-            className="bg-[#0072bc] hover:bg-[#005a96]"
-            onClick={handleSubmit}
-          >
-            Add Tenant
-          </Button>
         </div>
       </div>
     </div>
