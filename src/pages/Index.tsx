@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   Building2, 
@@ -33,6 +34,8 @@ const Index = () => {
   const handleLearnMoreClick = () => {
     navigate("/services");
   };
+
+  // ... keep existing code (JSX for navigation bar and hero section)
 
   return (
     <div className="min-h-screen bg-white">
