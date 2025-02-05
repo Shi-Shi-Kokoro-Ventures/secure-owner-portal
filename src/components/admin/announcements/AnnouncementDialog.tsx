@@ -35,7 +35,7 @@ export const AnnouncementDialog = () => {
     try {
       const { data, error } = await supabase
         .from("system_announcements")
-        .insert({
+        .insert([{
           title,
           message,
           audience,
@@ -43,7 +43,7 @@ export const AnnouncementDialog = () => {
           is_pinned: isPinned,
           is_scheduled: isScheduled,
           scheduled_time: isScheduled ? scheduledTime : null,
-        })
+        }])
         .select()
         .single();
 
