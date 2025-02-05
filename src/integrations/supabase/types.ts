@@ -615,7 +615,7 @@ export type Database = {
       payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal"
       payment_status: "pending" | "completed" | "failed"
       unit_status: "vacant" | "occupied" | "under_maintenance"
-      user_role: "tenant" | "property_manager" | "owner"
+      user_role: "tenant" | "property_manager" | "owner" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
