@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
@@ -12,8 +13,21 @@ import {
   Mail,
   CheckCircle2
 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const Services = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleGetStarted = () => {
+    // For now, navigate to contact section and show toast
+    navigate("/#contact");
+    toast({
+      title: "Thank you for your interest!",
+      description: "We'll be in touch with you shortly to discuss our services.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -83,7 +97,12 @@ const Services = () => {
                       </li>
                     ))}
                   </ul>
-                  <Button className="w-full mt-6">Get Started</Button>
+                  <Button 
+                    className="w-full mt-6"
+                    onClick={handleGetStarted}
+                  >
+                    Get Started
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -145,11 +164,18 @@ const Services = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-8">Let's Work Together!</h2>
           <div className="flex flex-col md:flex-row justify-center items-center gap-6">
-            <Button className="flex items-center gap-2">
+            <Button 
+              className="flex items-center gap-2"
+              onClick={handleGetStarted}
+            >
               <Phone className="w-4 h-4" />
               Contact Us
             </Button>
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={() => window.location.href = "mailto:info@shishikokoroproperty.com"}
+            >
               <Mail className="w-4 h-4" />
               info@shishikokoroproperty.com
             </Button>
