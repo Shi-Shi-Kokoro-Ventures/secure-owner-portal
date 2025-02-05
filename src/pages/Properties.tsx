@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { useToast } from "@/hooks/use-toast";
 import { AddPropertyDialog } from "@/components/AddPropertyDialog";
+import { cn } from "@/lib/utils";
 
 const summaryData = [
   { month: 'Mar', value: 0 },
@@ -78,58 +79,63 @@ const Properties = () => {
 
   return (
     <Layout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight">Summary</h1>
+      <div className="space-y-6 animate-fade-in">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">Summary</h1>
           <div className="flex items-center gap-4">
             <select 
-              className="rounded-md border border-gray-300 px-3 py-1.5"
+              className="rounded-md border border-gray-300 px-3 py-1.5 bg-white shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               onChange={handlePropertyTypeChange}
             >
               <option>All Properties</option>
               <option>Residential</option>
               <option>Commercial</option>
             </select>
-            <Button variant="outline" size="sm" onClick={handleFilterClick}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleFilterClick}
+              className="hover:bg-gray-50 transition-colors"
+            >
               <Filter className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-4 bg-blue-600 text-white">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="p-4 bg-gradient-to-br from-blue-600 to-blue-700 text-white hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-4xl font-bold">1</p>
-                <p className="text-sm">Vacancy</p>
+                <p className="text-sm opacity-90">Vacancy</p>
               </div>
               <Building2 className="h-8 w-8 opacity-80" />
             </div>
           </Card>
-          <Card className="p-4 bg-yellow-400">
+          <Card className="p-4 bg-gradient-to-br from-yellow-400 to-yellow-500 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-4xl font-bold">0</p>
-                <p className="text-sm">Leases Expire Soon</p>
+                <p className="text-sm opacity-90">Leases Expire Soon</p>
               </div>
               <FileText className="h-8 w-8 opacity-80" />
             </div>
           </Card>
-          <Card className="p-4 bg-red-400 text-white">
+          <Card className="p-4 bg-gradient-to-br from-red-400 to-red-500 text-white hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-4xl font-bold">0</p>
-                <p className="text-sm">Rent Overdue</p>
+                <p className="text-sm opacity-90">Rent Overdue</p>
               </div>
               <DollarSign className="h-8 w-8 opacity-80" />
             </div>
           </Card>
-          <Card className="p-4 bg-emerald-500 text-white">
+          <Card className="p-4 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-4xl font-bold">0</p>
-                <p className="text-sm">Open Work Orders</p>
+                <p className="text-sm opacity-90">Open Work Orders</p>
               </div>
               <Wrench className="h-8 w-8 opacity-80" />
             </div>
@@ -138,15 +144,21 @@ const Properties = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Property Summary Chart */}
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-4">Property Summary</h2>
+          <Card className="p-6 hover:shadow-lg transition-all duration-300">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">Property Summary</h2>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={summaryData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Line type="monotone" dataKey="value" stroke="#8884d8" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis dataKey="month" stroke="#6B7280" />
+                  <YAxis stroke="#6B7280" />
+                  <Line 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#1a4f7c"
+                    strokeWidth={2}
+                    dot={{ fill: '#1a4f7c' }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -154,25 +166,25 @@ const Properties = () => {
           </Card>
 
           {/* Net Income Summary */}
-          <Card className="p-6">
+          <Card className="p-6 hover:shadow-lg transition-all duration-300">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Net Income Summary</h2>
-              <select className="rounded-md border border-gray-300 px-3 py-1.5">
+              <h2 className="text-lg font-semibold text-gray-900">Net Income Summary</h2>
+              <select className="rounded-md border border-gray-300 px-3 py-1.5 bg-white shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors">
                 <option>This Year</option>
               </select>
             </div>
             <div className="space-y-4">
-              <div className="flex justify-between py-2">
-                <span>Income</span>
-                <span>$0.00</span>
+              <div className="flex justify-between py-2 border-b">
+                <span className="text-gray-600">Income</span>
+                <span className="font-medium text-gray-900">$0.00</span>
               </div>
-              <div className="flex justify-between py-2">
-                <span>Expenses</span>
-                <span>$0.00</span>
+              <div className="flex justify-between py-2 border-b">
+                <span className="text-gray-600">Expenses</span>
+                <span className="font-medium text-gray-900">$0.00</span>
               </div>
-              <div className="flex justify-between py-2 bg-gray-50">
-                <span>Net Income</span>
-                <span>$0.00</span>
+              <div className="flex justify-between py-2 bg-gray-50 rounded-lg px-3">
+                <span className="font-medium text-gray-900">Net Income</span>
+                <span className="font-medium text-gray-900">$0.00</span>
               </div>
             </div>
           </Card>
@@ -180,93 +192,89 @@ const Properties = () => {
 
         {/* System Updates & News */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-4">System Updates</h2>
+          <Card className="p-6 hover:shadow-lg transition-all duration-300">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">System Updates</h2>
             <div className="space-y-4">
               {systemUpdates.map((update, index) => (
-                <div key={index} className="flex gap-4">
+                <div key={index} className="flex gap-4 group">
                   <span className="text-sm text-gray-500 whitespace-nowrap">{update.date}</span>
-                  <p className="text-sm text-blue-600 hover:underline cursor-pointer">{update.title}</p>
+                  <p className="text-sm text-blue-600 group-hover:text-blue-700 cursor-pointer transition-colors">{update.title}</p>
                 </div>
               ))}
             </div>
           </Card>
 
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-4">News & Tips</h2>
+          <Card className="p-6 hover:shadow-lg transition-all duration-300">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">News & Tips</h2>
             <div className="space-y-4">
               {newsAndTips.map((news, index) => (
-                <div key={index} className="flex gap-4">
+                <div key={index} className="flex gap-4 group">
                   <span className="text-sm text-gray-500 whitespace-nowrap">{news.date}</span>
-                  <p className="text-sm text-blue-600 hover:underline cursor-pointer">{news.title}</p>
+                  <p className="text-sm text-blue-600 group-hover:text-blue-700 cursor-pointer transition-colors">{news.title}</p>
                 </div>
               ))}
             </div>
-            <Button variant="link" className="mt-4 text-blue-600 p-0">
+            <Button variant="link" className="mt-4 text-blue-600 p-0 hover:text-blue-700 transition-colors">
               more blog posts...
             </Button>
           </Card>
         </div>
 
         {/* Quick Access */}
-        <Card className="p-6">
-          <h2 className="text-lg font-semibold mb-4">Quick Access</h2>
+        <Card className="p-6 hover:shadow-lg transition-all duration-300">
+          <h2 className="text-lg font-semibold mb-4 text-gray-900">Quick Access</h2>
           <div className="flex flex-wrap gap-4">
-            <Button 
-              variant="link" 
-              className="text-blue-600"
-              onClick={() => handleQuickAccessClick('File Library')}
-            >
-              File Library
-            </Button>
-            <Button 
-              variant="link" 
-              className="text-blue-600"
-              onClick={() => handleQuickAccessClick('Inspections')}
-            >
-              Inspections
-            </Button>
-            <Button 
-              variant="link" 
-              className="text-blue-600"
-              onClick={() => handleQuickAccessClick('Signature Requests')}
-            >
-              Signature Requests
-            </Button>
-            <Button 
-              variant="link" 
-              className="text-blue-600"
-              onClick={() => handleQuickAccessClick('Tenant Screening')}
-            >
-              Tenant Screening
-            </Button>
+            {['File Library', 'Inspections', 'Signature Requests', 'Tenant Screening'].map((action) => (
+              <Button 
+                key={action}
+                variant="link" 
+                className="text-blue-600 hover:text-blue-700 transition-colors"
+                onClick={() => handleQuickAccessClick(action)}
+              >
+                {action}
+              </Button>
+            ))}
           </div>
         </Card>
 
         {/* Properties Table Section */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Properties</h2>
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <h2 className="text-xl font-semibold text-gray-900">Properties</h2>
+          <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
               <select 
-                className="rounded-md border border-gray-300 px-3 py-1.5"
+                className="rounded-md border border-gray-300 px-3 py-1.5 bg-white shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                 onChange={handlePropertyTypeChange}
               >
                 <option>All</option>
                 <option>Vacant</option>
                 <option>Occupied</option>
               </select>
-              <Button variant="outline" size="sm" onClick={handleFilterClick}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleFilterClick}
+                className="hover:bg-gray-50 transition-colors"
+              >
                 <Filter className="mr-2 h-4 w-4" />
                 Filter
               </Button>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleViewListings}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleViewListings}
+                className="hover:bg-gray-50 transition-colors"
+              >
                 <ListFilter className="mr-2 h-4 w-4" />
                 View Listings (0)
               </Button>
-              <Button size="sm" onClick={handleAddProperty}>
+              <Button 
+                size="sm" 
+                onClick={handleAddProperty}
+                className="bg-primary hover:bg-primary/90 transition-colors"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add a Property
               </Button>
