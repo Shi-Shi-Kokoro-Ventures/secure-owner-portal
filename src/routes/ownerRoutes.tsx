@@ -20,19 +20,19 @@ export const ownerRoutes: RouteObject[] = [
     path: "/owner",
     element: <ProtectedRoute><OwnerLayout /></ProtectedRoute>,
     children: [
-      { path: "/owner", element: <OwnerDashboard /> },
-      { path: "/owner/dashboard", element: <OwnerDashboard /> },
-      { path: "/owner/properties", element: <OwnerProperties /> },
-      { path: "/owner/statements", element: <OwnerStatements /> },
-      { path: "/owner/documents", element: <OwnerDocuments /> },
-      { path: "/owner/reports", element: <OwnerReports /> },
-      { path: "/owner/communications", element: <OwnerCommunications /> },
-      { path: "/owner/settings", element: <OwnerSettings /> },
-      { path: "/owner/maintenance", element: <OwnerMaintenance /> },
-      { path: "/owner/maintenance/:id", element: <OwnerMaintenanceDetail /> },
-      { path: "/owner/payments", element: <OwnerPayments /> },
-      { path: "/owner/lease-renewals", element: <LeaseRenewals /> },
-      { path: "/owner/applications", element: <Applications /> }
+      { index: true, element: <OwnerDashboard /> },
+      { path: "dashboard", element: <OwnerDashboard /> },
+      { path: "properties", element: <OwnerProperties /> },
+      { path: "statements", element: <OwnerStatements /> },
+      { path: "documents", element: <OwnerDocuments /> },
+      { path: "reports", element: <OwnerReports /> },
+      { path: "communications", element: <OwnerCommunications /> },
+      { path: "settings", element: <OwnerSettings /> },
+      { path: "maintenance", element: <OwnerMaintenance /> },
+      { path: "maintenance/:id", element: <OwnerMaintenanceDetail /> },
+      { path: "payments", element: <OwnerPayments /> },
+      { path: "lease-renewals", element: <LeaseRenewals /> },
+      { path: "applications", element: <Applications /> }
     ]
   }
 ];
