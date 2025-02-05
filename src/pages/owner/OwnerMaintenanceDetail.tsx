@@ -63,7 +63,7 @@ const OwnerMaintenanceDetail = () => {
       const newUpdateObj = {
         date: currentDate,
         message: newUpdate,
-        author: "Property Manager",
+        author: "Property Owner",
       };
 
       setUpdates(prev => [...prev, newUpdateObj]);
