@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,6 +8,7 @@ import { propertyManagerRoutes } from "./routes/propertyManagerRoutes";
 import { tenantRoutes } from "./routes/tenantRoutes";
 import { ownerRoutes } from "./routes/ownerRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
+import { vendorRoutes } from "./routes/vendorRoutes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,6 +39,9 @@ const App: React.FC = () => {
             ))}
             {adminRoutes.map((route) => (
               <Route key={route.path || 'admin-index'} path={route.path} element={route.element} />
+            ))}
+            {vendorRoutes.map((route) => (
+              <Route key={route.path || 'vendor-index'} path={route.path} element={route.element} />
             ))}
           </Routes>
           <Toaster />
