@@ -11,16 +11,20 @@ export const MaintenanceMetric = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-gray-900">3</div>
-        <p className="text-sm text-muted-foreground">1 urgent request</p>
+        <div className="text-2xl font-bold text-gray-900">5</div>
+        <p className="text-sm text-muted-foreground">Active requests</p>
         <div className="mt-4 space-y-1">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-red-600 font-medium">Urgent</span>
-            <span className="text-gray-900">1</span>
+            <span className="text-red-600 font-medium">High Priority</span>
+            <span className="text-gray-900">2</span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-yellow-600 font-medium">In Progress</span>
-            <span className="text-gray-900">2</span>
+            <span className="text-yellow-600 font-medium">Medium Priority</span>
+            <span className="text-gray-900">3</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-green-600 font-medium">Low Priority</span>
+            <span className="text-gray-900">0</span>
           </div>
         </div>
       </CardContent>
