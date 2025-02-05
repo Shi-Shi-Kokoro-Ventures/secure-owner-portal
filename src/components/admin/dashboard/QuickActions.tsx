@@ -13,7 +13,7 @@ export const QuickActions = () => {
   const actions = [
     {
       title: "Add Manager",
-      description: "Create new property manager",
+      description: "Add new manager",
       icon: UserPlus,
       route: "/admin/users",
       color: "text-blue-600 dark:text-blue-400",
@@ -21,7 +21,7 @@ export const QuickActions = () => {
     },
     {
       title: "Review Leases",
-      description: "3 leases pending review",
+      description: "3 pending leases",
       icon: FileText,
       route: "/admin/leases",
       color: "text-purple-600 dark:text-purple-400",
@@ -29,7 +29,7 @@ export const QuickActions = () => {
     },
     {
       title: "Maintenance",
-      description: "View maintenance requests",
+      description: "View requests",
       icon: Wrench,
       route: "/admin/maintenance",
       color: "text-amber-600 dark:text-amber-400",
@@ -45,7 +45,7 @@ export const QuickActions = () => {
     },
     {
       title: "System Alerts",
-      description: "View important alerts",
+      description: "View alerts",
       icon: AlertCircle,
       route: "/admin/alerts",
       color: "text-red-600 dark:text-red-400",
@@ -69,7 +69,7 @@ export const QuickActions = () => {
     },
     {
       title: "Settings",
-      description: "System configuration",
+      description: "System settings",
       icon: Settings,
       route: "/admin/settings",
       color: "text-gray-600 dark:text-gray-400",
@@ -96,18 +96,18 @@ export const QuickActions = () => {
             <Button 
               key={action.title}
               variant="outline"
-              className="group flex h-full min-h-[140px] w-full flex-col items-start gap-4 p-6 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-100 dark:border-gray-700 transition-all duration-200"
+              className="group flex h-full min-h-[120px] w-full flex-col items-start gap-3 p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-100 dark:border-gray-700 transition-all duration-200"
               onClick={() => handleAction(action.route)}
             >
               <div className={cn(
-                "flex h-12 w-12 items-center justify-center rounded-full transition-colors",
+                "flex h-10 w-10 items-center justify-center rounded-full transition-colors",
                 action.bgColor
               )}>
-                <action.icon className={cn("h-6 w-6", action.color)} />
+                <action.icon className={cn("h-5 w-5", action.color)} />
               </div>
-              <div className="space-y-1 w-full">
-                <div className="font-medium text-gray-900 dark:text-gray-100 text-sm break-words">{action.title}</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 break-words">{action.description}</div>
+              <div className="space-y-0.5 w-full">
+                <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{action.title}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">{action.description}</div>
               </div>
             </Button>
           ))}
