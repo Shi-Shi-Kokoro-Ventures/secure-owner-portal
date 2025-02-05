@@ -1,7 +1,7 @@
+
 import { ActivityLog } from "@/components/admin/dashboard/ActivityLog"
 import { QuickActions } from "@/components/admin/dashboard/QuickActions"
 import { StatCard } from "@/components/admin/dashboard/StatCard"
-import { VapiAssistant } from "@/components/admin/VapiAssistant"
 import { Building2, Users, Wrench, DollarSign } from "lucide-react"
 
 export default function AdminDashboard() {
@@ -55,7 +55,6 @@ export default function AdminDashboard() {
           <QuickActions />
           <ActivityLog />
         </div>
-        <VapiAssistant />
       </div>
     </div>
   )
