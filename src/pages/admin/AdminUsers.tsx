@@ -1,38 +1,16 @@
+
 import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { UserPlus, Pencil, Trash2, UserCheck, Upload } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
-type UserRole = 'admin' | 'property_manager' | 'owner' | 'tenant';
-
-interface User {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  role: UserRole;
-  phone: string | null;
-  created_at: string;
-  profile_picture_url: string | null;
-}
-
-interface EditFormState {
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  role: UserRole;
-  profile_picture_url?: string | null;
-}
+import { UsersTable } from "@/components/admin/users/UsersTable";
+import { AddUserDialog } from "@/components/admin/users/AddUserDialog";
+import { EditUserDialog } from "@/components/admin/users/EditUserDialog";
+import { DeleteUserDialog } from "@/components/admin/users/DeleteUserDialog";
+import type { User, UserFormState } from "@/types/user";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -41,14 +19,14 @@ const AdminUsers = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editForm, setEditForm] = useState<EditFormState>({
+  const [editForm, setEditForm] = useState<UserFormState>({
     first_name: "",
     last_name: "",
     email: "",
     phone: "",
     role: "tenant"
   });
-  const [addForm, setAddForm] = useState<EditFormState>({
+  const [addForm, setAddForm] = useState<UserFormState>({
     first_name: "",
     last_name: "",
     email: "",
@@ -196,24 +174,6 @@ const AdminUsers = () => {
     }
   };
 
-  const getRoleBadgeColor = (role: string) => {
-    const colors = {
-      admin: 'bg-red-100 text-red-800',
-      property_manager: 'bg-blue-100 text-blue-800',
-      owner: 'bg-green-100 text-green-800',
-      tenant: 'bg-purple-100 text-purple-800',
-    };
-    return colors[role as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
   const handleProfilePictureUpload = async (event: React.ChangeEvent<HTMLInputElement>, userId: string) => {
     try {
       const file = event.target.files?.[0];
@@ -274,267 +234,40 @@ const AdminUsers = () => {
             <CardTitle>All Users</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-[#4C8DAE] hover:bg-[#4C8DAE]">
-                  <TableHead className="text-white font-semibold">Profile</TableHead>
-                  <TableHead className="text-white font-semibold">Name</TableHead>
-                  <TableHead className="text-white font-semibold">Email</TableHead>
-                  <TableHead className="text-white font-semibold">Role</TableHead>
-                  <TableHead className="text-white font-semibold">Phone</TableHead>
-                  <TableHead className="text-white font-semibold">Joined</TableHead>
-                  <TableHead className="text-white font-semibold text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      Loading users...
-                    </TableCell>
-                  </TableRow>
-                ) : users.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      No users found
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  users.map((user) => (
-                    <TableRow key={user.id} className="hover:bg-gray-50">
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src={user.profile_picture_url || undefined} alt={`${user.first_name} ${user.last_name}`} />
-                            <AvatarFallback>{user.first_name[0]}{user.last_name[0]}</AvatarFallback>
-                          </Avatar>
-                          <div className="relative">
-                            <Input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              id={`profile-upload-${user.id}`}
-                              onChange={(e) => handleProfilePictureUpload(e, user.id)}
-                            />
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="absolute -left-2 -top-2"
-                              onClick={() => document.getElementById(`profile-upload-${user.id}`)?.click()}
-                            >
-                              <Upload className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {user.first_name} {user.last_name}
-                      </TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
-                          {user.role}
-                        </span>
-                      </TableCell>
-                      <TableCell>{user.phone || '-'}</TableCell>
-                      <TableCell>{formatDate(user.created_at)}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end space-x-2">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            title="Edit User"
-                            onClick={() => handleEdit(user)}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            title="Delete User"
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setIsDeleteDialogOpen(true);
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            title="Change Role"
-                            onClick={() => handleEdit(user)}
-                          >
-                            <UserCheck className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+            <UsersTable
+              users={users}
+              isLoading={isLoading}
+              onEdit={handleEdit}
+              onDelete={(user) => {
+                setSelectedUser(user);
+                setIsDeleteDialogOpen(true);
+              }}
+              onProfilePictureUpload={handleProfilePictureUpload}
+            />
           </CardContent>
         </Card>
 
-        {/* Add User Dialog */}
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="add_first_name">First Name</Label>
-                  <Input
-                    id="add_first_name"
-                    value={addForm.first_name}
-                    onChange={(e) => setAddForm({ ...addForm, first_name: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="add_last_name">Last Name</Label>
-                  <Input
-                    id="add_last_name"
-                    value={addForm.last_name}
-                    onChange={(e) => setAddForm({ ...addForm, last_name: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="add_email">Email</Label>
-                <Input
-                  id="add_email"
-                  type="email"
-                  value={addForm.email}
-                  onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="add_phone">Phone</Label>
-                <Input
-                  id="add_phone"
-                  value={addForm.phone}
-                  onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="add_role">Role</Label>
-                <Select
-                  value={addForm.role}
-                  onValueChange={(value: UserRole) => setAddForm({ ...addForm, role: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="property_manager">Property Manager</SelectItem>
-                    <SelectItem value="owner">Owner</SelectItem>
-                    <SelectItem value="tenant">Tenant</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleAddUser}>Add User</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <AddUserDialog
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+          formData={addForm}
+          onFormChange={setAddForm}
+          onSubmit={handleAddUser}
+        />
 
-        {/* Edit User Dialog */}
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit User</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="first_name">First Name</Label>
-                  <Input
-                    id="first_name"
-                    value={editForm.first_name}
-                    onChange={(e) => setEditForm({ ...editForm, first_name: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="last_name">Last Name</Label>
-                  <Input
-                    id="last_name"
-                    value={editForm.last_name}
-                    onChange={(e) => setEditForm({ ...editForm, last_name: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={editForm.email}
-                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  value={editForm.phone}
-                  onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="role">Role</Label>
-                <Select
-                  value={editForm.role}
-                  onValueChange={(value: UserRole) => setEditForm({ ...editForm, role: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="property_manager">Property Manager</SelectItem>
-                    <SelectItem value="owner">Owner</SelectItem>
-                    <SelectItem value="tenant">Tenant</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleSaveEdit}>Save Changes</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <EditUserDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          formData={editForm}
+          onFormChange={setEditForm}
+          onSubmit={handleSaveEdit}
+        />
 
-        {/* Delete Confirmation Dialog */}
-        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Confirm Delete</DialogTitle>
-            </DialogHeader>
-            <p>Are you sure you want to delete this user? This action cannot be undone.</p>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button 
-                variant="destructive" 
-                onClick={() => selectedUser && handleDelete(selectedUser.id)}
-              >
-                Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <DeleteUserDialog
+          open={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          onConfirm={() => selectedUser && handleDelete(selectedUser.id)}
+        />
       </div>
     </AdminLayout>
   );
