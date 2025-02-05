@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -220,7 +219,7 @@ export const AddUserWizard = ({ open, onOpenChange, onSubmit }: AddUserWizardPro
 
   const renderRoleSpecificInformation = () => (
     <div className="space-y-4">
-      {formData.role === "vendor" && (
+      {formData.role === 'vendor' && (
         <>
           <div className="space-y-2">
             <Label htmlFor="company_name">Company Name</Label>
