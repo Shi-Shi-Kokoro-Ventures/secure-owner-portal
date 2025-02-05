@@ -9,6 +9,9 @@ import {
 } from "@/components/ui/table";
 import { Lease } from "@/types/lease";
 import { formatDistance } from "date-fns";
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 interface LeasesTableProps {
   leases: Lease[];
@@ -16,6 +19,8 @@ interface LeasesTableProps {
 }
 
 export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
+  const { toast } = useToast();
+
   const getStatusBadge = (status: Lease['status']) => {
     const variants = {
       active: <Badge className="bg-emerald-500 hover:bg-emerald-600">Active</Badge>,
@@ -46,19 +51,40 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
     return formatDistance(end, now, { addSuffix: true });
   };
 
+  const handleRowClick = (leaseId: string) => {
+    toast({
+      title: "Lease Details",
+      description: "Detailed lease view will be available in the next update.",
+    });
+  };
+
   if (isLoading) {
     return (
-      <div className="flex justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="flex justify-center items-center py-8">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
     <div className="rounded-md border animate-in fade-in duration-500">
+      <div className="p-4 bg-muted/50 border-b">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Active Leases</h3>
+          <Button
+            onClick={() => toast({
+              title: "Create Lease",
+              description: "New lease creation will be available in the next update.",
+            })}
+            size="sm"
+          >
+            Create Lease
+          </Button>
+        </div>
+      </div>
       <Table>
         <TableHeader>
-          <TableRow className="bg-muted/50">
+          <TableRow className="bg-muted/50 hover:bg-muted/50">
             <TableHead>Lease #</TableHead>
             <TableHead>Property</TableHead>
             <TableHead>Unit</TableHead>
@@ -76,6 +102,7 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
             <TableRow 
               key={lease.id} 
               className="hover:bg-muted/50 cursor-pointer transition-colors duration-200"
+              onClick={() => handleRowClick(lease.id)}
             >
               <TableCell className="font-medium">{lease.lease_number}</TableCell>
               <TableCell>{lease.unit.property.property_name}</TableCell>
@@ -106,6 +133,13 @@ export const LeasesTable = ({ leases, isLoading }: LeasesTableProps) => {
               <TableCell>{getStatusBadge(lease.status)}</TableCell>
             </TableRow>
           ))}
+          {leases?.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={10} className="h-24 text-center text-muted-foreground">
+                No leases found
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
