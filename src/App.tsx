@@ -70,15 +70,15 @@ const App: React.FC = () => {
                 key={route.path || 'vendor-index'} 
                 path={route.path} 
                 element={route.element}
-                children={route.children?.map((childRoute) => (
+              >
+                {route.children?.map((childRoute) => (
                   <Route
                     key={childRoute.path}
                     path={childRoute.path}
                     element={childRoute.element}
-                    index={childRoute.index}
                   />
                 ))}
-              />
+              </Route>
             ))}
           </Routes>
           <Toaster />
