@@ -27,6 +27,16 @@ const TenantServices = () => {
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
+          
+          {/* Logo Section */}
+          <div className="flex justify-center mb-8">
+            <img 
+              src="/lovable-uploads/40334d61-cc63-4970-bdb9-d08d169244d0.png"
+              alt="Shi Shi Kokoro Property Management"
+              className="h-48 w-auto"
+            />
+          </div>
+
           <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
             Tenant Services
           </h1>
