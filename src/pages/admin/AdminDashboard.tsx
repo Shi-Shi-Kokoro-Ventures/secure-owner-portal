@@ -8,7 +8,7 @@ import { AdminLayout } from "@/components/admin/AdminLayout"
 export default function AdminDashboard() {
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 max-w-[1200px] mx-auto">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Total Properties"
@@ -60,5 +60,5 @@ export default function AdminDashboard() {
         </div>
       </div>
     </AdminLayout>
-  )
+  );
 }

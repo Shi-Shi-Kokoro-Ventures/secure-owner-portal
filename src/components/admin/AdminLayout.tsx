@@ -19,10 +19,12 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-background">
       <div className="flex min-h-screen overflow-hidden">
+        {/* Make sidebar fixed position and adjust z-index */}
         <div className="fixed inset-y-0 z-50">
           <AdminSidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
         </div>
         
+        {/* Main content area with padding adjustments */}
         <div className={cn(
           "flex flex-col flex-1 w-full",
           "transition-all duration-300 ease-in-out",
@@ -36,6 +38,7 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </main>
         </div>
 
+        {/* AI Assistant Button */}
         <div className="fixed bottom-4 right-4 z-50">
           {!aiChatOpen ? (
             <Button
