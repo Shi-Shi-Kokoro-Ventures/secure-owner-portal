@@ -49,8 +49,8 @@ const Index = () => {
     navigate("/services");
   };
 
-  const handleTenantServicesClick = () => {
-    navigate("/tenant-services");
+  const handleTenantLoginClick = () => {
+    navigate("/login");
   };
 
   return (
@@ -232,9 +232,9 @@ const Index = () => {
                 </Card>
                 <Button 
                   className="w-full group"
-                  onClick={handleTenantServicesClick}
+                  onClick={handleTenantLoginClick}
                 >
-                  Learn More About Tenant Services
+                  Tenant Login
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </div>
