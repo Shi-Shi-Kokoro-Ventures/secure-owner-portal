@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,37 @@ export const ThemeCustomizer = () => {
     text_color: "#000000",
     accent_color: "#9333ea",
   });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('theme_settings')
+          .select('*')
+          .single();
+
+        if (error) {
+          console.error('Error fetching theme settings:', error);
+          return;
+        }
+
+        if (data) {
+          setSettings(data);
+          // Update CSS variables with fetched values
+          Object.entries(data).forEach(([key, value]) => {
+            if (typeof value === 'string' && key !== 'id' && key !== 'created_at' && key !== 'updated_at') {
+              document.documentElement.style.setProperty(`--${key.replace('_', '-')}`, value);
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching theme settings:', error);
+      }
+    };
+
+    fetchSettings();
+  }, []);
 
   const handleColorChange = (key: keyof ThemeSettings, value: string) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
@@ -26,6 +57,7 @@ export const ThemeCustomizer = () => {
   };
 
   const handleSave = async () => {
+    setLoading(true);
     try {
       const { error } = await supabase
         .from('theme_settings')
@@ -47,6 +79,8 @@ export const ThemeCustomizer = () => {
         description: "Failed to save theme settings. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -153,8 +187,8 @@ export const ThemeCustomizer = () => {
           </div>
         </div>
 
-        <Button onClick={handleSave} className="w-full">
-          Save Theme Settings
+        <Button onClick={handleSave} disabled={loading} className="w-full">
+          {loading ? "Saving..." : "Save Theme Settings"}
         </Button>
 
         <div className="mt-6 p-4 border rounded-lg">
