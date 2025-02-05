@@ -56,13 +56,12 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
     });
   };
 
-  // Only show metrics based on user role
   const isAdmin = userRole === 'admin';
   const isPropertyManager = userRole === 'property_manager';
   const isOwner = userRole === 'owner';
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 animate-in fade-in duration-700">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
       {(isAdmin || isPropertyManager || isOwner) && (
         <LeaseMetricCard
           title="Active Leases"
