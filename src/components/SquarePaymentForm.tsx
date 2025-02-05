@@ -8,7 +8,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { supabase } from "@/integrations/supabase/client";
 
-const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY || '');
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
 const PaymentForm = ({ amount = 1200, leaseId = "" }) => {
   const stripe = useStripe();
@@ -24,7 +24,6 @@ const PaymentForm = ({ amount = 1200, leaseId = "" }) => {
     setIsLoading(true);
     
     try {
-      // Use confirmPayment instead of createPaymentMethod
       const result = await stripe.confirmPayment({
         elements,
         confirmParams: {
