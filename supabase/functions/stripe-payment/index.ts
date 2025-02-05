@@ -13,6 +13,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const PLATFORM_FEE_PERCENTAGE = 0.05; // 5% platform fee
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -32,9 +34,39 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    const { amount, paymentMethodId, leaseId } = await req.json();
+    const { amount, leaseId } = await req.json();
 
-    // Get or create Stripe customer
+    // Get the lease details to find the property owner
+    const { data: lease } = await supabaseClient
+      .from('leases')
+      .select(`
+        unit_id,
+        units!inner (
+          property_id,
+          properties!inner (
+            owner_id
+          )
+        )
+      `)
+      .eq('id', leaseId)
+      .single();
+
+    if (!lease) {
+      throw new Error('Lease not found');
+    }
+
+    // Get the owner's Stripe Connect account
+    const { data: connectAccount } = await supabaseClient
+      .from('stripe_connect_accounts')
+      .select('stripe_account_id')
+      .eq('user_id', lease.units.properties.owner_id)
+      .single();
+
+    if (!connectAccount) {
+      throw new Error('Property owner has not set up payments');
+    }
+
+    // Get or create customer
     const { data: existingCustomer } = await supabaseClient
       .from('stripe_customers')
       .select('stripe_customer_id')
@@ -67,48 +99,41 @@ serve(async (req) => {
       stripeCustomerId = customer.id;
     }
 
+    // Calculate platform fee
+    const amountInCents = amount * 100;
+    const platformFee = Math.round(amountInCents * PLATFORM_FEE_PERCENTAGE);
+
     // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100, // Convert to cents
+      amount: amountInCents,
       currency: 'usd',
       customer: stripeCustomerId,
-      payment_method: paymentMethodId,
-      off_session: false,
-      confirm: true,
       metadata: {
         leaseId,
         userId: user.id,
       },
+      transfer_data: {
+        destination: connectAccount.stripe_account_id,
+      },
+      application_fee_amount: platformFee,
     });
 
-    // Record the payment in our database
-    if (paymentIntent.status === 'succeeded') {
-      await supabaseClient.from('payments').insert({
-        tenant_id: user.id,
-        lease_id: leaseId,
-        amount_paid: amount,
-        payment_date: new Date().toISOString(),
-        status: 'completed',
-        method: 'credit_card',
-        stripe_payment_intent_id: paymentIntent.id,
-      });
-    }
-
+    // Send the client secret to the client
     return new Response(
-      JSON.stringify({ paymentIntentId: paymentIntent.id, status: paymentIntent.status }),
+      JSON.stringify({ clientSecret: paymentIntent.client_secret }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
-      },
+      }
     );
   } catch (error) {
-    console.error('Error processing payment:', error);
+    console.error('Error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
-      },
+      }
     );
   }
 });

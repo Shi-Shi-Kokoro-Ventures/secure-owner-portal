@@ -81,7 +81,7 @@ export function StripePaymentForm() {
   useEffect(() => {
     const createPaymentIntent = async () => {
       const { data, error } = await supabase.functions.invoke('stripe-payment', {
-        body: { amount: 1200, mode: 'setup' },
+        body: { amount: 1200, leaseId: "YOUR_LEASE_ID" }, // Replace with actual lease ID
       });
 
       if (error) {
