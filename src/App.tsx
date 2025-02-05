@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -38,6 +39,7 @@ import OwnerMaintenanceDetail from "@/pages/owner/OwnerMaintenanceDetail";
 import Notifications from "@/pages/Notifications";
 import Help from "@/pages/Help";
 
+// Create a new QueryClient instance outside of the component
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -47,11 +49,12 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function App() {
+const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Routes>
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
           
@@ -204,9 +207,12 @@ export default function App() {
 
           {/* Catch all route for 404 */}
           <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Toaster />
-      </Router>
-    </QueryClientProvider>
+          </Routes>
+          <Toaster />
+        </Router>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
-}
+};
+
+export default App;
