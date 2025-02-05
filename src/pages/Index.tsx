@@ -41,9 +41,9 @@ const Index = () => {
               <img 
                 src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png" 
                 alt="Shi Shi Kokoro Property Management" 
-                className="h-12 w-12 object-contain"
+                className="h-10 w-auto object-contain transition-transform hover:scale-105"
               />
-              <span className="ml-2 text-lg font-semibold text-gray-900">Shi Shi Kokoro</span>
+              <span className="ml-3 text-xl font-semibold text-gray-900">Shi Shi Kokoro</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <a href="#about" className="text-gray-600 hover:text-primary">About Us</a>
