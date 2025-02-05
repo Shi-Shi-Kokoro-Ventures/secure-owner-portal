@@ -26,22 +26,59 @@ const App: React.FC = () => {
         <Router>
           <Routes>
             {commonRoutes.map((route) => (
-              <Route key={route.path || 'index'} {...route} />
+              <Route 
+                key={route.path || 'index'} 
+                path={route.path} 
+                element={route.element}
+                index={route.index}
+              />
             ))}
             {propertyManagerRoutes.map((route) => (
-              <Route key={route.path || 'pm-index'} {...route} />
+              <Route 
+                key={route.path || 'pm-index'} 
+                path={route.path} 
+                element={route.element}
+                index={route.index}
+              />
             ))}
             {tenantRoutes.map((route) => (
-              <Route key={route.path || 'tenant-index'} {...route} />
+              <Route 
+                key={route.path || 'tenant-index'} 
+                path={route.path} 
+                element={route.element}
+                index={route.index}
+              />
             ))}
             {ownerRoutes.map((route) => (
-              <Route key={route.path || 'owner-index'} {...route} />
+              <Route 
+                key={route.path || 'owner-index'} 
+                path={route.path} 
+                element={route.element}
+                index={route.index}
+              />
             ))}
             {adminRoutes.map((route) => (
-              <Route key={route.path || 'admin-index'} {...route} />
+              <Route 
+                key={route.path || 'admin-index'} 
+                path={route.path} 
+                element={route.element}
+                index={route.index}
+              />
             ))}
             {vendorRoutes.map((route) => (
-              <Route key={route.path || 'vendor-index'} {...route} />
+              <Route 
+                key={route.path || 'vendor-index'} 
+                path={route.path} 
+                element={route.element}
+                children={route.children?.map((childRoute) => (
+                  <Route
+                    key={childRoute.path}
+                    path={childRoute.path}
+                    element={childRoute.element}
+                    index={childRoute.index}
+                  />
+                ))}
+              />
             ))}
           </Routes>
           <Toaster />
