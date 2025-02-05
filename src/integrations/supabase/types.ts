@@ -978,6 +978,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       is_property_manager: {
         Args: {
           user_id: string
