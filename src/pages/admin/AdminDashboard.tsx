@@ -10,7 +10,7 @@ import {
   Bell,
   Plus,
   FileText,
-  MessageSquare,
+  Megaphone,
   UserPlus,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -42,8 +42,8 @@ const AdminDashboard = () => {
             Approve Leases
           </Button>
           <Button className="gap-2">
-            <MessageSquare className="h-4 w-4" />
-            Send Announcement
+            <Megaphone className="h-4 w-4" />
+            Broadcast System Announcement
           </Button>
         </div>
 
@@ -108,7 +108,7 @@ const AdminDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                Alerts
+                System Alerts
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -139,7 +139,7 @@ const AdminDashboard = () => {
             <CardContent>
               <ul className="space-y-4">
                 <li className="text-sm text-muted-foreground">
-                  New property manager added - 2 hours ago
+                  System announcement sent to all users - 2 hours ago
                 </li>
                 <li className="text-sm text-muted-foreground">
                   Lease agreement approved - 4 hours ago
