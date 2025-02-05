@@ -32,12 +32,6 @@ export const SystemAlerts = () => {
     info: 'bg-blue-500'
   };
 
-  const severityIcons = {
-    critical: '🔴',
-    warning: '🟡',
-    info: '🔵'
-  };
-
   return (
     <Card className="bg-white dark:bg-gray-800 h-full transition-all duration-200">
       <CardHeader className="pb-3">
@@ -67,11 +61,8 @@ export const SystemAlerts = () => {
                 key={index}
                 className="flex items-center gap-3 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
-                <span className={cn("h-2 w-2 rounded-full", severityColors[alert.severity])} />
-                <div className="flex items-center gap-2 truncate">
-                  <span className="text-sm">{severityIcons[alert.severity]}</span>
-                  <p className="text-sm text-gray-900 dark:text-gray-100 truncate">{alert.message}</p>
-                </div>
+                <div className={cn("h-3 w-3 flex-shrink-0 rounded-full", severityColors[alert.severity])} />
+                <p className="text-sm text-gray-900 dark:text-gray-100 truncate flex-1">{alert.message}</p>
               </div>
             ))}
           </div>
@@ -131,8 +122,8 @@ export const RecentActivity = () => {
           <div className="space-y-3">
             {activities.map((activity, index) => (
               <div key={index} className="flex items-center gap-4 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 dark:bg-primary/5">
-                  <activity.icon className="h-5 w-5 text-primary" />
+                <div className="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-primary/10 dark:bg-primary/5">
+                  <activity.icon className="h-6 w-6 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{activity.title}</p>
