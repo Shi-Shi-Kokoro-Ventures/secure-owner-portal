@@ -689,6 +689,62 @@ export type Database = {
           },
         ]
       }
+      system_announcements: {
+        Row: {
+          audience: Database["public"]["Enums"]["announcement_audience"] | null
+          created_at: string | null
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          is_pinned: boolean | null
+          is_scheduled: boolean | null
+          message: string
+          scheduled_time: string | null
+          title: string
+          urgency_level:
+            | Database["public"]["Enums"]["announcement_urgency"]
+            | null
+        }
+        Insert: {
+          audience?: Database["public"]["Enums"]["announcement_audience"] | null
+          created_at?: string | null
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_pinned?: boolean | null
+          is_scheduled?: boolean | null
+          message: string
+          scheduled_time?: string | null
+          title: string
+          urgency_level?:
+            | Database["public"]["Enums"]["announcement_urgency"]
+            | null
+        }
+        Update: {
+          audience?: Database["public"]["Enums"]["announcement_audience"] | null
+          created_at?: string | null
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_pinned?: boolean | null
+          is_scheduled?: boolean | null
+          message?: string
+          scheduled_time?: string | null
+          title?: string
+          urgency_level?:
+            | Database["public"]["Enums"]["announcement_urgency"]
+            | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_announcements_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_rewards: {
         Row: {
           id: string
@@ -1005,6 +1061,13 @@ export type Database = {
       }
     }
     Enums: {
+      announcement_audience:
+        | "all"
+        | "tenants"
+        | "owners"
+        | "property_managers"
+        | "admins"
+      announcement_urgency: "low" | "medium" | "high" | "critical"
       conversation_type:
         | "tenant-manager"
         | "tenant-owner"

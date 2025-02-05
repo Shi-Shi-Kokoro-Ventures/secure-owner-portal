@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,8 @@ import { useToast } from "@/hooks/use-toast";
 import { StatCard } from "@/components/admin/dashboard/StatCard";
 import { QuickActions } from "@/components/admin/dashboard/QuickActions";
 import { ActivityLog } from "@/components/admin/dashboard/ActivityLog";
+import { AnnouncementDialog } from "@/components/admin/announcements/AnnouncementDialog";
+import { AnnouncementListener } from "@/components/admin/announcements/AnnouncementListener";
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -73,43 +74,12 @@ const AdminDashboard = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" className="gap-2 transition-colors hover:bg-primary hover:text-white">
-              <TrendingUp className="h-4 w-4" />
-              View Reports
-            </Button>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button size="sm" className="gap-2">
-                  <Megaphone className="h-4 w-4" />
-                  Broadcast Announcement
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Broadcast System Announcement</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 pt-4">
-                  <Textarea
-                    placeholder="Enter your announcement message..."
-                    value={announcement}
-                    onChange={(e) => setAnnouncement(e.target.value)}
-                    className="min-h-[100px]"
-                  />
-                  <Button 
-                    onClick={handleBroadcastAnnouncement}
-                    disabled={isSubmitting}
-                    className="w-full"
-                  >
-                    {isSubmitting ? "Broadcasting..." : "Send Announcement"}
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <AnnouncementDialog />
           </div>
         </div>
 
-        <QuickActions />
-
+        <AnnouncementListener />
+        
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Total Properties"
