@@ -23,16 +23,16 @@ const App: React.FC = () => {
         <Router>
           <Routes>
             {commonRoutes.map((route) => (
-              <Route key={route.path} {...route} />
+              <Route key={route.path || 'index'} path={route.path} element={route.element} />
             ))}
             {propertyManagerRoutes.map((route) => (
-              <Route key={route.path} {...route} />
+              <Route key={route.path || 'pm-index'} path={route.path} element={route.element} />
             ))}
             {tenantRoutes.map((route) => (
-              <Route key={route.element?.type?.name} {...route} />
+              <Route key={route.path || 'tenant-index'} path={route.path} element={route.element} />
             ))}
             {ownerRoutes.map((route) => (
-              <Route key={route.element?.type?.name} {...route} />
+              <Route key={route.path || 'owner-index'} path={route.path} element={route.element} />
             ))}
           </Routes>
           <Toaster />
