@@ -22,7 +22,7 @@ const Messages = () => {
         .from('messages')
         .select(`
           id,
-          sender:sender_id(
+          sender:users!messages_sender_id_fkey(
             first_name,
             last_name
           ),
