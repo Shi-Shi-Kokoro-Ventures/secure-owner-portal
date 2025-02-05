@@ -1,122 +1,71 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, DollarSign, FileText, Bell } from "lucide-react";
+import { DashboardMetrics } from "@/components/owner/DashboardMetrics";
+import { QuickActions } from "@/components/owner/QuickActions";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+const performanceData = [
+  { month: "Jan", income: 42000, expenses: 15000 },
+  { month: "Feb", income: 45000, expenses: 14000 },
+  { month: "Mar", income: 48000, expenses: 16000 },
+  { month: "Apr", income: 47000, expenses: 13000 },
+  { month: "May", income: 46000, expenses: 15000 },
+  { month: "Jun", income: 48000, expenses: 14000 },
+];
 
 const OwnerDashboard = () => {
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 py-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Welcome Back, Owner</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Owner Dashboard</h1>
         <p className="text-muted-foreground">
-          Here's an overview of your property portfolio
+          Welcome back! Here's an overview of your properties
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Properties</CardTitle>
-            <Building2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">3</div>
-            <p className="text-xs text-muted-foreground">
-              +1 from last month
-            </p>
-          </CardContent>
-        </Card>
+      <div className="space-y-6">
+        <DashboardMetrics />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Income</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$12,500</div>
-            <p className="text-xs text-muted-foreground">
-              +2.5% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Documents</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">25</div>
-            <p className="text-xs text-muted-foreground">
-              3 new this month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Notifications</CardTitle>
-            <Bell className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">7</div>
-            <p className="text-xs text-muted-foreground">
-              2 unread messages
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <div className="ml-4">
-                  <p className="text-sm font-medium">New maintenance request</p>
-                  <p className="text-sm text-muted-foreground">123 Main Street</p>
-                </div>
-                <div className="ml-auto text-sm text-muted-foreground">
-                  2h ago
-                </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={performanceData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line
+                      type="monotone"
+                      dataKey="income"
+                      stroke="#8884d8"
+                      name="Income"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="expenses"
+                      stroke="#82ca9d"
+                      name="Expenses"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
-              <div className="flex items-center">
-                <div className="ml-4">
-                  <p className="text-sm font-medium">Rent payment received</p>
-                  <p className="text-sm text-muted-foreground">456 Oak Avenue</p>
-                </div>
-                <div className="ml-auto text-sm text-muted-foreground">
-                  1d ago
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Property Overview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">123 Main Street</p>
-                  <p className="text-sm text-muted-foreground">Single Family Home</p>
-                </div>
-                <div className="text-sm font-medium text-green-600">Occupied</div>
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">456 Oak Avenue</p>
-                  <p className="text-sm text-muted-foreground">Apartment Complex</p>
-                </div>
-                <div className="text-sm font-medium text-green-600">95% Occupied</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <QuickActions />
+        </div>
       </div>
     </div>
   );

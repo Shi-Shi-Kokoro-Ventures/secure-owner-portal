@@ -154,7 +154,7 @@ const OwnerMaintenanceDetail = () => {
                 request.status === "pending"
                   ? "default"
                   : request.status === "approved"
-                  ? "success"
+                  ? "secondary"
                   : "destructive"
               }
             >
