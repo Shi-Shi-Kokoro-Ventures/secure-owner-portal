@@ -32,7 +32,7 @@ const LoadingComponent = () => (
 );
 
 // Helper function to wrap component with ProtectedRoute and Suspense
-const wrapComponent = (Component: React.ComponentType) => (
+const wrapComponent = (Component: React.ComponentType): React.ReactNode => (
   <ProtectedRoute>
     <Suspense fallback={<LoadingComponent />}>
       <Component />
