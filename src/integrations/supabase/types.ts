@@ -6,54 +6,9 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
-      users: {
-        Row: {
-          id: string;
-          role: 'admin' | 'property_manager' | 'owner' | 'tenant' | 'vendor';
-          first_name: string;
-          last_name: string;
-          email: string;
-          phone: string | null;
-          created_at: string;
-          profile_picture_url: string | null;
-          date_of_birth: string | null;
-          ssn_last_four: string | null;
-          status: 'active' | 'pending_approval' | 'suspended' | 'archived';
-          two_factor_enabled: boolean;
-          temporary_password: string | null;
-        };
-        Insert: {
-          id?: string;
-          role: 'admin' | 'property_manager' | 'owner' | 'tenant' | 'vendor';
-          first_name: string;
-          last_name: string;
-          email: string;
-          phone?: string | null;
-          created_at?: string;
-          profile_picture_url?: string | null;
-          date_of_birth?: string | null;
-          ssn_last_four?: string | null;
-          status?: 'active' | 'pending_approval' | 'suspended' | 'archived';
-          two_factor_enabled?: boolean;
-          temporary_password?: string | null;
-        };
-        Update: {
-          role?: 'admin' | 'property_manager' | 'owner' | 'tenant' | 'vendor';
-          first_name?: string;
-          last_name?: string;
-          email?: string;
-          phone?: string | null;
-          profile_picture_url?: string | null;
-          date_of_birth?: string | null;
-          ssn_last_four?: string | null;
-          status?: 'active' | 'pending_approval' | 'suspended' | 'archived';
-          two_factor_enabled?: boolean;
-          temporary_password?: string | null;
-        };
-      };
       addresses: {
         Row: {
           city: string
@@ -363,15 +318,15 @@ export interface Database {
           changes: Json
           id?: string
           lease_id?: string | null
-          modified_at?: string
-          modified_by?: string
+          modified_at?: string | null
+          modified_by?: string | null
         }
         Update: {
           changes?: Json
           id?: string
           lease_id?: string | null
-          modified_at?: string
-          modified_by?: string
+          modified_at?: string | null
+          modified_by?: string | null
         }
         Relationships: [
           {
@@ -523,8 +478,8 @@ export interface Database {
           special_terms?: string | null
           start_date?: string
           status?: Database["public"]["Enums"]["lease_status"]
-          tenant_id: string
-          unit_id: string
+          tenant_id?: string
+          unit_id?: string
           utilities_included?: string[] | null
         }
         Relationships: [
@@ -566,7 +521,7 @@ export interface Database {
           created_at?: string
           description: string
           id?: string
-          status: Database["public"]["Enums"]["maintenance_status"]
+          status?: Database["public"]["Enums"]["maintenance_status"]
           tenant_id?: string | null
           unit_id?: string | null
         }
@@ -689,7 +644,7 @@ export interface Database {
           is_active?: boolean | null
           is_default?: boolean | null
           stripe_payment_method_id?: string
-          tenant_id: string
+          tenant_id?: string
           updated_at?: string
         }
         Relationships: [
@@ -860,9 +815,9 @@ export interface Database {
           created_at?: string
           id?: string
           onboarding_status?: string | null
-          stripe_account_id: string
+          stripe_account_id?: string
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -894,7 +849,7 @@ export interface Database {
           id?: string
           stripe_customer_id?: string
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -962,34 +917,274 @@ export interface Database {
           },
         ]
       }
-      newsletter_subscribers: {
+      tenant_rewards: {
         Row: {
           id: string
-          email: string
-          unsubscribe_token: string
-          status: 'active' | 'unsubscribed'
-          created_at: string
+          last_updated: string
+          points: number
+          tenant_id: string | null
         }
         Insert: {
           id?: string
-          email: string
-          unsubscribe_token?: string
-          status?: 'active' | 'unsubscribed'
-          created_at?: string
+          last_updated?: string
+          points?: number
+          tenant_id?: string | null
         }
         Update: {
           id?: string
-          email?: string
-          unsubscribe_token?: string
-          status?: 'active' | 'unsubscribed'
+          last_updated?: string
+          points?: number
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_rewards_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      theme_settings: {
+        Row: {
+          accent_color: string
+          animation_speed: string | null
+          background_color: string
+          border_radius: string | null
+          created_at: string
+          dark_mode_enabled: boolean | null
+          font_size_base: string | null
+          id: string
+          primary_color: string
+          secondary_color: string
+          spacing_unit: string | null
+          text_color: string
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string
+          animation_speed?: string | null
+          background_color?: string
+          border_radius?: string | null
           created_at?: string
+          dark_mode_enabled?: boolean | null
+          font_size_base?: string | null
+          id?: string
+          primary_color?: string
+          secondary_color?: string
+          spacing_unit?: string | null
+          text_color?: string
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string
+          animation_speed?: string | null
+          background_color?: string
+          border_radius?: string | null
+          created_at?: string
+          dark_mode_enabled?: boolean | null
+          font_size_base?: string | null
+          id?: string
+          primary_color?: string
+          secondary_color?: string
+          spacing_unit?: string | null
+          text_color?: string
+          updated_at?: string
         }
         Relationships: []
       }
-    };
+      units: {
+        Row: {
+          created_at: string
+          id: string
+          property_id: string | null
+          rent_amount: number
+          status: Database["public"]["Enums"]["unit_status"]
+          tenant_id: string | null
+          unit_number: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          property_id?: string | null
+          rent_amount: number
+          status?: Database["public"]["Enums"]["unit_status"]
+          tenant_id?: string | null
+          unit_number: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          property_id?: string | null
+          rent_amount?: number
+          status?: Database["public"]["Enums"]["unit_status"]
+          tenant_id?: string | null
+          unit_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "units_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "units_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_documents: {
+        Row: {
+          created_at: string
+          document_type: string
+          file_url: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_type: string
+          file_url: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_type?: string
+          file_url?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_documents_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          created_at: string
+          date_of_birth: string | null
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string | null
+          profile_picture_url: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          ssn_last_four: string | null
+          status: Database["public"]["Enums"]["user_status"]
+          temporary_password: string | null
+          two_factor_enabled: boolean
+        }
+        Insert: {
+          created_at?: string
+          date_of_birth?: string | null
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          phone?: string | null
+          profile_picture_url?: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          ssn_last_four?: string | null
+          status?: Database["public"]["Enums"]["user_status"]
+          temporary_password?: string | null
+          two_factor_enabled?: boolean
+        }
+        Update: {
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string | null
+          profile_picture_url?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          ssn_last_four?: string | null
+          status?: Database["public"]["Enums"]["user_status"]
+          temporary_password?: string | null
+          two_factor_enabled?: boolean
+        }
+        Relationships: []
+      }
+      vendor_details: {
+        Row: {
+          company_name: string
+          created_at: string
+          id: string
+          user_id: string | null
+          vendor_type: Database["public"]["Enums"]["vendor_type"]
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+          vendor_type: Database["public"]["Enums"]["vendor_type"]
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+          vendor_type?: Database["public"]["Enums"]["vendor_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_details_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendors: {
+        Row: {
+          company_name: string
+          contact_name: string
+          created_at: string
+          email: string
+          id: string
+          phone: string
+          services_offered: string | null
+        }
+        Insert: {
+          company_name: string
+          contact_name: string
+          created_at?: string
+          email: string
+          id?: string
+          phone: string
+          services_offered?: string | null
+        }
+        Update: {
+          company_name?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          phone?: string
+          services_offered?: string | null
+        }
+        Relationships: []
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
       apply_late_fees: {
         Args: {
@@ -1036,34 +1231,34 @@ export interface Database {
         }
         Returns: undefined
       }
-    };
+    }
     Enums: {
       announcement_audience:
         | "all"
         | "tenants"
         | "owners"
         | "property_managers"
-        | "admins";
-      announcement_urgency: "low" | "medium" | "high" | "critical";
-      contact_form_status: "pending" | "in_progress" | "completed";
+        | "admins"
+      announcement_urgency: "low" | "medium" | "high" | "critical"
+      contact_form_status: "pending" | "in_progress" | "completed"
       conversation_type:
         | "tenant-manager"
         | "tenant-owner"
         | "owner-manager"
         | "maintenance-vendor"
-        | "group";
-      eviction_status: "initiated" | "court_pending" | "completed" | "dismissed";
-      lease_status: "active" | "terminated" | "pending";
-      lease_type_enum: "fixed" | "month-to-month" | "short-term";
-      maintenance_status: "pending" | "in_progress" | "completed";
-      message_status: "sent" | "delivered" | "read";
-      message_type: "text" | "image" | "video" | "file";
-      payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal";
-      payment_status: "pending" | "completed" | "failed";
-      security_deposit_status_enum: "pending" | "received" | "returned";
-      unit_status: "vacant" | "occupied" | "under_maintenance";
-      user_role: "tenant" | "property_manager" | "owner" | "admin" | "vendor";
-      user_status: "active" | "pending_approval" | "suspended" | "archived";
+        | "group"
+      eviction_status: "initiated" | "court_pending" | "completed" | "dismissed"
+      lease_status: "active" | "terminated" | "pending"
+      lease_type_enum: "fixed" | "month-to-month" | "short-term"
+      maintenance_status: "pending" | "in_progress" | "completed"
+      message_status: "sent" | "delivered" | "read"
+      message_type: "text" | "image" | "video" | "file"
+      payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal"
+      payment_status: "pending" | "completed" | "failed"
+      security_deposit_status_enum: "pending" | "received" | "returned"
+      unit_status: "vacant" | "occupied" | "under_maintenance"
+      user_role: "tenant" | "property_manager" | "owner" | "admin" | "vendor"
+      user_status: "active" | "pending_approval" | "suspended" | "archived"
       vendor_type:
         | "plumbing"
         | "electrical"
@@ -1074,15 +1269,105 @@ export interface Database {
         | "pest_control"
         | "security"
     }
-    };
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
+      [_ in never]: never
+    }
+  }
 }
 
-export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
-export type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
+type PublicSchema = Database[Extract<keyof Database, "public">]
 
-// Add specific type for Users table
-export type User = Tables<'users'>;
+export type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof PublicSchema["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
