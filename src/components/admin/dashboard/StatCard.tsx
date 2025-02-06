@@ -1,3 +1,4 @@
+
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -19,18 +20,19 @@ export const StatCard = ({ title, value, description, icon: Icon, trend, classNa
   <Card 
     className={cn(
       "relative overflow-hidden",
-      "bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm",
-      "transition-all duration-300 hover:shadow-lg",
+      "transition-all duration-300",
+      "shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]",
+      "hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]",
+      "hover:-translate-y-1",
       "before:content-[''] before:absolute before:inset-0",
       "before:bg-gradient-radial before:from-primary-100/20 before:via-transparent before:to-transparent",
       "before:opacity-0 hover:before:opacity-100 before:transition-opacity",
       "animate-in fade-in slide-in-from-bottom-3 duration-500",
-      "hover:translate-y-[-2px] transform transition-transform",
       onClick && "cursor-pointer",
       className
     )}
     onClick={onClick}
-    role="button"
+    role={onClick ? "button" : undefined}
     tabIndex={onClick ? 0 : undefined}
   >
     <div className="p-6 relative z-10">
