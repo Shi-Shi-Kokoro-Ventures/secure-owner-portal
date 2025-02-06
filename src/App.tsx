@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
@@ -63,7 +62,7 @@ const App: React.FC = () => {
             ))}
             {adminRoutes.map((route) => (
               <Route 
-                key={route.path || 'admin-index'} 
+                key={route.key} 
                 path={route.path} 
                 element={route.element} 
               />
