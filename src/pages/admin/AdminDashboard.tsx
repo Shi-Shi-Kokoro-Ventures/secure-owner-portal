@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 export default function AdminDashboard() {
   return (
     <AdminLayout>
-      <div className="space-y-6 p-6">
+      <div className="space-y-6 p-6 max-w-7xl mx-auto">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <AnnouncementDialog />
@@ -26,7 +26,6 @@ export default function AdminDashboard() {
               value: "12%",
               positive: true
             }}
-            className="bg-white dark:bg-gray-800"
           />
           <StatCard
             title="Active Tenants"
@@ -37,7 +36,6 @@ export default function AdminDashboard() {
               value: "8%",
               positive: true
             }}
-            className="bg-white dark:bg-gray-800"
           />
           <StatCard
             title="Maintenance Requests"
@@ -48,7 +46,6 @@ export default function AdminDashboard() {
               value: "5%",
               positive: false
             }}
-            className="bg-white dark:bg-gray-800"
           />
           <StatCard
             title="Revenue"
@@ -59,17 +56,23 @@ export default function AdminDashboard() {
               value: "15%",
               positive: true
             }}
-            className="bg-white dark:bg-gray-800"
           />
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="space-y-6">
-            <QuickActions />
+            <Card className="overflow-hidden">
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <QuickActions />
+              </CardContent>
+            </Card>
             <ActivityLog />
           </div>
-          <div className="space-y-6">
-            <Card className="bg-white dark:bg-gray-800">
+          <div>
+            <Card>
               <CardHeader>
                 <CardTitle>System Announcements</CardTitle>
               </CardHeader>

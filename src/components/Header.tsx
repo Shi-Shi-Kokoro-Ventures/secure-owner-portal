@@ -55,13 +55,16 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             alt="Shi Shi Kokoro"
             className="h-8 w-auto"
           />
-          <span className="text-lg font-semibold hidden md:block">
+          <span className="text-lg font-semibold">
             Shi Shi Kokoro
+          </span>
+          <span className="text-sm text-muted-foreground hidden md:block">
+            Property Management
           </span>
         </div>
 
         <div className="flex flex-1 items-center gap-4 justify-end">
-          <form className="flex-1 hidden md:block lg:max-w-xs">
+          <form className="flex-1 hidden md:block max-w-xs">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -72,7 +75,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             </div>
           </form>
         
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -129,7 +132,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
 
             <div className="flex items-center gap-2 ml-4 hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-lg transition-colors cursor-pointer">
               <User className="h-8 w-8 rounded-full bg-gray-100 p-1" />
-              <div className="hidden md:block text-sm">
+              <div className="hidden md:block">
                 <div className="font-medium">Shi Shi Kokoro</div>
                 <div className="text-xs text-muted-foreground">Property Management</div>
               </div>
