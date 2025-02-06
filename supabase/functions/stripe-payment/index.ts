@@ -25,6 +25,7 @@ serve(async (req) => {
     // Get the authorization header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
+      console.error('No authorization header provided');
       throw new Error('No authorization header');
     }
 
@@ -34,33 +35,42 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         global: { 
-          headers: { 
-            Authorization: authHeader 
-          } 
+          headers: { Authorization: authHeader } 
         },
+        auth: {
+          persistSession: false
+        }
       }
     );
 
     // Get the current user
-    const {
-      data: { user },
-      error: userError,
-    } = await supabaseClient.auth.getUser();
-
-    if (userError) {
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    
+    if (userError || !user) {
       console.error('Auth error:', userError);
       throw new Error('Authentication failed');
     }
 
-    if (!user) {
-      console.error('No user found');
-      throw new Error('User not found');
-    }
+    console.log('Authenticated user:', user.id);
 
     // Get request body
-    const { amount, leaseId } = await req.json();
+    const { amount, leaseId, action } = await req.json();
+
+    // Handle refund action
+    if (action === 'refund') {
+      const { paymentId } = await req.json();
+      const refund = await stripe.refunds.create({
+        payment_intent: paymentId,
+      });
+      
+      return new Response(
+        JSON.stringify({ success: true, refund }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     if (!amount) {
+      console.error('Amount is required');
       throw new Error('Amount is required');
     }
 
@@ -85,6 +95,7 @@ serve(async (req) => {
     }
 
     if (!lease) {
+      console.error('Lease not found');
       throw new Error('Lease not found');
     }
 
@@ -101,6 +112,7 @@ serve(async (req) => {
     }
 
     if (!connectAccount) {
+      console.error('Property owner has not set up payments');
       throw new Error('Property owner has not set up payments');
     }
 
@@ -133,6 +145,7 @@ serve(async (req) => {
       }
 
       if (!userData) {
+        console.error('User details not found');
         throw new Error('User details not found');
       }
 
@@ -165,6 +178,13 @@ serve(async (req) => {
     const amountInCents = amount * 100;
     const platformFee = Math.round(amountInCents * PLATFORM_FEE_PERCENTAGE);
 
+    console.log('Creating payment intent:', {
+      amount: amountInCents,
+      customerId: stripeCustomerId,
+      connectAccountId: connectAccount.stripe_account_id,
+      platformFee
+    });
+
     // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
@@ -179,6 +199,8 @@ serve(async (req) => {
       },
       application_fee_amount: platformFee,
     });
+
+    console.log('Payment intent created:', paymentIntent.id);
 
     return new Response(
       JSON.stringify({ clientSecret: paymentIntent.client_secret }),
