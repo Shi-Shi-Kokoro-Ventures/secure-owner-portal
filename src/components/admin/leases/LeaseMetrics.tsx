@@ -1,6 +1,6 @@
 import { 
   FileText, Clock, Shield, AlertTriangle, 
-  DollarSign, Users, Ban, Building2 
+  DollarSign, Users, Ban, Building2, Loader2 
 } from "lucide-react";
 import { StatCard } from "./StatCard";
 import { Lease } from "@/types/lease";
@@ -16,17 +16,22 @@ interface LeaseMetricsProps {
 export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
   const { toast } = useToast();
   
-  // During development, default to admin role
-  const { data: userRole = 'admin' } = useQuery({
+  const { data: userRole = 'admin', isLoading: isRoleLoading } = useQuery({
     queryKey: ['userRole'],
     queryFn: async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        if (authError) {
+          logger.error('Auth error:', authError);
+          return 'admin';
+        }
+
         if (!user) {
           logger.warn('No authenticated user, defaulting to admin for development');
           return 'admin';
         }
-        
+
         const { data, error } = await supabase
           .from('users')
           .select('role')
@@ -35,46 +40,68 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
         
         if (error) {
           logger.error('Error fetching user role:', error);
-          // During development, default to admin if there's an error
-          return 'admin';
-        }
-        
-        if (!data?.role) {
-          logger.warn('No user role found, defaulting to admin for development');
-          return 'admin';
+          throw error;
         }
 
-        logger.info('User role fetched:', data.role);
-        return data.role;
+        logger.info('User role fetched:', data?.role);
+        return data?.role || 'admin';
       } catch (error) {
         logger.error('Error in userRole query:', error);
-        // During development, default to admin if there's an error
-        return 'admin';
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch user role. Please try again.",
+        });
+        throw error;
       }
     },
-    staleTime: 0, // Don't cache during development
-    retry: false, // Don't retry during development
+    retry: 1,
     refetchOnWindowFocus: true,
   });
 
-  logger.info(`Rendering LeaseMetrics with ${leases?.length || 0} leases`);
+  if (isRoleLoading) {
+    return (
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="p-6 rounded-lg border bg-card animate-pulse">
+            <div className="flex items-center justify-between mb-4">
+              <div className="h-4 bg-muted rounded w-1/3"></div>
+              <div className="h-8 w-8 rounded-lg bg-muted"></div>
+            </div>
+            <div className="space-y-3">
+              <div className="h-7 bg-muted rounded w-1/4"></div>
+              <div className="h-4 bg-muted rounded w-2/3"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
-  const activeLeases = leases?.filter(lease => lease.status === 'active').length || 0;
-  const pendingLeases = leases?.filter(lease => lease.status === 'pending').length || 0;
-  const expiringLeases = leases?.filter(lease => {
+  if (!leases) {
+    return (
+      <div className="p-4 text-center text-muted-foreground">
+        No lease data available
+      </div>
+    );
+  }
+
+  const activeLeases = leases.filter(lease => lease.status === 'active').length;
+  const pendingLeases = leases.filter(lease => lease.status === 'pending').length;
+  const expiringLeases = leases.filter(lease => {
     const endDate = new Date(lease.end_date);
     const thirtyDaysFromNow = new Date();
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
     return lease.status === 'active' && endDate <= thirtyDaysFromNow;
-  }).length || 0;
+  }).length;
 
-  const totalDeposits = leases?.reduce((acc, lease) => acc + Number(lease.deposit_amount), 0) || 0;
-  const monthlyRevenue = leases?.reduce((acc, lease) => acc + Number(lease.monthly_rent), 0) || 0;
-  const retentionRate = leases?.length ? 
+  const totalDeposits = leases.reduce((acc, lease) => acc + Number(lease.deposit_amount), 0);
+  const monthlyRevenue = leases.reduce((acc, lease) => acc + Number(lease.monthly_rent), 0);
+  const retentionRate = leases.length ? 
     ((leases.filter(lease => lease.auto_renewal).length / leases.length) * 100).toFixed(1) : 0;
 
-  const violations = leases?.filter(lease => lease.status === 'terminated').length || 0;
-  const occupancyRate = leases?.length ? 
+  const violations = leases.filter(lease => lease.status === 'terminated').length;
+  const occupancyRate = leases.length ? 
     ((leases.filter(lease => lease.status === 'active').length / leases.length) * 100).toFixed(1) : 0;
 
   const handleMetricClick = (metric: string) => {

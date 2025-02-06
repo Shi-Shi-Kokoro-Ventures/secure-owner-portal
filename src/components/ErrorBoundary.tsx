@@ -1,49 +1,82 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   children: ReactNode;
+  fallback?: ReactNode;
 }
 
 interface State {
   hasError: boolean;
   error: Error | null;
+  errorInfo: ErrorInfo | null;
 }
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
     error: null,
+    errorInfo: null,
   };
 
   public static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
+    return { hasError: true, error, errorInfo: null };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Error caught by boundary:", error);
     console.error("Error info:", errorInfo);
+    this.setState({
+      error,
+      errorInfo
+    });
   }
+
+  private handleRetry = () => {
+    this.setState({ hasError: false, error: null, errorInfo: null });
+  };
 
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="p-4">
-          <Alert variant="destructive">
-            <AlertTitle>Something went wrong</AlertTitle>
-            <AlertDescription>
-              {this.state.error?.message || "An unexpected error occurred"}
-            </AlertDescription>
-          </Alert>
-          <Button
-            className="mt-4"
-            onClick={() => window.location.reload()}
-          >
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Retry
-          </Button>
+        <div className="min-h-[400px] p-8 flex items-center justify-center">
+          <div className="max-w-md w-full space-y-4">
+            <Alert variant="destructive" className="border-2">
+              <AlertTitle className="text-lg font-semibold">
+                Something went wrong
+              </AlertTitle>
+              <AlertDescription className="mt-2">
+                <p className="text-sm mb-2">
+                  {this.state.error?.message || "An unexpected error occurred"}
+                </p>
+                {process.env.NODE_ENV === 'development' && this.state.errorInfo && (
+                  <pre className="text-xs mt-2 p-2 bg-background/10 rounded overflow-auto">
+                    {this.state.errorInfo.componentStack}
+                  </pre>
+                )}
+              </AlertDescription>
+            </Alert>
+            <div className="flex gap-2">
+              <Button
+                className="flex-1"
+                onClick={this.handleRetry}
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Retry
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => window.location.href = '/'}
+              >
+                <Home className="mr-2 h-4 w-4" />
+                Go Home
+              </Button>
+            </div>
+          </div>
         </div>
       );
     }
