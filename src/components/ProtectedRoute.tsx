@@ -22,7 +22,13 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
-  // During development, we'll only check for authentication
+  // During development, bypass all checks
+  if (import.meta.env.DEV) {
+    logger.info('Development mode: bypassing all auth checks');
+    return <>{children}</>;
+  }
+
+  // In production, check for authentication
   if (!session) {
     logger.warn('No session found, redirecting to login');
     return <Navigate to="/login" replace />;
