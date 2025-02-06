@@ -29,10 +29,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Chart } from "@/components/ui/chart";
 import { PaymentActions } from "@/components/admin/payments/PaymentActions";
 import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { StripePaymentForm } from "@/components/SquarePaymentForm";
 
 export default function AdminFinancials() {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
 
   const { data: payments, isLoading, refetch } = useQuery({
     queryKey: ['payments', startDate, endDate],
@@ -132,10 +135,27 @@ export default function AdminFinancials() {
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Payment
-            </Button>
+            <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
+              <DialogTrigger asChild>
+                <Button size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Payment
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Process New Payment</DialogTitle>
+                </DialogHeader>
+                <StripePaymentForm 
+                  amount={1200} 
+                  leaseId="" 
+                  onSuccess={() => {
+                    setShowPaymentDialog(false);
+                    refetch();
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
