@@ -363,15 +363,15 @@ export interface Database {
           changes: Json
           id?: string
           lease_id?: string | null
-          modified_at?: string | null
-          modified_by?: string | null
+          modified_at?: string
+          modified_by?: string
         }
         Update: {
           changes?: Json
           id?: string
           lease_id?: string | null
-          modified_at?: string | null
-          modified_by?: string | null
+          modified_at?: string
+          modified_by?: string
         }
         Relationships: [
           {
@@ -689,7 +689,7 @@ export interface Database {
           is_active?: boolean | null
           is_default?: boolean | null
           stripe_payment_method_id?: string
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
         }
         Relationships: [
@@ -860,7 +860,7 @@ export interface Database {
           created_at?: string
           id?: string
           onboarding_status?: string | null
-          stripe_account_id?: string
+          stripe_account_id: string
           updated_at?: string
           user_id: string
         }
@@ -1043,27 +1043,27 @@ export interface Database {
         | "tenants"
         | "owners"
         | "property_managers"
-        | "admins"
-      announcement_urgency: "low" | "medium" | "high" | "critical"
-      contact_form_status: "pending" | "in_progress" | "completed"
+        | "admins";
+      announcement_urgency: "low" | "medium" | "high" | "critical";
+      contact_form_status: "pending" | "in_progress" | "completed";
       conversation_type:
         | "tenant-manager"
         | "tenant-owner"
         | "owner-manager"
         | "maintenance-vendor"
-        | "group"
-      eviction_status: "initiated" | "court_pending" | "completed" | "dismissed"
-      lease_status: "active" | "terminated" | "pending"
-      lease_type_enum: "fixed" | "month-to-month" | "short-term"
-      maintenance_status: "pending" | "in_progress" | "completed"
-      message_status: "sent" | "delivered" | "read"
-      message_type: "text" | "image" | "video" | "file"
-      payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal"
-      payment_status: "pending" | "completed" | "failed"
-      security_deposit_status_enum: "pending" | "received" | "returned"
-      unit_status: "vacant" | "occupied" | "under_maintenance"
-      user_role: "tenant" | "property_manager" | "owner" | "admin" | "vendor"
-      user_status: "active" | "pending_approval" | "suspended" | "archived"
+        | "group";
+      eviction_status: "initiated" | "court_pending" | "completed" | "dismissed";
+      lease_status: "active" | "terminated" | "pending";
+      lease_type_enum: "fixed" | "month-to-month" | "short-term";
+      maintenance_status: "pending" | "in_progress" | "completed";
+      message_status: "sent" | "delivered" | "read";
+      message_type: "text" | "image" | "video" | "file";
+      payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal";
+      payment_status: "pending" | "completed" | "failed";
+      security_deposit_status_enum: "pending" | "received" | "returned";
+      unit_status: "vacant" | "occupied" | "under_maintenance";
+      user_role: "tenant" | "property_manager" | "owner" | "admin" | "vendor";
+      user_status: "active" | "pending_approval" | "suspended" | "archived";
       vendor_type:
         | "plumbing"
         | "electrical"
