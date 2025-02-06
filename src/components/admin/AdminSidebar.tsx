@@ -76,7 +76,7 @@ export const AdminSidebar = ({ open, onOpenChange }: AdminSidebarProps) => {
   return (
     <div
       className={cn(
-        "relative flex h-screen flex-col border-r bg-background transition-all duration-300 ease-in-out",
+        "relative flex h-screen flex-col border-r bg-background/80 backdrop-blur-sm transition-all duration-300 ease-in-out",
         open ? "w-64" : "w-[60px]"
       )}
     >
@@ -84,7 +84,7 @@ export const AdminSidebar = ({ open, onOpenChange }: AdminSidebarProps) => {
         <Button
           variant="ghost"
           size="sm"
-          className="ml-auto"
+          className="ml-auto hover:bg-transparent"
           onClick={() => onOpenChange(!open)}
         >
           <ChevronLeft
@@ -113,18 +113,20 @@ export const AdminSidebar = ({ open, onOpenChange }: AdminSidebarProps) => {
               {open && <span>{item.name}</span>}
             </Link>
           ))}
-          <AnnouncementDialog>
-            <button
-              className={cn(
-                "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-                "hover:bg-accent hover:text-accent-foreground",
-                !open && "justify-center"
-              )}
-            >
-              <Megaphone className="h-4 w-4" />
-              {open && <span>Broadcast</span>}
-            </button>
-          </AnnouncementDialog>
+          <AnnouncementDialog 
+            trigger={
+              <button
+                className={cn(
+                  "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                  "hover:bg-accent hover:text-accent-foreground",
+                  !open && "justify-center"
+                )}
+              >
+                <Megaphone className="h-4 w-4" />
+                {open && <span>Broadcast</span>}
+              </button>
+            }
+          />
         </div>
       </ScrollArea>
 
