@@ -3,6 +3,7 @@ import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 const mockData = [
   { month: 'Jan', income: 4000, expenses: 2400 },
@@ -14,22 +15,44 @@ const mockData = [
 ];
 
 export const FinancialMetrics = () => {
-  const { data: financialData, isLoading } = useQuery({
+  const { data: financialData, isLoading, error } = useQuery({
     queryKey: ['financial-metrics'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('payments')
-        .select(`
-          amount_paid,
-          payment_date,
-          status
-        `)
-        .gte('payment_date', new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString());
+      if (import.meta.env.DEV) {
+        return { data: mockData };
+      }
 
+      const { data, error } = await supabase.functions.invoke('get-financial-metrics');
       if (error) throw error;
       return data;
     },
   });
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-center h-[300px]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-center h-[300px] text-destructive">
+            Error loading financial data
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const chartData = financialData?.data || mockData;
 
   return (
     <Card>
@@ -51,7 +74,7 @@ export const FinancialMetrics = () => {
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockData}>
+              <BarChart data={chartData}>
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip content={({ active, payload, label }) => (
