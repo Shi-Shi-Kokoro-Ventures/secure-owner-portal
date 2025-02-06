@@ -1,4 +1,7 @@
-import { PaymentMethod, PaymentStatus } from './enums';
+import { Database } from './base';
+
+export type PaymentStatus = Database['public']['Enums']['payment_status'];
+export type PaymentMethodType = Database['public']['Enums']['payment_method'];
 
 export interface Payment {
   id: string;
@@ -7,7 +10,7 @@ export interface Payment {
   amount_paid: number;
   payment_date: string;
   status: PaymentStatus;
-  method: PaymentMethod;
+  method: PaymentMethodType;
   created_at: string;
   stripe_payment_intent_id: string | null;
   payment_method_id: string | null;
@@ -16,7 +19,7 @@ export interface Payment {
   connected_account_id: string | null;
 }
 
-export interface PaymentMethod {
+export interface PaymentMethodInterface {
   id: string;
   tenant_id: string;
   stripe_payment_method_id: string;

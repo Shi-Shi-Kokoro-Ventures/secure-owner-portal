@@ -7,16 +7,17 @@ export * from './payment';
 export * from './maintenance';
 export * from './communication';
 export * from './settings';
+export * from './newsletter';
 
-// Re-export the Database type with all tables
 import { Database as BaseDatabase } from './base';
 import { User, UserDocument, EmergencyContact } from './user';
 import { Property, Unit } from './property';
 import { Lease } from './lease';
-import { Payment, PaymentMethod } from './payment';
+import { Payment } from './payment';
 import { MaintenanceRequest } from './maintenance';
 import { SystemAnnouncement, Conversation, Message } from './communication';
 import { AdminSetting, ThemeSetting } from './settings';
+import { Newsletter, NewsletterSubscriber } from './newsletter';
 
 export interface Database extends BaseDatabase {
   public: {
@@ -56,11 +57,6 @@ export interface Database extends BaseDatabase {
         Insert: Partial<Payment>;
         Update: Partial<Payment>;
       };
-      payment_methods: {
-        Row: PaymentMethod;
-        Insert: Partial<PaymentMethod>;
-        Update: Partial<PaymentMethod>;
-      };
       maintenance_requests: {
         Row: MaintenanceRequest;
         Insert: Partial<MaintenanceRequest>;
@@ -91,6 +87,28 @@ export interface Database extends BaseDatabase {
         Insert: Partial<ThemeSetting>;
         Update: Partial<ThemeSetting>;
       };
+      newsletters: {
+        Row: Newsletter;
+        Insert: Partial<Newsletter>;
+        Update: Partial<Newsletter>;
+      };
+      newsletter_subscribers: {
+        Row: NewsletterSubscriber;
+        Insert: Partial<NewsletterSubscriber>;
+        Update: Partial<NewsletterSubscriber>;
+      };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in string]: any;
+    };
+    Enums: {
+      [_ in string]: any;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
     };
   };
 }
