@@ -18,6 +18,7 @@ import {
   CreditCard,
   Receipt,
   Calendar,
+  Plus,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,12 +27,17 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Chart } from "@/components/ui/chart";
+import { PaymentActions } from "@/components/admin/payments/PaymentActions";
+import { useState } from "react";
 
 export default function AdminFinancials() {
-  const { data: payments, isLoading } = useQuery({
-    queryKey: ['payments'],
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+
+  const { data: payments, isLoading, refetch } = useQuery({
+    queryKey: ['payments', startDate, endDate],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('payments')
         .select(`
           *,
@@ -47,6 +53,14 @@ export default function AdminFinancials() {
         `)
         .order('payment_date', { ascending: false });
 
+      if (startDate) {
+        query = query.gte('payment_date', startDate);
+      }
+      if (endDate) {
+        query = query.lte('payment_date', endDate);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
@@ -117,6 +131,10 @@ export default function AdminFinancials() {
             <Button variant="outline" size="sm">
               <Download className="h-4 w-4 mr-2" />
               Export
+            </Button>
+            <Button size="sm">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Payment
             </Button>
           </div>
         </div>
@@ -189,11 +207,15 @@ export default function AdminFinancials() {
             <div className="flex items-center space-x-2">
               <Input
                 type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
                 className="w-[150px]"
               />
               <span>to</span>
               <Input
                 type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
                 className="w-[150px]"
               />
             </div>
@@ -209,13 +231,14 @@ export default function AdminFinancials() {
                     <TableHead>Amount</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Payment Method</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading ? (
                     Array.from({ length: 5 }).map((_, index) => (
                       <TableRow key={index}>
-                        {Array.from({ length: 6 }).map((_, cellIndex) => (
+                        {Array.from({ length: 7 }).map((_, cellIndex) => (
                           <TableCell key={cellIndex}>
                             <Skeleton className="h-4 w-[100px]" />
                           </TableCell>
@@ -246,6 +269,12 @@ export default function AdminFinancials() {
                           </Badge>
                         </TableCell>
                         <TableCell>{payment.method}</TableCell>
+                        <TableCell>
+                          <PaymentActions 
+                            payment={payment}
+                            onRefund={refetch}
+                          />
+                        </TableCell>
                       </TableRow>
                     ))
                   )}
