@@ -13,7 +13,6 @@ const AdminLeases = () => {
   const { toast } = useToast();
   const [selectedLeaseId, setSelectedLeaseId] = useState<string | null>(null);
 
-  // Fetch user role directly, without depending on a separate auth query
   const { data: userRole = 'admin', isLoading: isRoleLoading } = useQuery({
     queryKey: ['userRole'],
     queryFn: async () => {
@@ -59,7 +58,6 @@ const AdminLeases = () => {
     refetchOnWindowFocus: true,
   });
 
-  // Fetch leases with simplified dependency
   const { data: leases = [], isLoading: isLeasesLoading, error: leasesError } = useQuery({
     queryKey: ['leases', userRole],
     queryFn: async () => {
