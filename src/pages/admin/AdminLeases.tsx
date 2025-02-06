@@ -14,21 +14,34 @@ const AdminLeases = () => {
   const { toast } = useToast();
   const [selectedLeaseId, setSelectedLeaseId] = useState<string | null>(null);
 
-  // Fetch user role with proper error handling and caching
-  const { data: userRole, isLoading: isRoleLoading } = useQuery({
-    queryKey: ['userRole'],
+  // First, ensure we have an authenticated user
+  const { data: authData, isLoading: isAuthLoading } = useQuery({
+    queryKey: ['auth'],
     queryFn: async () => {
-      logger.info('Fetching user role');
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        logger.error('No user found');
-        return null;
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        logger.error('Auth error:', authError);
+        throw authError;
       }
+      if (!user) {
+        logger.error('No authenticated user');
+        throw new Error('No authenticated user');
+      }
+      return user;
+    },
+    retry: 1
+  });
+
+  // Then fetch user role only if we have an authenticated user
+  const { data: userRole, isLoading: isRoleLoading } = useQuery({
+    queryKey: ['userRole', authData?.id],
+    queryFn: async () => {
+      logger.info('Fetching user role for:', authData?.id);
       
       const { data, error } = await supabase
         .from('users')
         .select('role')
-        .eq('id', user.id)
+        .eq('id', authData?.id)
         .maybeSingle();
       
       if (error) {
@@ -36,16 +49,22 @@ const AdminLeases = () => {
         throw error;
       }
 
-      logger.info('User role fetched:', data?.role);
-      return data?.role;
+      if (!data) {
+        logger.error('No user role found');
+        throw new Error('No user role found');
+      }
+
+      logger.info('User role fetched:', data.role);
+      return data.role;
     },
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    enabled: !!authData?.id,
+    staleTime: 5 * 60 * 1000,
     retry: 2
   });
 
-  // Fetch leases with proper error handling
-  const { data: leases, isLoading, error } = useQuery({
-    queryKey: ['leases'],
+  // Finally fetch leases only if we have a user role
+  const { data: leases, isLoading: isLeasesLoading, error: leasesError } = useQuery({
+    queryKey: ['leases', userRole],
     queryFn: async () => {
       logger.info('Fetching leases data');
       const { data, error } = await supabase
@@ -86,10 +105,12 @@ const AdminLeases = () => {
       logger.info(`Leases data fetched successfully: ${data?.length || 0} leases found`);
       return data as Lease[];
     },
-    enabled: !!userRole, // Only fetch leases if we have the user role
+    enabled: !!userRole,
   });
 
-  if (error) {
+  const isLoading = isAuthLoading || isRoleLoading || isLeasesLoading;
+
+  if (leasesError) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-6">
@@ -101,7 +122,7 @@ const AdminLeases = () => {
     );
   }
 
-  if (isLoading || isRoleLoading) {
+  if (isLoading) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
