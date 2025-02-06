@@ -1,18 +1,32 @@
-
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowRight, CheckCircle2, AlertCircle, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 export function StripeConnectSetup() {
   const [isLoading, setIsLoading] = useState(true);
   const [accountStatus, setAccountStatus] = useState<'not_created' | 'pending' | 'complete' | null>(null);
   const { toast } = useToast();
 
+  // Get the current session
+  const { data: session } = useQuery({
+    queryKey: ['session'],
+    queryFn: async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      return session;
+    },
+  });
+
   const checkAccountStatus = async () => {
     try {
+      if (!session) {
+        throw new Error('No active session');
+      }
+
       const { data, error } = await supabase.functions.invoke('stripe-connect', {
         body: { action: 'check_account_status' },
       });
@@ -24,7 +38,7 @@ export function StripeConnectSetup() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to check account status",
+        description: error instanceof Error ? error.message : "Failed to check account status",
       });
     } finally {
       setIsLoading(false);
@@ -32,11 +46,17 @@ export function StripeConnectSetup() {
   };
 
   useEffect(() => {
-    checkAccountStatus();
-  }, []);
+    if (session) {
+      checkAccountStatus();
+    }
+  }, [session]);
 
   const handleSetupAccount = async () => {
     try {
+      if (!session) {
+        throw new Error('Please log in to set up Stripe Connect');
+      }
+
       setIsLoading(true);
       const { data, error } = await supabase.functions.invoke('stripe-connect', {
         body: { action: 'create_account' },
@@ -52,7 +72,7 @@ export function StripeConnectSetup() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to set up Stripe Connect",
+        description: error instanceof Error ? error.message : "Failed to set up Stripe Connect",
       });
       setIsLoading(false);
     }
@@ -60,6 +80,10 @@ export function StripeConnectSetup() {
 
   const handleOpenDashboard = async () => {
     try {
+      if (!session) {
+        throw new Error('Please log in to access the dashboard');
+      }
+
       setIsLoading(true);
       const { data, error } = await supabase.functions.invoke('stripe-connect', {
         body: { action: 'create_login_link' },
@@ -75,18 +99,32 @@ export function StripeConnectSetup() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to open Stripe dashboard",
+        description: error instanceof Error ? error.message : "Failed to open Stripe dashboard",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
+  if (!session) {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="text-center text-muted-foreground">
+            Please log in to manage payment settings
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (isLoading) {
     return (
       <Card>
-        <CardContent className="pt-6 flex justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
         </CardContent>
       </Card>
     );
