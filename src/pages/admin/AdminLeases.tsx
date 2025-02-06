@@ -5,7 +5,6 @@ import { LeasesTable } from "@/components/admin/leases/LeasesTable";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import type { Lease } from "@/types/lease.types";
 import { logger } from "@/utils/logger";
@@ -157,9 +156,9 @@ const AdminLeases = () => {
             </div>
           </ErrorBoundary>
         </div>
-      </AdminLayout>
-    );
-  };
+      </ErrorBoundary>
+    </AdminLayout>
+  );
 };
 
 export default AdminLeases;
