@@ -14,22 +14,36 @@ const AdminLeases = () => {
   const { toast } = useToast();
   const [selectedLeaseId, setSelectedLeaseId] = useState<string | null>(null);
 
-  const { data: userRole } = useQuery({
+  // Fetch user role with proper error handling and caching
+  const { data: userRole, isLoading: isRoleLoading } = useQuery({
     queryKey: ['userRole'],
     queryFn: async () => {
+      logger.info('Fetching user role');
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
+      if (!user) {
+        logger.error('No user found');
+        return null;
+      }
       
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('users')
         .select('role')
         .eq('id', user.id)
         .maybeSingle();
       
+      if (error) {
+        logger.error('Error fetching user role:', error);
+        throw error;
+      }
+
+      logger.info('User role fetched:', data?.role);
       return data?.role;
-    }
+    },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    retry: 2
   });
 
+  // Fetch leases with proper error handling
   const { data: leases, isLoading, error } = useQuery({
     queryKey: ['leases'],
     queryFn: async () => {
@@ -72,6 +86,7 @@ const AdminLeases = () => {
       logger.info(`Leases data fetched successfully: ${data?.length || 0} leases found`);
       return data as Lease[];
     },
+    enabled: !!userRole, // Only fetch leases if we have the user role
   });
 
   if (error) {
@@ -86,7 +101,7 @@ const AdminLeases = () => {
     );
   }
 
-  if (isLoading) {
+  if (isLoading || isRoleLoading) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
