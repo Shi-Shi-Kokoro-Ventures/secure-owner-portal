@@ -47,7 +47,16 @@ serve(async (req) => {
         await supabaseClient.from('payments').update({
           status: 'completed',
           stripe_payment_intent_id: paymentIntent.id,
+          payment_date: new Date().toISOString(),
         }).match({ stripe_payment_intent_id: paymentIntent.id });
+
+        // Update tenant rewards if applicable
+        if (paymentIntent.metadata.tenant_id) {
+          await supabaseClient.rpc('update_tenant_rewards', {
+            p_tenant_id: paymentIntent.metadata.tenant_id,
+            p_points: 10 // Award points for successful payment
+          });
+        }
         break;
 
       case 'payment_intent.payment_failed':
@@ -70,6 +79,23 @@ serve(async (req) => {
           tenant_id: refund.metadata.tenant_id,
           lease_id: refund.metadata.lease_id,
         });
+        break;
+
+      case 'charge.dispute.created':
+        const dispute = event.data.object;
+        await supabaseClient.from('payments').update({
+          status: 'disputed',
+          stripe_payment_intent_id: dispute.payment_intent,
+        }).match({ stripe_payment_intent_id: dispute.payment_intent });
+        break;
+
+      case 'charge.dispute.closed':
+        const closedDispute = event.data.object;
+        const newStatus = closedDispute.status === 'won' ? 'completed' : 'refunded';
+        await supabaseClient.from('payments').update({
+          status: newStatus,
+          stripe_payment_intent_id: closedDispute.payment_intent,
+        }).match({ stripe_payment_intent_id: closedDispute.payment_intent });
         break;
 
       default:
