@@ -10,10 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 export default function AdminDashboard() {
   return (
     <AdminLayout>
-      <div className="container mx-auto p-6 space-y-6 max-w-7xl">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
+      <div className="container mx-auto p-8 space-y-8 max-w-7xl">
+        <div className="mb-10">
+          <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent dark:from-primary-400 dark:to-primary-600">
+            Dashboard
+          </h1>
+          <p className="text-muted-foreground mt-2 text-lg">
             Welcome back! Here's an overview of your property management system.
           </p>
         </div>
@@ -28,7 +30,7 @@ export default function AdminDashboard() {
               value: "12%",
               positive: true
             }}
-            className="border shadow-md bg-white dark:bg-gray-800"
+            className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] border-primary/10 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 hover:-translate-y-1"
           />
           <StatCard
             title="Active Tenants"
@@ -39,7 +41,7 @@ export default function AdminDashboard() {
               value: "8%",
               positive: true
             }}
-            className="border shadow-md bg-white dark:bg-gray-800"
+            className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] border-primary/10 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 hover:-translate-y-1"
           />
           <StatCard
             title="Maintenance Requests"
@@ -50,7 +52,7 @@ export default function AdminDashboard() {
               value: "5%",
               positive: false
             }}
-            className="border shadow-md bg-white dark:bg-gray-800"
+            className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] border-primary/10 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 hover:-translate-y-1"
           />
           <StatCard
             title="Revenue"
@@ -61,20 +63,20 @@ export default function AdminDashboard() {
               value: "15%",
               positive: true
             }}
-            className="border shadow-md bg-white dark:bg-gray-800"
+            className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] border-primary/10 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 hover:-translate-y-1"
           />
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="space-y-6">
-            <Card className="border shadow-md bg-white dark:bg-gray-800">
-              <CardHeader>
-                <CardTitle className="text-xl font-semibold">Quick Actions</CardTitle>
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div className="space-y-8">
+            <Card className="overflow-hidden border border-primary/10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300">
+              <CardHeader className="border-b border-primary/10 bg-primary/5 p-6">
+                <CardTitle className="text-2xl font-semibold text-primary-800 dark:text-primary-200">Quick Actions</CardTitle>
                 <p className="text-sm text-muted-foreground">
                   Frequently used actions and tools
                 </p>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 <QuickActions />
               </CardContent>
             </Card>
@@ -82,14 +84,14 @@ export default function AdminDashboard() {
             <ActivityLog />
           </div>
           
-          <Card className="border shadow-md bg-white dark:bg-gray-800">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold">System Announcements</CardTitle>
+          <Card className="overflow-hidden border border-primary/10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300">
+            <CardHeader className="border-b border-primary/10 bg-primary/5 p-6">
+              <CardTitle className="text-2xl font-semibold text-primary-800 dark:text-primary-200">System Announcements</CardTitle>
               <p className="text-sm text-muted-foreground">
                 Important updates and notifications
               </p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               <AnnouncementList />
             </CardContent>
           </Card>
