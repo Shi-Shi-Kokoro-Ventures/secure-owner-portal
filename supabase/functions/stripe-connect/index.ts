@@ -19,16 +19,18 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
-    
-    // Initialize Supabase client with auth context
+    // Get the authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('No authorization header');
+    }
+
+    // Initialize Supabase client
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
-        global: { 
-          headers: { Authorization: req.headers.get('Authorization') ?? '' }
-        },
+        global: { headers: { Authorization: authHeader } },
       }
     );
 
@@ -36,17 +38,8 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     
     if (userError || !user) {
-      console.error('Auth error:', userError);
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized', details: userError?.message }),
-        { 
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      throw new Error('Unauthorized');
     }
-
-    console.log('Authenticated user:', user.id);
 
     // Get user role
     const { data: userData, error: roleError } = await supabaseClient
@@ -56,30 +49,14 @@ serve(async (req) => {
       .single();
 
     if (roleError || !userData) {
-      console.error('Role error:', roleError);
-      return new Response(
-        JSON.stringify({ error: 'Failed to get user role', details: roleError?.message }),
-        { 
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      throw new Error('Failed to get user role');
     }
 
-    console.log('User role:', userData.role);
-
     if (userData.role !== 'owner') {
-      return new Response(
-        JSON.stringify({ error: 'Only property owners can access Stripe Connect' }),
-        { 
-          status: 403,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      throw new Error('Only property owners can access Stripe Connect');
     }
 
     const { action } = await req.json();
-    console.log('Action requested:', action);
 
     switch (action) {
       case 'create_account': {
@@ -91,7 +68,6 @@ serve(async (req) => {
           .single();
 
         if (existingAccount) {
-          console.log('Existing account found:', existingAccount);
           return new Response(
             JSON.stringify({ accountId: existingAccount.stripe_account_id }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -99,7 +75,6 @@ serve(async (req) => {
         }
 
         // Create new Connect account
-        console.log('Creating new Stripe Connect account');
         const account = await stripe.accounts.create({
           type: 'express',
           country: 'US',
@@ -113,8 +88,6 @@ serve(async (req) => {
           },
         });
 
-        console.log('Stripe account created:', account.id);
-
         // Store the account ID
         const { error: insertError } = await supabaseClient
           .from('stripe_connect_accounts')
@@ -124,7 +97,6 @@ serve(async (req) => {
           });
 
         if (insertError) {
-          console.error('Insert error:', insertError);
           throw new Error('Failed to store Stripe account');
         }
 
@@ -136,7 +108,6 @@ serve(async (req) => {
           type: 'account_onboarding',
         });
 
-        console.log('Account link created');
         return new Response(
           JSON.stringify({ url: accountLink.url }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -151,7 +122,6 @@ serve(async (req) => {
           .single();
 
         if (!connectAccount) {
-          console.log('No connect account found');
           return new Response(
             JSON.stringify({ status: 'not_created' }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -159,7 +129,6 @@ serve(async (req) => {
         }
 
         const account = await stripe.accounts.retrieve(connectAccount.stripe_account_id);
-        console.log('Account status:', account.charges_enabled ? 'complete' : 'pending');
 
         return new Response(
           JSON.stringify({
@@ -178,20 +147,13 @@ serve(async (req) => {
           .single();
 
         if (!connectAccount) {
-          return new Response(
-            JSON.stringify({ error: 'No Stripe Connect account found' }),
-            { 
-              status: 400,
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-            }
-          );
+          throw new Error('No Stripe Connect account found');
         }
 
         const loginLink = await stripe.accounts.createLoginLink(
           connectAccount.stripe_account_id
         );
 
-        console.log('Login link created:', loginLink.url);
         return new Response(
           JSON.stringify({ url: loginLink.url }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -199,26 +161,16 @@ serve(async (req) => {
       }
 
       default:
-        return new Response(
-          JSON.stringify({ error: 'Invalid action' }),
-          { 
-            status: 400,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-          }
-        );
+        throw new Error('Invalid action');
     }
 
   } catch (error) {
-    console.error('Error in stripe-connect function:', error);
+    console.error('Error:', error);
     return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        stack: error.stack,
-        details: 'An unexpected error occurred'
-      }),
+      JSON.stringify({ error: error.message }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: error.message === 'Unauthorized' ? 401 : 500
+        status: error.message === 'Unauthorized' ? 401 : 400
       }
     );
   }
