@@ -40,38 +40,6 @@ export const QuickActions = () => {
       route: "/admin/properties",
       color: "text-emerald-600 dark:text-emerald-400",
       bgColor: "bg-emerald-50 dark:bg-emerald-900/20"
-    },
-    {
-      title: "System Alerts",
-      description: "View alerts",
-      icon: AlertCircle,
-      route: "/admin/alerts",
-      color: "text-red-600 dark:text-red-400",
-      bgColor: "bg-red-50 dark:bg-red-900/20"
-    },
-    {
-      title: "Payments",
-      description: "Process payments",
-      icon: CreditCard,
-      route: "/admin/payments",
-      color: "text-indigo-600 dark:text-indigo-400",
-      bgColor: "bg-indigo-50 dark:bg-indigo-900/20"
-    },
-    {
-      title: "Tenants",
-      description: "Manage tenants",
-      icon: Users,
-      route: "/admin/tenants",
-      color: "text-orange-600 dark:text-orange-400",
-      bgColor: "bg-orange-50 dark:bg-orange-900/20"
-    },
-    {
-      title: "Settings",
-      description: "System settings",
-      icon: Settings,
-      route: "/admin/settings",
-      color: "text-gray-600 dark:text-gray-400",
-      bgColor: "bg-gray-50 dark:bg-gray-900/20"
     }
   ];
 
@@ -84,12 +52,12 @@ export const QuickActions = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {actions.map((action) => (
         <Button 
           key={action.title}
           variant="outline"
-          className="group flex h-full min-h-[120px] w-full flex-col items-start gap-3 p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-100 dark:border-gray-700 transition-all duration-200"
+          className="flex flex-col items-start gap-3 p-4 h-auto min-h-[120px] bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-100 dark:border-gray-700 transition-all duration-200"
           onClick={() => handleAction(action.route)}
         >
           <div className={cn(
@@ -98,9 +66,9 @@ export const QuickActions = () => {
           )}>
             <action.icon className={cn("h-5 w-5", action.color)} />
           </div>
-          <div className="space-y-0.5 w-full">
-            <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{action.title}</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">{action.description}</div>
+          <div className="space-y-1 text-left w-full">
+            <h3 className="font-medium text-sm">{action.title}</h3>
+            <p className="text-xs text-muted-foreground">{action.description}</p>
           </div>
         </Button>
       ))}
