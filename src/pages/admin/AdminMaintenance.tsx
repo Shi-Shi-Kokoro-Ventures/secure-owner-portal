@@ -1,8 +1,18 @@
+import { useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MaintenanceRequestDetails } from "@/components/maintenance/MaintenanceRequestDetails";
 
 export default function AdminMaintenance() {
+  const [formData, setFormData] = useState({
+    description: '',
+    priority: 'normal',
+    category: 'general',
+    status: 'pending'
+  });
+
+  const [error, setError] = useState<Error | null>(null);
+
   return (
     <AdminLayout>
       <div className="container mx-auto px-4 py-6">
@@ -13,7 +23,11 @@ export default function AdminMaintenance() {
               <CardTitle>Maintenance Requests</CardTitle>
             </CardHeader>
             <CardContent>
-              <MaintenanceRequestDetails />
+              <MaintenanceRequestDetails 
+                formData={formData}
+                setFormData={setFormData}
+                error={error}
+              />
             </CardContent>
           </Card>
         </div>
