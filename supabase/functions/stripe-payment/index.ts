@@ -10,14 +10,19 @@ const corsHeaders = {
 const PLATFORM_FEE_PERCENTAGE = 0.05; // 5% platform fee
 
 serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
   try {
-    // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') ?? '', {
+    // Handle CORS preflight requests
+    if (req.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    // Initialize Stripe with error handling
+    const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY');
+    if (!stripeSecretKey) {
+      throw new Error('Stripe secret key is not configured');
+    }
+
+    const stripe = new Stripe(stripeSecretKey, {
       apiVersion: '2023-10-16',
       httpClient: Stripe.createFetchHttpClient(),
     });
@@ -25,9 +30,11 @@ serve(async (req) => {
     // Validate authorization header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      console.error('Authentication failed: No authorization header provided');
       return new Response(
-        JSON.stringify({ error: 'No authorization header provided' }),
+        JSON.stringify({ 
+          error: 'No authorization header provided',
+          details: 'Authentication is required for this endpoint'
+        }),
         { 
           status: 401,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -35,23 +42,29 @@ serve(async (req) => {
       );
     }
 
-    // Create Supabase client with the user's JWT
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: { headers: { Authorization: authHeader } },
-        auth: { persistSession: false }
-      }
-    );
+    // Initialize Supabase client with error handling
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY');
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Supabase configuration is missing');
+    }
+
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+      auth: { persistSession: false }
+    });
 
     // Get and validate the current user
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     
     if (userError) {
-      console.error('Authentication failed: Invalid user session', userError);
+      console.error('Authentication error:', userError);
       return new Response(
-        JSON.stringify({ error: 'Invalid user session', details: userError.message }),
+        JSON.stringify({ 
+          error: 'Invalid user session', 
+          details: userError.message 
+        }),
         { 
           status: 401,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -60,9 +73,12 @@ serve(async (req) => {
     }
 
     if (!user) {
-      console.error('Authentication failed: No user found in session');
+      console.error('No user found in session');
       return new Response(
-        JSON.stringify({ error: 'No user found in session' }),
+        JSON.stringify({ 
+          error: 'No user found in session',
+          details: 'User authentication is required'
+        }),
         { 
           status: 401,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -72,14 +88,17 @@ serve(async (req) => {
 
     console.log('Successfully authenticated user:', user.id);
 
-    // Parse request body
+    // Parse request body with error handling
     let requestBody;
     try {
       requestBody = await req.json();
     } catch (error) {
       console.error('Failed to parse request body:', error);
       return new Response(
-        JSON.stringify({ error: 'Invalid request body' }),
+        JSON.stringify({ 
+          error: 'Invalid request body',
+          details: 'Request body must be valid JSON'
+        }),
         { 
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -94,7 +113,10 @@ serve(async (req) => {
       const { paymentId } = requestBody;
       if (!paymentId) {
         return new Response(
-          JSON.stringify({ error: 'Payment ID is required for refund' }),
+          JSON.stringify({ 
+            error: 'Payment ID is required for refund',
+            details: 'Please provide a valid payment ID'
+          }),
           { 
             status: 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -102,20 +124,37 @@ serve(async (req) => {
         );
       }
 
-      const refund = await stripe.refunds.create({
-        payment_intent: paymentId,
-      });
-      
-      return new Response(
-        JSON.stringify({ success: true, refund }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      try {
+        const refund = await stripe.refunds.create({
+          payment_intent: paymentId,
+        });
+        
+        return new Response(
+          JSON.stringify({ success: true, refund }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      } catch (error) {
+        console.error('Refund error:', error);
+        return new Response(
+          JSON.stringify({ 
+            error: 'Failed to process refund',
+            details: error.message
+          }),
+          { 
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
     }
 
     // Validate amount for payment
     if (!amount) {
       return new Response(
-        JSON.stringify({ error: 'Amount is required' }),
+        JSON.stringify({ 
+          error: 'Amount is required',
+          details: 'Please provide a valid payment amount'
+        }),
         { 
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -123,7 +162,7 @@ serve(async (req) => {
       );
     }
 
-    // Get the lease details to find the property owner
+    // Get the lease details with error handling
     const { data: lease, error: leaseError } = await supabaseClient
       .from('leases')
       .select(`
@@ -141,7 +180,10 @@ serve(async (req) => {
     if (leaseError) {
       console.error('Failed to fetch lease details:', leaseError);
       return new Response(
-        JSON.stringify({ error: 'Failed to fetch lease details', details: leaseError.message }),
+        JSON.stringify({ 
+          error: 'Failed to fetch lease details',
+          details: leaseError.message
+        }),
         { 
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -151,7 +193,10 @@ serve(async (req) => {
 
     if (!lease) {
       return new Response(
-        JSON.stringify({ error: 'Lease not found' }),
+        JSON.stringify({ 
+          error: 'Lease not found',
+          details: 'Please provide a valid lease ID'
+        }),
         { 
           status: 404,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -159,7 +204,7 @@ serve(async (req) => {
       );
     }
 
-    // Get the owner's Stripe Connect account
+    // Get the owner's Stripe Connect account with error handling
     const { data: connectAccount, error: connectError } = await supabaseClient
       .from('stripe_connect_accounts')
       .select('stripe_account_id')
@@ -169,7 +214,10 @@ serve(async (req) => {
     if (connectError) {
       console.error('Failed to fetch connect account:', connectError);
       return new Response(
-        JSON.stringify({ error: 'Failed to fetch connect account', details: connectError.message }),
+        JSON.stringify({ 
+          error: 'Failed to fetch connect account',
+          details: connectError.message
+        }),
         { 
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -179,7 +227,10 @@ serve(async (req) => {
 
     if (!connectAccount) {
       return new Response(
-        JSON.stringify({ error: 'Property owner has not set up payments' }),
+        JSON.stringify({ 
+          error: 'Property owner has not set up payments',
+          details: 'The property owner needs to complete their Stripe Connect setup'
+        }),
         { 
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -187,7 +238,7 @@ serve(async (req) => {
       );
     }
 
-    // Get or create Stripe customer
+    // Get or create Stripe customer with error handling
     let stripeCustomerId;
     try {
       const { data: existingCustomer, error: customerError } = await supabaseClient
@@ -246,7 +297,10 @@ serve(async (req) => {
     } catch (error) {
       console.error('Failed to get/create Stripe customer:', error);
       return new Response(
-        JSON.stringify({ error: 'Failed to process customer information', details: error.message }),
+        JSON.stringify({ 
+          error: 'Failed to process customer information',
+          details: error.message
+        }),
         { 
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -265,7 +319,7 @@ serve(async (req) => {
       platformFee
     });
 
-    // Create payment intent
+    // Create payment intent with error handling
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amountInCents,
@@ -293,7 +347,10 @@ serve(async (req) => {
     } catch (error) {
       console.error('Failed to create payment intent:', error);
       return new Response(
-        JSON.stringify({ error: 'Failed to create payment intent', details: error.message }),
+        JSON.stringify({ 
+          error: 'Failed to create payment intent',
+          details: error.message
+        }),
         { 
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -303,7 +360,10 @@ serve(async (req) => {
   } catch (error) {
     console.error('Unexpected error:', error);
     return new Response(
-      JSON.stringify({ error: 'An unexpected error occurred', details: error.message }),
+      JSON.stringify({ 
+        error: 'An unexpected error occurred',
+        details: error.message
+      }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
