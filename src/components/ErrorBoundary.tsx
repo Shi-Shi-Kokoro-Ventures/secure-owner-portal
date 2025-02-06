@@ -2,7 +2,7 @@ import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Home } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { logger } from "@/utils/logger";
 
 interface Props {
   children: ReactNode;
@@ -27,8 +27,8 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Error caught by boundary:", error);
-    console.error("Error info:", errorInfo);
+    logger.error("Error caught by boundary:", error);
+    logger.error("Error info:", errorInfo);
     this.setState({
       error,
       errorInfo
@@ -36,7 +36,13 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   private handleRetry = () => {
+    logger.info("Retrying after error...");
     this.setState({ hasError: false, error: null, errorInfo: null });
+  };
+
+  private handleGoHome = () => {
+    logger.info("Navigating home after error...");
+    window.location.href = '/';
   };
 
   public render() {
@@ -53,7 +59,7 @@ class ErrorBoundary extends Component<Props, State> {
                   {this.state.error?.message || "An unexpected error occurred"}
                 </p>
                 {process.env.NODE_ENV === 'development' && this.state.errorInfo && (
-                  <pre className="text-xs mt-2 p-2 bg-background/10 rounded overflow-auto">
+                  <pre className="text-xs mt-2 p-2 bg-background/10 rounded overflow-auto max-h-[200px]">
                     {this.state.errorInfo.componentStack}
                   </pre>
                 )}
@@ -70,7 +76,7 @@ class ErrorBoundary extends Component<Props, State> {
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => window.location.href = '/'}
+                onClick={this.handleGoHome}
               >
                 <Home className="mr-2 h-4 w-4" />
                 Go Home

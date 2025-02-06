@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/utils/logger";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface LeaseMetricsProps {
   leases: Lease[];
@@ -16,7 +17,7 @@ interface LeaseMetricsProps {
 export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
   const { toast } = useToast();
   
-  const { data: userRole = 'admin', isLoading: isRoleLoading } = useQuery({
+  const { data: userRole = 'admin', isLoading: isRoleLoading, error: roleError } = useQuery({
     queryKey: ['userRole'],
     queryFn: async () => {
       try {
@@ -24,12 +25,12 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
         
         if (authError) {
           logger.error('Auth error:', authError);
-          return 'admin';
+          throw authError;
         }
 
         if (!user) {
-          logger.warn('No authenticated user, defaulting to admin for development');
-          return 'admin';
+          logger.warn('No authenticated user found');
+          throw new Error('No authenticated user found');
         }
 
         const { data, error } = await supabase
@@ -43,8 +44,13 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
           throw error;
         }
 
-        logger.info('User role fetched:', data?.role);
-        return data?.role || 'admin';
+        if (!data?.role) {
+          logger.warn('No user role found');
+          throw new Error('No user role found');
+        }
+
+        logger.info('User role fetched:', data.role);
+        return data.role;
       } catch (error) {
         logger.error('Error in userRole query:', error);
         toast({
@@ -56,8 +62,18 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
       }
     },
     retry: 1,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
+
+  if (roleError) {
+    return (
+      <Alert variant="destructive" className="mb-4">
+        <AlertDescription>
+          Failed to load user role. Please refresh the page and try again.
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   if (isRoleLoading) {
     return (
@@ -80,9 +96,11 @@ export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
 
   if (!leases) {
     return (
-      <div className="p-4 text-center text-muted-foreground">
-        No lease data available
-      </div>
+      <Alert className="mb-4">
+        <AlertDescription>
+          No lease data available
+        </AlertDescription>
+      </Alert>
     );
   }
 
