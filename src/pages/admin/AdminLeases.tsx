@@ -6,7 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import type { Lease } from "@/types/lease";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import type { Lease } from "@/types/lease.types";
 import { logger } from "@/utils/logger";
 
 const AdminLeases = () => {
@@ -97,27 +98,34 @@ const AdminLeases = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-6 p-6 animate-in fade-in duration-500">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight font-montserrat">
-            Lease Management
-          </h1>
-          <p className="text-muted-foreground font-inter">
-            Manage and track all property leases
-          </p>
-        </div>
+      <ErrorBoundary>
+        <div className="space-y-6 p-6 animate-in fade-in duration-500">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight font-montserrat">
+              Lease Management
+            </h1>
+            <p className="text-muted-foreground font-inter">
+              Manage and track all property leases
+            </p>
+          </div>
 
-        {/* Explicitly check if leases is an array before rendering LeaseMetrics */}
-        {Array.isArray(leases) && <LeaseMetrics leases={leases} />}
-        
-        <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
-          <LeasesTable 
-            leases={leases || []} 
-            isLoading={isLoading}
-            onLeaseSelect={setSelectedLeaseId}
-          />
+          {Array.isArray(leases) && (
+            <ErrorBoundary>
+              <LeaseMetrics leases={leases} />
+            </ErrorBoundary>
+          )}
+          
+          <ErrorBoundary>
+            <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+              <LeasesTable 
+                leases={leases || []} 
+                isLoading={isLoading}
+                onLeaseSelect={setSelectedLeaseId}
+              />
+            </div>
+          </ErrorBoundary>
         </div>
-      </div>
+      </ErrorBoundary>
     </AdminLayout>
   );
 };
