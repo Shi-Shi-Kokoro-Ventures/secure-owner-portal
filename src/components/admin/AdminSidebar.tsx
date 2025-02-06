@@ -11,6 +11,7 @@ import {
   Wallet,
   Wrench,
   BarChart2,
+  Send,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -33,6 +34,11 @@ export const AdminSidebar = ({ open, onOpenChange }: AdminSidebarProps) => {
       name: "Dashboard",
       path: "/admin/dashboard",
       icon: Home,
+    },
+    {
+      name: "Broadcast",
+      path: "/admin/announcements",
+      icon: Send,
     },
     {
       name: "Lease Management",
