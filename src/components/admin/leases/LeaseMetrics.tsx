@@ -15,20 +15,46 @@ interface LeaseMetricsProps {
 
 export const LeaseMetrics = ({ leases }: LeaseMetricsProps) => {
   const { toast } = useToast();
-  const { data: userRole } = useQuery({
+  
+  // During development, default to admin role
+  const { data: userRole = 'admin' } = useQuery({
     queryKey: ['userRole'],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-      
-      const { data } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', user.id)
-        .maybeSingle();
-      
-      return data?.role;
-    }
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          logger.warn('No authenticated user, defaulting to admin for development');
+          return 'admin';
+        }
+        
+        const { data, error } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .maybeSingle();
+        
+        if (error) {
+          logger.error('Error fetching user role:', error);
+          // During development, default to admin if there's an error
+          return 'admin';
+        }
+        
+        if (!data?.role) {
+          logger.warn('No user role found, defaulting to admin for development');
+          return 'admin';
+        }
+
+        logger.info('User role fetched:', data.role);
+        return data.role;
+      } catch (error) {
+        logger.error('Error in userRole query:', error);
+        // During development, default to admin if there's an error
+        return 'admin';
+      }
+    },
+    staleTime: 0, // Don't cache during development
+    retry: false, // Don't retry during development
+    refetchOnWindowFocus: true,
   });
 
   logger.info(`Rendering LeaseMetrics with ${leases?.length || 0} leases`);
