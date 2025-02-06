@@ -49,7 +49,18 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
           <Menu className="h-5 w-5" />
         </Button>
         
-        <div className="flex flex-1 items-center gap-4">
+        <div className="flex items-center gap-2">
+          <img
+            src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png"
+            alt="Shi Shi Kokoro"
+            className="h-8 w-auto"
+          />
+          <span className="text-lg font-semibold hidden md:block">
+            Shi Shi Kokoro
+          </span>
+        </div>
+
+        <div className="flex flex-1 items-center gap-4 justify-end">
           <form className="flex-1 hidden md:block lg:max-w-xs">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -60,68 +71,68 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
               />
             </div>
           </form>
-        </div>
+        
+          <div className="flex items-center gap-4">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                    onClick={handleMessages}
+                  >
+                    <MessageCircle className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Messages</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-        <div className="flex items-center gap-4">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="hover:bg-gray-100 dark:hover:bg-gray-800"
-                  onClick={handleMessages}
-                >
-                  <MessageCircle className="h-5 w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Messages</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                    onClick={handleNotifications}
+                  >
+                    <Bell className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Notifications</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  className="hover:bg-gray-100 dark:hover:bg-gray-800"
-                  onClick={handleNotifications}
-                >
-                  <Bell className="h-5 w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Notifications</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                    onClick={handleHelp}
+                  >
+                    <HelpCircle className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Help</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  className="hover:bg-gray-100 dark:hover:bg-gray-800"
-                  onClick={handleHelp}
-                >
-                  <HelpCircle className="h-5 w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Help</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <div className="flex items-center gap-2 ml-4 hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-lg transition-colors cursor-pointer">
-            <User className="h-8 w-8 rounded-full bg-gray-100 p-1" />
-            <div className="hidden md:block text-sm">
-              <div className="font-medium">Shi Shi Kokoro</div>
-              <div className="text-xs text-muted-foreground">Property Management</div>
+            <div className="flex items-center gap-2 ml-4 hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-lg transition-colors cursor-pointer">
+              <User className="h-8 w-8 rounded-full bg-gray-100 p-1" />
+              <div className="hidden md:block text-sm">
+                <div className="font-medium">Shi Shi Kokoro</div>
+                <div className="text-xs text-muted-foreground">Property Management</div>
+              </div>
             </div>
           </div>
         </div>

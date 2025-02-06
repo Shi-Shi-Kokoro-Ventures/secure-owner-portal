@@ -10,22 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 export default function AdminDashboard() {
   return (
     <AdminLayout>
-      <div className="space-y-6 container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="space-y-6 p-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center">
-              <img
-                src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png"
-                alt="Shi Shi Kokoro"
-                className="h-8 w-auto mr-2"
-              />
-              <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                Shi Shi Kokoro
-              </span>
-            </div>
-            <AnnouncementDialog />
-          </div>
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <AnnouncementDialog />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
