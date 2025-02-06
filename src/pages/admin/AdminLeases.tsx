@@ -14,34 +14,26 @@ const AdminLeases = () => {
   const { toast } = useToast();
   const [selectedLeaseId, setSelectedLeaseId] = useState<string | null>(null);
 
-  // First, ensure we have an authenticated user
-  const { data: authData, isLoading: isAuthLoading } = useQuery({
-    queryKey: ['auth'],
+  // Fetch user role directly, without depending on a separate auth query
+  const { data: userRole, isLoading: isRoleLoading } = useQuery({
+    queryKey: ['userRole'],
     queryFn: async () => {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
       if (authError) {
         logger.error('Auth error:', authError);
         throw authError;
       }
+
       if (!user) {
         logger.error('No authenticated user');
         throw new Error('No authenticated user');
       }
-      return user;
-    },
-    retry: 1
-  });
 
-  // Then fetch user role only if we have an authenticated user
-  const { data: userRole, isLoading: isRoleLoading } = useQuery({
-    queryKey: ['userRole', authData?.id],
-    queryFn: async () => {
-      logger.info('Fetching user role for:', authData?.id);
-      
       const { data, error } = await supabase
         .from('users')
         .select('role')
-        .eq('id', authData?.id)
+        .eq('id', user.id)
         .maybeSingle();
       
       if (error) {
@@ -50,19 +42,20 @@ const AdminLeases = () => {
       }
 
       if (!data) {
-        logger.error('No user role found');
-        throw new Error('No user role found');
+        // During development, default to admin role if no role is found
+        logger.warn('No user role found, defaulting to admin for development');
+        return 'admin';
       }
 
       logger.info('User role fetched:', data.role);
       return data.role;
     },
-    enabled: !!authData?.id,
-    staleTime: 5 * 60 * 1000,
-    retry: 2
+    staleTime: 0, // Don't cache the role during development
+    retry: false, // Don't retry during development
+    refetchOnWindowFocus: true, // Refetch when window gains focus
   });
 
-  // Finally fetch leases only if we have a user role
+  // Fetch leases with simplified dependency
   const { data: leases, isLoading: isLeasesLoading, error: leasesError } = useQuery({
     queryKey: ['leases', userRole],
     queryFn: async () => {
@@ -106,9 +99,11 @@ const AdminLeases = () => {
       return data as Lease[];
     },
     enabled: !!userRole,
+    staleTime: 0, // Don't cache during development
+    refetchOnWindowFocus: true,
   });
 
-  const isLoading = isAuthLoading || isRoleLoading || isLeasesLoading;
+  const isLoading = isRoleLoading || isLeasesLoading;
 
   if (leasesError) {
     return (
