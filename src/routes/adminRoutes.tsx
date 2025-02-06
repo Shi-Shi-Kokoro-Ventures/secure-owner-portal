@@ -9,11 +9,11 @@ import AdminSettings from "@/pages/admin/AdminSettings";
 import Messages from "@/pages/Messages";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
-interface AdminRoute extends RouteObject {
+type AdminRoute = RouteObject & {
   key: string;
   requiresAuth?: boolean;
   title?: string;
-}
+};
 
 export const adminRoutes: AdminRoute[] = [
   {
