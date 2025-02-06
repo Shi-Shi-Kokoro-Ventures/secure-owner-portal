@@ -1,10 +1,4 @@
 project_id = "zpprexurqzixebfuneni"
 
-[functions.stripe-connect]
+[functions.generate-newsletter]
 verify_jwt = true
-
-[functions.stripe-payment]
-verify_jwt = true
-
-[functions.stripe-webhook]
-verify_jwt = false
