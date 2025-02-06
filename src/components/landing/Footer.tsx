@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { NewsletterSection } from "./NewsletterSection";
 
 export const Footer = () => {
+  const navigate = useNavigate();
+  
   const handleTenantServicesClick = () => {
     navigate("/tenant-services");
   };

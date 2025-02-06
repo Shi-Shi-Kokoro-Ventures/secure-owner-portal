@@ -25,7 +25,7 @@ export const NewsletterSection = () => {
     try {
       // Check for existing subscription
       const { data: existingSubscription, error: fetchError } = await supabase
-        .from('newsletter_subscriptions')
+        .from('newsletter_subscribers')
         .select('*')
         .eq('email', email)
         .single();
@@ -44,7 +44,7 @@ export const NewsletterSection = () => {
         } else {
           // Reactivate unsubscribed email
           const { error: updateError } = await supabase
-            .from('newsletter_subscriptions')
+            .from('newsletter_subscribers')
             .update({ status: 'active' })
             .eq('email', email);
 
@@ -58,7 +58,7 @@ export const NewsletterSection = () => {
       } else {
         // New subscription
         const { error: insertError } = await supabase
-          .from('newsletter_subscriptions')
+          .from('newsletter_subscribers')
           .insert([{ email }]);
 
         if (insertError) throw insertError;

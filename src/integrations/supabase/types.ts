@@ -613,6 +613,30 @@ export type Database = {
           },
         ]
       }
+      newsletter_subscribers: {
+        Row: {
+          id: string
+          email: string
+          subscribed_at: string
+          unsubscribe_token: string
+          status: 'active' | 'unsubscribed'
+        }
+        Insert: {
+          id?: string
+          email: string
+          subscribed_at?: string
+          unsubscribe_token?: string
+          status?: 'active' | 'unsubscribed'
+        }
+        Update: {
+          id?: string
+          email?: string
+          subscribed_at?: string
+          unsubscribe_token?: string
+          status?: 'active' | 'unsubscribed'
+        }
+        Relationships: []
+      }
       payment_methods: {
         Row: {
           card_brand: string
