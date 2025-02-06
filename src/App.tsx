@@ -64,7 +64,7 @@ const App: React.FC = () => {
               <Route 
                 key={route.key} 
                 path={route.path} 
-                element={route.element} 
+                element={route.element}
               />
             ))}
             {vendorRoutes.map((route) => (

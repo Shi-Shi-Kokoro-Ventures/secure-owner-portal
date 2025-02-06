@@ -9,7 +9,6 @@ import AdminSettings from "@/pages/admin/AdminSettings";
 import Messages from "@/pages/Messages";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
-// Define admin route configuration type that extends RouteObject
 interface AdminRoute extends RouteObject {
   key: string;
   requiresAuth?: boolean;
