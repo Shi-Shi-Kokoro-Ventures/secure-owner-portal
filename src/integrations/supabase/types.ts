@@ -421,17 +421,17 @@ export type Database = {
           last_modified_by: string | null
           late_fee_grace_period_days: number | null
           late_fee_percentage: number | null
-          lease_number: string | null
-          lease_type: string | null
+          lease_number: string
+          lease_type: string
           monthly_rent: number
           notice_period_days: number | null
           rent_due_day: number | null
-          security_deposit_status: string | null
+          security_deposit_status: string
           special_terms: string | null
           start_date: string
           status: Database["public"]["Enums"]["lease_status"]
-          tenant_id: string | null
-          unit_id: string | null
+          tenant_id: string
+          unit_id: string
           utilities_included: string[] | null
         }
         Insert: {
@@ -445,17 +445,17 @@ export type Database = {
           last_modified_by?: string | null
           late_fee_grace_period_days?: number | null
           late_fee_percentage?: number | null
-          lease_number?: string | null
-          lease_type?: string | null
+          lease_number: string
+          lease_type?: string
           monthly_rent: number
           notice_period_days?: number | null
           rent_due_day?: number | null
-          security_deposit_status?: string | null
+          security_deposit_status?: string
           special_terms?: string | null
           start_date: string
           status?: Database["public"]["Enums"]["lease_status"]
-          tenant_id?: string | null
-          unit_id?: string | null
+          tenant_id: string
+          unit_id: string
           utilities_included?: string[] | null
         }
         Update: {
@@ -469,17 +469,17 @@ export type Database = {
           last_modified_by?: string | null
           late_fee_grace_period_days?: number | null
           late_fee_percentage?: number | null
-          lease_number?: string | null
-          lease_type?: string | null
+          lease_number?: string
+          lease_type?: string
           monthly_rent?: number
           notice_period_days?: number | null
           rent_due_day?: number | null
-          security_deposit_status?: string | null
+          security_deposit_status?: string
           special_terms?: string | null
           start_date?: string
           status?: Database["public"]["Enums"]["lease_status"]
-          tenant_id?: string | null
-          unit_id?: string | null
+          tenant_id?: string
+          unit_id?: string
           utilities_included?: string[] | null
         }
         Relationships: [
