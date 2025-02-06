@@ -6,7 +6,7 @@ import AdminFinancials from "@/pages/admin/AdminFinancials";
 import AdminMaintenance from "@/pages/admin/AdminMaintenance";
 import AdminLeases from "@/pages/admin/AdminLeases";
 import AdminSettings from "@/pages/admin/AdminSettings";
-import Messages from "@/pages/Messages";
+import AdminReports from "@/pages/admin/AdminReports";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 type AdminRoute = RouteObject & {
@@ -33,15 +33,15 @@ export const adminRoutes: AdminRoute[] = [
     title: "Dashboard",
   },
   {
-    key: "admin-users",
-    path: "/admin/users",
+    key: "admin-leases",
+    path: "/admin/leases",
     element: (
       <ProtectedRoute>
-        <AdminUsers />
+        <AdminLeases />
       </ProtectedRoute>
     ),
     requiresAuth: true,
-    title: "User Management",
+    title: "Lease Management",
   },
   {
     key: "admin-properties",
@@ -55,8 +55,8 @@ export const adminRoutes: AdminRoute[] = [
     title: "Properties",
   },
   {
-    key: "admin-financials",
-    path: "/admin/financials",
+    key: "admin-payments",
+    path: "/admin/payments",
     element: (
       <ProtectedRoute>
         <AdminFinancials />
@@ -77,15 +77,26 @@ export const adminRoutes: AdminRoute[] = [
     title: "Maintenance",
   },
   {
-    key: "admin-leases",
-    path: "/admin/leases",
+    key: "admin-reports",
+    path: "/admin/reports",
     element: (
       <ProtectedRoute>
-        <AdminLeases />
+        <AdminReports />
       </ProtectedRoute>
     ),
     requiresAuth: true,
-    title: "Lease Management",
+    title: "Reports & Analytics",
+  },
+  {
+    key: "admin-users",
+    path: "/admin/users",
+    element: (
+      <ProtectedRoute>
+        <AdminUsers />
+      </ProtectedRoute>
+    ),
+    requiresAuth: true,
+    title: "User Management",
   },
   {
     key: "admin-settings",
@@ -97,16 +108,5 @@ export const adminRoutes: AdminRoute[] = [
     ),
     requiresAuth: true,
     title: "Settings",
-  },
-  {
-    key: "admin-messages",
-    path: "/admin/messages",
-    element: (
-      <ProtectedRoute>
-        <Messages />
-      </ProtectedRoute>
-    ),
-    requiresAuth: true,
-    title: "Messages",
   },
 ];
