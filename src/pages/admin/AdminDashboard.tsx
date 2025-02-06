@@ -10,8 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 export default function AdminDashboard() {
   return (
     <AdminLayout>
-      <div className="space-y-6 p-6 max-w-7xl mx-auto">
-        <div className="flex items-center justify-between">
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
+        <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <AnnouncementDialog />
         </div>
@@ -59,9 +59,9 @@ export default function AdminDashboard() {
           />
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-2 mt-6">
           <div className="space-y-6">
-            <Card className="overflow-hidden">
+            <Card>
               <CardHeader>
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>

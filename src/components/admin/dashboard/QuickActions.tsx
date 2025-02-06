@@ -1,8 +1,6 @@
-
 import { Building2, FileText, UserPlus, Wrench, AlertCircle, CreditCard, Users, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -86,33 +84,26 @@ export const QuickActions = () => {
   };
 
   return (
-    <Card className="bg-white dark:bg-gray-800">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">Quick Actions</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {actions.map((action) => (
-            <Button 
-              key={action.title}
-              variant="outline"
-              className="group flex h-full min-h-[120px] w-full flex-col items-start gap-3 p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-100 dark:border-gray-700 transition-all duration-200"
-              onClick={() => handleAction(action.route)}
-            >
-              <div className={cn(
-                "flex h-10 w-10 items-center justify-center rounded-full transition-colors",
-                action.bgColor
-              )}>
-                <action.icon className={cn("h-5 w-5", action.color)} />
-              </div>
-              <div className="space-y-0.5 w-full">
-                <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{action.title}</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">{action.description}</div>
-              </div>
-            </Button>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {actions.map((action) => (
+        <Button 
+          key={action.title}
+          variant="outline"
+          className="group flex h-full min-h-[120px] w-full flex-col items-start gap-3 p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-100 dark:border-gray-700 transition-all duration-200"
+          onClick={() => handleAction(action.route)}
+        >
+          <div className={cn(
+            "flex h-10 w-10 items-center justify-center rounded-full transition-colors",
+            action.bgColor
+          )}>
+            <action.icon className={cn("h-5 w-5", action.color)} />
+          </div>
+          <div className="space-y-0.5 w-full">
+            <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{action.title}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">{action.description}</div>
+          </div>
+        </Button>
+      ))}
+    </div>
   );
 };
