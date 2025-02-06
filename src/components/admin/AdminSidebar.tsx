@@ -11,10 +11,12 @@ import {
   Wallet,
   Wrench,
   BarChart2,
+  Megaphone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { AnnouncementDialog } from "@/components/admin/announcements/AnnouncementDialog";
 
 interface AdminSidebarProps {
   open: boolean;
@@ -111,6 +113,18 @@ export const AdminSidebar = ({ open, onOpenChange }: AdminSidebarProps) => {
               {open && <span>{item.name}</span>}
             </Link>
           ))}
+          <AnnouncementDialog>
+            <button
+              className={cn(
+                "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                "hover:bg-accent hover:text-accent-foreground",
+                !open && "justify-center"
+              )}
+            >
+              <Megaphone className="h-4 w-4" />
+              {open && <span>Broadcast</span>}
+            </button>
+          </AnnouncementDialog>
         </div>
       </ScrollArea>
 
