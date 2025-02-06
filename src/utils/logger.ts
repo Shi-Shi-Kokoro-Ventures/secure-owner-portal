@@ -11,7 +11,24 @@ class Logger {
   private static instance: Logger;
   private logs: LogEntry[] = [];
 
-  private constructor() {}
+  private constructor() {
+    // Capture unhandled errors and rejections
+    if (typeof window !== 'undefined') {
+      window.addEventListener('error', (event) => {
+        this.error('Unhandled error:', {
+          message: event.message,
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          error: event.error
+        });
+      });
+
+      window.addEventListener('unhandledrejection', (event) => {
+        this.error('Unhandled promise rejection:', event.reason);
+      });
+    }
+  }
 
   public static getInstance(): Logger {
     if (!Logger.instance) {
@@ -30,9 +47,17 @@ class Logger {
 
     this.logs.push(entry);
     
-    // Log to console in development
+    // Always log to console in development
     if (process.env.NODE_ENV === 'development') {
-      console[level](message, data);
+      const consoleMethod = level === 'error' ? console.error : 
+                           level === 'warn' ? console.warn : 
+                           console.log;
+      
+      if (data) {
+        consoleMethod(`[${level.toUpperCase()}] ${message}`, data);
+      } else {
+        consoleMethod(`[${level.toUpperCase()}] ${message}`);
+      }
     }
 
     // In production, you might want to send logs to a service

@@ -23,12 +23,18 @@ class ErrorBoundary extends Component<Props, State> {
   };
 
   public static getDerivedStateFromError(error: Error): State {
+    logger.error("Error caught in getDerivedStateFromError:", error);
     return { hasError: true, error, errorInfo: null };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    logger.error("Error caught by boundary:", error);
-    logger.error("Error info:", errorInfo);
+    // Log both the error and the component stack
+    logger.error("Error caught by boundary:", {
+      error: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack
+    });
+    
     this.setState({
       error,
       errorInfo
