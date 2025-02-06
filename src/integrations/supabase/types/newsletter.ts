@@ -1,3 +1,4 @@
+
 export interface Newsletter {
   id: string;
   title: string;

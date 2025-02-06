@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,15 +34,14 @@ export const NewsletterGenerator = () => {
 
       if (error) throw error;
 
-      // Store the generated content in the newsletters table
       const { error: insertError } = await supabase
         .from('newsletters')
-        .insert([{
+        .insert({
           title: data.title,
           content: data.content,
           status: 'draft',
           created_by: (await supabase.auth.getUser()).data.user?.id
-        }]);
+        });
 
       if (insertError) throw insertError;
 

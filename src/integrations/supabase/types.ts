@@ -637,6 +637,48 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletters: {
+        Row: {
+          approved_by: string | null
+          canva_design_id: string | null
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          scheduled_for: string | null
+          sent_at: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          approved_by?: string | null
+          canva_design_id?: string | null
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          scheduled_for?: string | null
+          sent_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          approved_by?: string | null
+          canva_design_id?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          scheduled_for?: string | null
+          sent_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payment_methods: {
         Row: {
           card_brand: string
