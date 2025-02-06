@@ -1,15 +1,15 @@
 import * as React from "react"
-import { Legend as RechartsPrimitive } from "recharts"
+import { Legend } from "recharts"
 import { cn } from "@/lib/utils"
 import { useChart } from "./chart-context"
 import { getPayloadConfigFromPayload } from "./utils"
 
-export const ChartLegend = RechartsPrimitive.Legend
+export const ChartLegend = Legend
 
 export const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+    Pick<React.ComponentProps<typeof Legend>, "payload" | "verticalAlign"> & {
       hideIcon?: boolean
       nameKey?: string
     }

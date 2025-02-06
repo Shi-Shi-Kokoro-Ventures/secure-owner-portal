@@ -1,14 +1,14 @@
 import * as React from "react"
-import { Tooltip as RechartsPrimitive } from "recharts"
+import { Tooltip } from "recharts"
 import { cn } from "@/lib/utils"
 import { useChart } from "./chart-context"
 import { getPayloadConfigFromPayload } from "./utils"
 
-export const ChartTooltip = RechartsPrimitive.Tooltip
+export const ChartTooltip = Tooltip
 
 export const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
+  React.ComponentProps<typeof Tooltip> &
     React.ComponentProps<"div"> & {
       hideLabel?: boolean
       hideIndicator?: boolean
