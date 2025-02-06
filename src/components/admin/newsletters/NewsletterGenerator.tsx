@@ -39,7 +39,7 @@ export const NewsletterGenerator = () => {
         .insert({
           title: data.title,
           content: data.content,
-          status: 'draft',
+          status: 'draft' as const,
           created_by: (await supabase.auth.getUser()).data.user?.id
         });
 
