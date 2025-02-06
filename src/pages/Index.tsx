@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Building2, 
   CheckCircle2, 
@@ -18,12 +20,16 @@ import {
   FileText,
   Wrench,
   Shield,
-  ArrowRight 
+  ArrowRight,
+  Loader2 
 } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   useEffect(() => {
     // Handle scrollTo parameter
@@ -55,6 +61,73 @@ const Index = () => {
 
   const handleTenantServicesClick = () => {
     navigate("/tenant-services");
+  };
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast({
+        title: "Error",
+        description: "Please enter an email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubscribing(true);
+    try {
+      // Check for existing subscription
+      const { data: existingSubscription } = await supabase
+        .from('newsletter_subscriptions')
+        .select('id, status')
+        .eq('email', email)
+        .single();
+
+      if (existingSubscription) {
+        if (existingSubscription.status === 'active') {
+          toast({
+            title: "Already Subscribed",
+            description: "This email is already subscribed to our newsletter",
+            variant: "default",
+          });
+        } else {
+          // Reactivate unsubscribed email
+          const { error: updateError } = await supabase
+            .from('newsletter_subscriptions')
+            .update({ status: 'active' })
+            .eq('email', email);
+
+          if (updateError) throw updateError;
+
+          toast({
+            title: "Welcome Back!",
+            description: "Your newsletter subscription has been reactivated",
+          });
+        }
+      } else {
+        // New subscription
+        const { error: insertError } = await supabase
+          .from('newsletter_subscriptions')
+          .insert([{ email }]);
+
+        if (insertError) throw insertError;
+
+        toast({
+          title: "Success!",
+          description: "Thank you for subscribing to our newsletter",
+        });
+      }
+      setEmail("");
+    } catch (error) {
+      console.error('Subscription error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to subscribe. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubscribing(false);
+    }
   };
 
   return (
@@ -172,7 +245,6 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Services Section */}
       <section id="services" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-16">Our Services</h2>
@@ -256,7 +328,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Locations Section */}
       <section id="locations" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-16">Our Locations</h2>
@@ -291,7 +362,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
       <section id="contact" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12">
@@ -339,7 +409,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
@@ -381,10 +450,26 @@ const Index = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
               <p className="mb-4">Subscribe to get property management tips & market updates</p>
-              <div className="flex gap-2">
-                <Input placeholder="Your Email" className="bg-white" />
-                <Button>Subscribe</Button>
-              </div>
+              <form onSubmit={handleSubscribe} className="flex gap-2">
+                <Input 
+                  placeholder="Your Email" 
+                  className="bg-white" 
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isSubscribing}
+                />
+                <Button type="submit" disabled={isSubscribing}>
+                  {isSubscribing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Subscribing...
+                    </>
+                  ) : (
+                    'Subscribe'
+                  )}
+                </Button>
+              </form>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-12 pt-8 text-center">
