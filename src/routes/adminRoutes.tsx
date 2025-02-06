@@ -12,37 +12,46 @@ export const adminRoutes = [
   {
     path: "/admin",
     element: <Navigate to="/admin/dashboard" replace />,
+    key: "admin-root"
   },
   {
     path: "/admin/dashboard",
     element: <AdminDashboard />,
+    key: "admin-dashboard"
   },
   {
     path: "/admin/users",
     element: <AdminUsers />,
+    key: "admin-users"
   },
   {
     path: "/admin/properties",
     element: <AdminProperties />,
+    key: "admin-properties"
   },
   {
     path: "/admin/financials",
     element: <AdminFinancials />,
+    key: "admin-financials"
   },
   {
     path: "/admin/maintenance",
     element: <AdminMaintenance />,
+    key: "admin-maintenance"
   },
   {
     path: "/admin/leases",
     element: <AdminLeases />,
+    key: "admin-leases"
   },
   {
     path: "/admin/settings",
     element: <AdminSettings />,
+    key: "admin-settings"
   },
   {
     path: "/admin/messages",
     element: <Messages />,
+    key: "admin-messages"
   },
 ];
