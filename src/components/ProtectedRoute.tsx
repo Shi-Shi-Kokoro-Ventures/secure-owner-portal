@@ -1,9 +1,16 @@
+
 import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/utils/logger";
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  // During development, bypass all checks
+  if (import.meta.env.DEV) {
+    logger.info('Development mode: bypassing all auth checks');
+    return <>{children}</>;
+  }
+
   const { data: session } = useQuery({
     queryKey: ['session'],
     queryFn: async () => {
@@ -21,12 +28,6 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
-
-  // During development, bypass all checks
-  if (import.meta.env.DEV) {
-    logger.info('Development mode: bypassing all auth checks');
-    return <>{children}</>;
-  }
 
   // In production, check for authentication
   if (!session) {
