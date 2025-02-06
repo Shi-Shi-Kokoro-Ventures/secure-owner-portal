@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { AdminSidebar } from "./AdminSidebar";
 import { Header } from "@/components/Header";
@@ -7,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logger } from "@/utils/logger";
+import { AnnouncementListener } from "./announcements/AnnouncementListener";
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -18,6 +18,7 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="min-h-screen bg-background">
+      <AnnouncementListener />
       <div className="flex min-h-screen overflow-hidden">
         {/* Make sidebar fixed position and adjust z-index */}
         <div className="fixed inset-y-0 z-50">
