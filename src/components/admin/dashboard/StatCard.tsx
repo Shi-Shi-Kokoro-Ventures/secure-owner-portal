@@ -19,11 +19,7 @@ interface StatCardProps {
 export const StatCard = ({ title, value, description, icon: Icon, trend, className, onClick }: StatCardProps) => (
   <Card 
     className={cn(
-      "relative overflow-hidden bg-card",
-      "transition-all duration-200",
-      "border border-border/50",
-      "hover:shadow-lg hover:border-primary/20",
-      "dark:hover:border-primary/30",
+      "transition-all duration-200 hover:shadow-md",
       onClick && "cursor-pointer",
       className
     )}
@@ -37,19 +33,19 @@ export const StatCard = ({ title, value, description, icon: Icon, trend, classNa
           <p className="text-sm font-medium text-muted-foreground">
             {title}
           </p>
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50/50 dark:bg-primary-900/20">
-            <Icon className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <Icon className="h-5 w-5 text-primary" />
           </div>
         </div>
         <div>
           <div className="flex items-baseline gap-2">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
+            <h2 className="text-2xl font-bold tracking-tight">
               {value}
             </h2>
             {trend && (
               <span className={cn(
                 "inline-flex items-center text-sm font-medium",
-                trend.positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                trend.positive ? 'text-success' : 'text-destructive'
               )}>
                 {trend.positive ? <ArrowUpRight className="mr-0.5 h-4 w-4" /> : <ArrowDownRight className="mr-0.5 h-4 w-4" />}
                 {trend.value}
