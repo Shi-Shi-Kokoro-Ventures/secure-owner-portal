@@ -1,4 +1,4 @@
-import { Table, TableBody } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Lease } from "@/types/lease";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
