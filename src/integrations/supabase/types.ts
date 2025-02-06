@@ -6,9 +6,54 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
+export interface Database {
   public: {
     Tables: {
+      users: {
+        Row: {
+          id: string;
+          role: 'admin' | 'property_manager' | 'owner' | 'tenant' | 'vendor';
+          first_name: string;
+          last_name: string;
+          email: string;
+          phone: string | null;
+          created_at: string;
+          profile_picture_url: string | null;
+          date_of_birth: string | null;
+          ssn_last_four: string | null;
+          status: 'active' | 'pending_approval' | 'suspended' | 'archived';
+          two_factor_enabled: boolean;
+          temporary_password: string | null;
+        };
+        Insert: {
+          id?: string;
+          role: 'admin' | 'property_manager' | 'owner' | 'tenant' | 'vendor';
+          first_name: string;
+          last_name: string;
+          email: string;
+          phone?: string | null;
+          created_at?: string;
+          profile_picture_url?: string | null;
+          date_of_birth?: string | null;
+          ssn_last_four?: string | null;
+          status?: 'active' | 'pending_approval' | 'suspended' | 'archived';
+          two_factor_enabled?: boolean;
+          temporary_password?: string | null;
+        };
+        Update: {
+          role?: 'admin' | 'property_manager' | 'owner' | 'tenant' | 'vendor';
+          first_name?: string;
+          last_name?: string;
+          email?: string;
+          phone?: string | null;
+          profile_picture_url?: string | null;
+          date_of_birth?: string | null;
+          ssn_last_four?: string | null;
+          status?: 'active' | 'pending_approval' | 'suspended' | 'archived';
+          two_factor_enabled?: boolean;
+          temporary_password?: string | null;
+        };
+      };
       addresses: {
         Row: {
           city: string
@@ -941,10 +986,10 @@ export type Database = {
         }
         Relationships: []
       }
-    }
+    };
     Views: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Functions: {
       apply_late_fees: {
         Args: {
@@ -991,7 +1036,7 @@ export type Database = {
         }
         Returns: undefined
       }
-    }
+    };
     Enums: {
       announcement_audience:
         | "all"
@@ -1029,8 +1074,15 @@ export type Database = {
         | "pest_control"
         | "security"
     }
+    };
     CompositeTypes: {
-      [_ in never]: never
-    }
-  }
+      [_ in never]: never;
+    };
+  };
 }
+
+export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+export type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
+
+// Add specific type for Users table
+export type User = Tables<'users'>;
