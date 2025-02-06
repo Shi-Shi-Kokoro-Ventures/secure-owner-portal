@@ -1,112 +1,82 @@
-import { Navigate, RouteObject } from "react-router-dom";
-import AdminDashboard from "@/pages/admin/AdminDashboard";
-import AdminUsers from "@/pages/admin/AdminUsers";
-import AdminProperties from "@/pages/admin/AdminProperties";
-import AdminFinancials from "@/pages/admin/AdminFinancials";
-import AdminMaintenance from "@/pages/admin/AdminMaintenance";
-import AdminLeases from "@/pages/admin/AdminLeases";
-import AdminSettings from "@/pages/admin/AdminSettings";
-import AdminReports from "@/pages/admin/AdminReports";
+import { Navigate } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Loader2 } from "lucide-react";
+import {
+  dashboardRoutes,
+  leaseRoutes,
+  propertyRoutes,
+  financialRoutes,
+  maintenanceRoutes,
+  reportRoutes,
+  userManagementRoutes,
+  settingsRoutes,
+} from "./config/adminRoutesConfig";
+import { AdminRoute } from "@/types/routes";
 
-type AdminRoute = RouteObject & {
-  key: string;
-  requiresAuth?: boolean;
-  title?: string;
+// Lazy load components
+const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
+const AdminUsers = lazy(() => import("@/pages/admin/AdminUsers"));
+const AdminProperties = lazy(() => import("@/pages/admin/AdminProperties"));
+const AdminFinancials = lazy(() => import("@/pages/admin/AdminFinancials"));
+const AdminMaintenance = lazy(() => import("@/pages/admin/AdminMaintenance"));
+const AdminLeases = lazy(() => import("@/pages/admin/AdminLeases"));
+const AdminSettings = lazy(() => import("@/pages/admin/AdminSettings"));
+const AdminReports = lazy(() => import("@/pages/admin/AdminReports"));
+
+// Loading component for suspense fallback
+const LoadingComponent = () => (
+  <div className="flex items-center justify-center h-screen">
+    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  </div>
+);
+
+// Helper function to wrap component with ProtectedRoute and Suspense
+const wrapComponent = (Component: React.ComponentType) => (
+  <ProtectedRoute>
+    <Suspense fallback={<LoadingComponent />}>
+      <Component />
+    </Suspense>
+  </ProtectedRoute>
+);
+
+// Map route configurations to actual routes with components
+const mapRouteConfig = (config: AdminRoute): AdminRoute => {
+  switch (config.key) {
+    case "admin-dashboard":
+      return { ...config, element: wrapComponent(AdminDashboard) };
+    case "admin-users":
+      return { ...config, element: wrapComponent(AdminUsers) };
+    case "admin-properties":
+      return { ...config, element: wrapComponent(AdminProperties) };
+    case "admin-payments":
+      return { ...config, element: wrapComponent(AdminFinancials) };
+    case "admin-maintenance":
+      return { ...config, element: wrapComponent(AdminMaintenance) };
+    case "admin-leases":
+      return { ...config, element: wrapComponent(AdminLeases) };
+    case "admin-settings":
+      return { ...config, element: wrapComponent(AdminSettings) };
+    case "admin-reports":
+      return { ...config, element: wrapComponent(AdminReports) };
+    default:
+      return config;
+  }
 };
 
+// Combine all routes
 export const adminRoutes: AdminRoute[] = [
   {
     key: "admin-root",
     path: "/admin",
     element: <Navigate to="/admin/dashboard" replace />,
   },
-  {
-    key: "admin-dashboard",
-    path: "/admin/dashboard",
-    element: (
-      <ProtectedRoute>
-        <AdminDashboard />
-      </ProtectedRoute>
-    ),
-    requiresAuth: true,
-    title: "Dashboard",
-  },
-  {
-    key: "admin-leases",
-    path: "/admin/leases",
-    element: (
-      <ProtectedRoute>
-        <AdminLeases />
-      </ProtectedRoute>
-    ),
-    requiresAuth: true,
-    title: "Lease Management",
-  },
-  {
-    key: "admin-properties",
-    path: "/admin/properties",
-    element: (
-      <ProtectedRoute>
-        <AdminProperties />
-      </ProtectedRoute>
-    ),
-    requiresAuth: true,
-    title: "Properties",
-  },
-  {
-    key: "admin-payments",
-    path: "/admin/payments",
-    element: (
-      <ProtectedRoute>
-        <AdminFinancials />
-      </ProtectedRoute>
-    ),
-    requiresAuth: true,
-    title: "Financial Management",
-  },
-  {
-    key: "admin-maintenance",
-    path: "/admin/maintenance",
-    element: (
-      <ProtectedRoute>
-        <AdminMaintenance />
-      </ProtectedRoute>
-    ),
-    requiresAuth: true,
-    title: "Maintenance",
-  },
-  {
-    key: "admin-reports",
-    path: "/admin/reports",
-    element: (
-      <ProtectedRoute>
-        <AdminReports />
-      </ProtectedRoute>
-    ),
-    requiresAuth: true,
-    title: "Reports & Analytics",
-  },
-  {
-    key: "admin-users",
-    path: "/admin/users",
-    element: (
-      <ProtectedRoute>
-        <AdminUsers />
-      </ProtectedRoute>
-    ),
-    requiresAuth: true,
-    title: "User Management",
-  },
-  {
-    key: "admin-settings",
-    path: "/admin/settings",
-    element: (
-      <ProtectedRoute>
-        <AdminSettings />
-      </ProtectedRoute>
-    ),
-    requiresAuth: true,
-    title: "Settings",
-  },
-];
+  ...dashboardRoutes,
+  ...leaseRoutes,
+  ...propertyRoutes,
+  ...financialRoutes,
+  ...maintenanceRoutes,
+  ...reportRoutes,
+  ...userManagementRoutes,
+  ...settingsRoutes,
+].map(mapRouteConfig);
