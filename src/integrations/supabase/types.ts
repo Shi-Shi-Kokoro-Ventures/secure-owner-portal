@@ -613,6 +613,30 @@ export type Database = {
           },
         ]
       }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          status: string | null
+          unsubscribe_token: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          status?: string | null
+          unsubscribe_token?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          status?: string | null
+          unsubscribe_token?: string
+        }
+        Relationships: []
+      }
       payment_methods: {
         Row: {
           card_brand: string
