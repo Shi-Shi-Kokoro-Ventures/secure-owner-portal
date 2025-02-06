@@ -1,4 +1,3 @@
-
 export interface Lease {
   id: string;
   lease_number: string;
@@ -24,4 +23,10 @@ export interface Lease {
   rent_due_day: number;
   late_fee_percentage: number;
   late_fee_grace_period_days: number;
+  created_at: string;
+  last_modified_at: string;
+  last_modified_by: string;
+  documents: string[];
+  utilities_included: string[];
+  special_terms: string | null;
 }

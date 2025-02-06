@@ -30,7 +30,7 @@ export default function AdminLeases() {
           throw error;
         }
 
-        return data as Lease[];
+        return data as unknown as Lease[];
       } catch (error) {
         logger.error('Error in leases query:', error);
         throw error;

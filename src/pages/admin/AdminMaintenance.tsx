@@ -5,13 +5,12 @@ import { MaintenanceRequestDetails } from "@/components/maintenance/MaintenanceR
 
 export default function AdminMaintenance() {
   const [formData, setFormData] = useState({
+    title: '',
     description: '',
-    priority: 'normal',
-    category: 'general',
-    status: 'pending'
+    category: 'general'
   });
 
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string>("");
 
   return (
     <AdminLayout>
