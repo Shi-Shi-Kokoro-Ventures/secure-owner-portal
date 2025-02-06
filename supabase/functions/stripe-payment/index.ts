@@ -7,6 +7,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const PLATFORM_FEE_PERCENTAGE = 0.05; // 5% platform fee
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -20,12 +22,22 @@ serve(async (req) => {
       httpClient: Stripe.createFetchHttpClient(),
     });
 
-    // Create Supabase client
+    // Get the authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('No authorization header');
+    }
+
+    // Create Supabase client with the user's JWT
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
-        global: { headers: { Authorization: req.headers.get('Authorization')! } },
+        global: { 
+          headers: { 
+            Authorization: authHeader 
+          } 
+        },
       }
     );
 
@@ -35,8 +47,14 @@ serve(async (req) => {
       error: userError,
     } = await supabaseClient.auth.getUser();
 
-    if (userError || !user) {
-      throw new Error('Unauthorized');
+    if (userError) {
+      console.error('Auth error:', userError);
+      throw new Error('Authentication failed');
+    }
+
+    if (!user) {
+      console.error('No user found');
+      throw new Error('User not found');
     }
 
     // Get request body
@@ -46,26 +64,76 @@ serve(async (req) => {
       throw new Error('Amount is required');
     }
 
+    // Get the lease details to find the property owner
+    const { data: lease, error: leaseError } = await supabaseClient
+      .from('leases')
+      .select(`
+        unit_id,
+        units!inner (
+          property_id,
+          properties!inner (
+            owner_id
+          )
+        )
+      `)
+      .eq('id', leaseId)
+      .single();
+
+    if (leaseError) {
+      console.error('Lease error:', leaseError);
+      throw new Error('Error fetching lease details');
+    }
+
+    if (!lease) {
+      throw new Error('Lease not found');
+    }
+
+    // Get the owner's Stripe Connect account
+    const { data: connectAccount, error: connectError } = await supabaseClient
+      .from('stripe_connect_accounts')
+      .select('stripe_account_id')
+      .eq('user_id', lease.units.properties.owner_id)
+      .single();
+
+    if (connectError) {
+      console.error('Connect account error:', connectError);
+      throw new Error('Error fetching connect account');
+    }
+
+    if (!connectAccount) {
+      throw new Error('Property owner has not set up payments');
+    }
+
     // Get or create customer
-    const { data: existingCustomer } = await supabaseClient
+    const { data: existingCustomer, error: customerError } = await supabaseClient
       .from('stripe_customers')
       .select('stripe_customer_id')
       .eq('user_id', user.id)
       .single();
+
+    if (customerError && customerError.code !== 'PGRST116') {
+      console.error('Customer error:', customerError);
+      throw new Error('Error fetching customer');
+    }
 
     let stripeCustomerId;
     if (existingCustomer) {
       stripeCustomerId = existingCustomer.stripe_customer_id;
     } else {
       // Get user details
-      const { data: userData } = await supabaseClient
+      const { data: userData, error: userDataError } = await supabaseClient
         .from('users')
         .select('email, first_name, last_name')
         .eq('id', user.id)
         .single();
 
+      if (userDataError) {
+        console.error('User data error:', userDataError);
+        throw new Error('Error fetching user details');
+      }
+
       if (!userData) {
-        throw new Error('User not found');
+        throw new Error('User details not found');
       }
 
       // Create Stripe customer
@@ -78,26 +146,40 @@ serve(async (req) => {
       });
 
       // Save customer ID
-      await supabaseClient.from('stripe_customers').insert({
-        user_id: user.id,
-        stripe_customer_id: customer.id,
-      });
+      const { error: insertError } = await supabaseClient
+        .from('stripe_customers')
+        .insert({
+          user_id: user.id,
+          stripe_customer_id: customer.id,
+        });
+
+      if (insertError) {
+        console.error('Insert customer error:', insertError);
+        throw new Error('Error saving customer');
+      }
 
       stripeCustomerId = customer.id;
     }
 
+    // Calculate platform fee
+    const amountInCents = amount * 100;
+    const platformFee = Math.round(amountInCents * PLATFORM_FEE_PERCENTAGE);
+
     // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100, // Convert to cents
+      amount: amountInCents,
       currency: 'usd',
       customer: stripeCustomerId,
       metadata: {
         leaseId,
         userId: user.id,
       },
+      transfer_data: {
+        destination: connectAccount.stripe_account_id,
+      },
+      application_fee_amount: platformFee,
     });
 
-    // Return the client secret
     return new Response(
       JSON.stringify({ clientSecret: paymentIntent.client_secret }),
       {
