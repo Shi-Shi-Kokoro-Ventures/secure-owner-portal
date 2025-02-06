@@ -1181,6 +1181,30 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_subscriptions: {
+        Row: {
+          id: string
+          email: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -1268,6 +1292,7 @@ export type Database = {
         | "landscaping"
         | "pest_control"
         | "security"
+      subscription_status: "active" | "unsubscribed"
     }
     CompositeTypes: {
       [_ in never]: never

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client"; 
 import { 
   Building2, 
   CheckCircle2, 
@@ -77,11 +77,15 @@ const Index = () => {
     setIsSubscribing(true);
     try {
       // Check for existing subscription
-      const { data: existingSubscription } = await supabase
+      const { data: existingSubscription, error: fetchError } = await supabase
         .from('newsletter_subscriptions')
-        .select('id, status')
+        .select('*')
         .eq('email', email)
         .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        throw fetchError;
+      }
 
       if (existingSubscription) {
         if (existingSubscription.status === 'active') {
