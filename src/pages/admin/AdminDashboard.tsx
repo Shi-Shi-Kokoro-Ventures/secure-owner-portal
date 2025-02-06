@@ -10,18 +10,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 export default function AdminDashboard() {
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
-        <div className="container mx-auto px-4 py-8 space-y-8 max-w-7xl">
-          <div className="mb-10">
-            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent dark:from-primary-400 dark:to-primary-600">
+      <div className="min-h-screen bg-background/95">
+        <div className="container mx-auto px-4 py-6 max-w-7xl">
+          {/* Header Section */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold tracking-tight text-primary-800 dark:text-primary-200">
               Dashboard
             </h1>
-            <p className="text-muted-foreground mt-2 text-lg">
+            <p className="text-muted-foreground mt-2">
               Welcome back! Here's an overview of your property management system.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {/* Stats Grid */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
             <StatCard
               title="Total Properties"
               value="28"
@@ -31,7 +33,6 @@ export default function AdminDashboard() {
                 value: "12%",
                 positive: true
               }}
-              className="bg-white/95 dark:bg-gray-800/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-800/60 border-primary/10"
             />
             <StatCard
               title="Active Tenants"
@@ -42,7 +43,6 @@ export default function AdminDashboard() {
                 value: "8%",
                 positive: true
               }}
-              className="bg-white/95 dark:bg-gray-800/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-800/60 border-primary/10"
             />
             <StatCard
               title="Maintenance Requests"
@@ -53,7 +53,6 @@ export default function AdminDashboard() {
                 value: "5%",
                 positive: false
               }}
-              className="bg-white/95 dark:bg-gray-800/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-800/60 border-primary/10"
             />
             <StatCard
               title="Revenue"
@@ -64,15 +63,16 @@ export default function AdminDashboard() {
                 value: "15%",
                 positive: true
               }}
-              className="bg-white/95 dark:bg-gray-800/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-800/60 border-primary/10"
             />
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-2">
-            <div className="space-y-8">
-              <Card className="overflow-hidden border border-primary/10 bg-white/95 dark:bg-gray-800/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-800/60">
-                <CardHeader className="border-b border-primary/10 bg-primary/5 p-6">
-                  <CardTitle className="text-2xl font-semibold text-primary-800 dark:text-primary-200">
+          {/* Main Content Grid */}
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Left Column */}
+            <div className="space-y-6">
+              <Card className="overflow-hidden border-primary/10">
+                <CardHeader className="border-b border-primary/10 bg-card p-6">
+                  <CardTitle className="text-xl font-semibold text-primary-800 dark:text-primary-200">
                     Quick Actions
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">
@@ -87,9 +87,10 @@ export default function AdminDashboard() {
               <ActivityLog />
             </div>
             
-            <Card className="overflow-hidden border border-primary/10 bg-white/95 dark:bg-gray-800/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-800/60">
-              <CardHeader className="border-b border-primary/10 bg-primary/5 p-6">
-                <CardTitle className="text-2xl font-semibold text-primary-800 dark:text-primary-200">
+            {/* Right Column */}
+            <Card className="overflow-hidden border-primary/10 h-fit">
+              <CardHeader className="border-b border-primary/10 bg-card p-6">
+                <CardTitle className="text-xl font-semibold text-primary-800 dark:text-primary-200">
                   System Announcements
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">

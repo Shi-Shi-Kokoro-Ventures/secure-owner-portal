@@ -19,15 +19,11 @@ interface StatCardProps {
 export const StatCard = ({ title, value, description, icon: Icon, trend, className, onClick }: StatCardProps) => (
   <Card 
     className={cn(
-      "relative overflow-hidden",
-      "transition-all duration-300",
-      "shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]",
-      "hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]",
-      "hover:-translate-y-1",
-      "before:content-[''] before:absolute before:inset-0",
-      "before:bg-gradient-radial before:from-primary-100/20 before:via-transparent before:to-transparent",
-      "before:opacity-0 hover:before:opacity-100 before:transition-opacity",
-      "animate-in fade-in slide-in-from-bottom-3 duration-500",
+      "relative overflow-hidden bg-card",
+      "transition-all duration-200",
+      "border border-border/50",
+      "hover:shadow-lg hover:border-primary/20",
+      "dark:hover:border-primary/30",
       onClick && "cursor-pointer",
       className
     )}
@@ -35,19 +31,19 @@ export const StatCard = ({ title, value, description, icon: Icon, trend, classNa
     role={onClick ? "button" : undefined}
     tabIndex={onClick ? 0 : undefined}
   >
-    <div className="p-6 relative z-10">
-      <div className="flex flex-col gap-6">
+    <div className="p-6">
+      <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <p className="text-base font-medium text-gray-500 dark:text-gray-400 font-poppins">
+          <p className="text-sm font-medium text-muted-foreground">
             {title}
           </p>
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-100/80 dark:bg-primary-900/30 transition-colors group-hover:bg-primary-200">
-            <Icon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50/50 dark:bg-primary-900/20">
+            <Icon className="h-5 w-5 text-primary-600 dark:text-primary-400" />
           </div>
         </div>
-        <div className="space-y-1">
-          <div className="flex items-baseline gap-3">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 font-montserrat">
+        <div>
+          <div className="flex items-baseline gap-2">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">
               {value}
             </h2>
             {trend && (
@@ -60,7 +56,7 @@ export const StatCard = ({ title, value, description, icon: Icon, trend, classNa
               </span>
             )}
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 font-inter">
+          <p className="mt-1 text-sm text-muted-foreground">
             {description}
           </p>
         </div>
