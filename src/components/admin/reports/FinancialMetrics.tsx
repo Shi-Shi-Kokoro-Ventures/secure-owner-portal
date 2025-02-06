@@ -54,7 +54,13 @@ export const FinancialMetrics = () => {
               <BarChart data={mockData}>
                 <XAxis dataKey="month" />
                 <YAxis />
-                <Tooltip content={ChartTooltip} />
+                <Tooltip content={({ active, payload, label }) => (
+                  <ChartTooltip 
+                    active={active} 
+                    payload={payload} 
+                    label={label}
+                  />
+                )} />
                 <Bar dataKey="income" fill="var(--color-income)" />
                 <Bar dataKey="expenses" fill="var(--color-expenses)" />
               </BarChart>

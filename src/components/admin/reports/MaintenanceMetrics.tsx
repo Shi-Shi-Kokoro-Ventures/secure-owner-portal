@@ -64,7 +64,13 @@ export const MaintenanceMetrics = () => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip content={ChartTooltip} />
+                <Tooltip content={({ active, payload, label }) => (
+                  <ChartTooltip 
+                    active={active} 
+                    payload={payload} 
+                    label={label}
+                  />
+                )} />
               </PieChart>
             </ResponsiveContainer>
           </ChartContainer>

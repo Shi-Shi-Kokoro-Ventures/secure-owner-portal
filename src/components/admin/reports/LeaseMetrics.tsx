@@ -54,7 +54,13 @@ export const LeaseMetrics = () => {
               <LineChart data={mockData}>
                 <XAxis dataKey="month" />
                 <YAxis />
-                <Tooltip content={ChartTooltip} />
+                <Tooltip content={({ active, payload, label }) => (
+                  <ChartTooltip 
+                    active={active} 
+                    payload={payload} 
+                    label={label}
+                  />
+                )} />
                 <Line type="monotone" dataKey="renewals" stroke="var(--color-renewals)" />
                 <Line type="monotone" dataKey="expirations" stroke="var(--color-expirations)" />
               </LineChart>
