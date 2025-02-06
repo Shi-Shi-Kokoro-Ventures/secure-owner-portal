@@ -71,6 +71,9 @@ serve(async (req) => {
           lease_id: refund.metadata.lease_id,
         });
         break;
+
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
     }
 
     return new Response(JSON.stringify({ received: true }), {
