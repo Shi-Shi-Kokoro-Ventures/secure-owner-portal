@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Calendar, Clock, Pin, Send } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -14,7 +15,11 @@ import type { Database } from "@/integrations/supabase/types";
 
 type Announcement = Database["public"]["Tables"]["system_announcements"]["Insert"];
 
-export const AnnouncementDialog = () => {
+interface AnnouncementDialogProps {
+  trigger?: React.ReactNode;
+}
+
+export const AnnouncementDialog = ({ trigger }: AnnouncementDialogProps) => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -105,10 +110,7 @@ export const AnnouncementDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Send className="mr-2 h-4 w-4" />
-          Broadcast Announcement
-        </Button>
+        {trigger}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[725px]">
         <DialogHeader>
