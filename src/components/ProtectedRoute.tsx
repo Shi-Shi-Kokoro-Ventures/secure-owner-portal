@@ -23,7 +23,7 @@ export const ProtectedRoute = ({
   const { toast } = useToast();
   
   // Save full path including search params and hash
-  const currentPath = location.pathname + location.search + location.hash;
+  const currentPath = `${location.pathname}${location.search}${location.hash}`;
 
   if (isLoading) {
     return (
@@ -35,7 +35,8 @@ export const ProtectedRoute = ({
 
   // Handle authentication check
   if (requireAuth && !user) {
-    logger.info('Protected route accessed without authentication');
+    logger.info('Protected route accessed without authentication, redirecting to:', redirectTo);
+    // Pass the attempted URL in location state for post-login redirect
     return <Navigate to={redirectTo} state={{ from: currentPath }} replace />;
   }
 

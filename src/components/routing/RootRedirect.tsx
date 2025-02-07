@@ -9,8 +9,8 @@ export const RootRedirect = () => {
   const location = useLocation();
   const { toast } = useToast();
 
-  // Save attempted URL for post-login redirect
-  const attemptedPath = location.pathname + location.search + location.hash;
+  // Save full attempted URL for post-login redirect
+  const currentPath = `${location.pathname}${location.search}${location.hash}`;
 
   if (isLoading) {
     return (
@@ -21,8 +21,8 @@ export const RootRedirect = () => {
   }
 
   if (!user) {
-    logger.info('No user found, redirecting to login with return URL:', attemptedPath);
-    return <Navigate to="/login" state={{ from: attemptedPath }} replace />;
+    logger.info('No user found, redirecting to login with return URL:', currentPath);
+    return <Navigate to="/login" state={{ from: currentPath }} replace />;
   }
 
   if (!userProfile) {
@@ -38,8 +38,8 @@ export const RootRedirect = () => {
   // Handle special_admin access
   if (userProfile.role === 'special_admin') {
     // Allow special_admin to access any portal route directly
-    if (attemptedPath.match(/^\/(admin|owner|tenant|vendor|property-manager)/)) {
-      logger.info('Special admin accessing portal route:', attemptedPath);
+    if (currentPath.match(/^\/(admin|owner|tenant|vendor|property-manager)/)) {
+      logger.info('Special admin accessing portal route:', currentPath);
       return null; // Allow access to the attempted path
     }
     // Default to admin dashboard if no specific route attempted
