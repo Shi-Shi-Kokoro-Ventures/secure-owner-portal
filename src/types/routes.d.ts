@@ -9,4 +9,8 @@ export interface CustomRoute {
   title?: string;
 }
 
+export interface AdminRoute extends CustomRoute {
+  requiresAuth?: boolean;
+}
+
 export type AppRoute = CustomRoute | RouteObject;
