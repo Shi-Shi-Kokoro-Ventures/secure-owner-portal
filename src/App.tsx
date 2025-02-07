@@ -14,6 +14,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { useAuth } from "./hooks/use-auth-context";
+import { Layout } from "./components/Layout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,19 +25,37 @@ const queryClient = new QueryClient({
   },
 });
 
-// Root redirect component that handles authentication
+// Root redirect component that handles authentication and role-based routing
 const RootRedirect = () => {
-  const { user, isLoading } = useAuth();
+  const { user, userProfile, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  return <Navigate to="/admin/dashboard" replace />;
+  // Role-based redirects
+  switch (userProfile?.role) {
+    case 'admin':
+      return <Navigate to="/admin/dashboard" replace />;
+    case 'property_manager':
+      return <Navigate to="/property-manager/dashboard" replace />;
+    case 'tenant':
+      return <Navigate to="/tenant/dashboard" replace />;
+    case 'owner':
+      return <Navigate to="/owner/dashboard" replace />;
+    case 'vendor':
+      return <Navigate to="/vendor/dashboard" replace />;
+    default:
+      return <Navigate to="/login" replace />;
+  }
 };
 
 const App: React.FC = () => {
@@ -52,17 +71,19 @@ const App: React.FC = () => {
               {/* Auth routes */}
               <Route path="/login" element={<Login />} />
 
-              {/* Admin routes */}
-              {adminRoutes.map((route) => (
-                <Route 
-                  key={route.key}
-                  path={`/admin${route.path === '/admin' ? '' : route.path}`}
-                  element={route.element}
-                />
-              ))}
+              {/* Admin routes with Layout */}
+              <Route path="/admin" element={<Layout />}>
+                {adminRoutes.map((route) => (
+                  <Route
+                    key={route.key}
+                    path={route.path}
+                    element={route.element}
+                  />
+                ))}
+              </Route>
 
-              {/* Property Manager routes */}
-              <Route path="/property-manager">
+              {/* Property Manager routes with Layout */}
+              <Route path="/property-manager" element={<Layout />}>
                 {propertyManagerRoutes.map((route) => (
                   <Route
                     key={`pm-${route.path}`}
@@ -72,60 +93,36 @@ const App: React.FC = () => {
                 ))}
               </Route>
 
-              {/* Owner routes */}
-              <Route path="/owner">
+              {/* Owner routes with Layout */}
+              <Route path="/owner" element={<Layout />}>
                 {ownerRoutes.map((route) => (
                   <Route
                     key={`owner-${route.path}`}
                     path={route.path}
                     element={route.element}
-                  >
-                    {route.children?.map((childRoute) => (
-                      <Route
-                        key={`owner-child-${childRoute.path}`}
-                        path={childRoute.path}
-                        element={childRoute.element}
-                      />
-                    ))}
-                  </Route>
+                  />
                 ))}
               </Route>
 
-              {/* Tenant routes */}
-              <Route path="/tenant">
+              {/* Tenant routes with Layout */}
+              <Route path="/tenant" element={<Layout />}>
                 {tenantRoutes.map((route) => (
                   <Route
                     key={`tenant-${route.path}`}
                     path={route.path}
                     element={route.element}
-                  >
-                    {route.children?.map((childRoute) => (
-                      <Route
-                        key={`tenant-child-${childRoute.path}`}
-                        path={childRoute.path}
-                        element={childRoute.element}
-                      />
-                    ))}
-                  </Route>
+                  />
                 ))}
               </Route>
 
-              {/* Vendor Routes */}
-              <Route path="/vendor">
+              {/* Vendor Routes with Layout */}
+              <Route path="/vendor" element={<Layout />}>
                 {vendorRoutes.map((route) => (
                   <Route
                     key={`vendor-${route.path}`}
                     path={route.path}
                     element={route.element}
-                  >
-                    {route.children?.map((childRoute) => (
-                      <Route
-                        key={`vendor-child-${childRoute.path}`}
-                        path={childRoute.path}
-                        element={childRoute.element}
-                      />
-                    ))}
-                  </Route>
+                  />
                 ))}
               </Route>
 

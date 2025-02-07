@@ -4,18 +4,39 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Tenants from "@/pages/Tenants";
 import WorkOrders from "@/pages/WorkOrders";
 import Reports from "@/pages/Reports";
+import Dashboard from "@/pages/Dashboard";
 
 export const propertyManagerRoutes: RouteObject[] = [
   {
-    element: <ProtectedRoute><Tenants /></ProtectedRoute>,
-    path: "tenants",  // Removed leading slash
+    path: "dashboard",
+    element: (
+      <ProtectedRoute allowedRoles={["property_manager"]}>
+        <Dashboard />
+      </ProtectedRoute>
+    ),
   },
   {
-    element: <ProtectedRoute><WorkOrders /></ProtectedRoute>,
-    path: "work-orders",  // Removed leading slash
+    path: "tenants",
+    element: (
+      <ProtectedRoute allowedRoles={["property_manager"]}>
+        <Tenants />
+      </ProtectedRoute>
+    ),
   },
   {
-    element: <ProtectedRoute><Reports /></ProtectedRoute>,
-    path: "reports",  // Removed leading slash
+    path: "work-orders",
+    element: (
+      <ProtectedRoute allowedRoles={["property_manager"]}>
+        <WorkOrders />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "reports",
+    element: (
+      <ProtectedRoute allowedRoles={["property_manager"]}>
+        <Reports />
+      </ProtectedRoute>
+    ),
   }
 ];

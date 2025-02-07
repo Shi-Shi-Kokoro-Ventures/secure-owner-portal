@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,11 +11,13 @@ import { supabase } from "@/integrations/supabase/client";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [userType, setUserType] = useState<"tenant" | "manager">("manager");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  // Get the redirect path from location state, default to /
+  const from = (location.state as { from?: string })?.from || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,22 +38,13 @@ const Login = () => {
         return;
       }
 
-      // Store user type preference if remember me is checked
-      if (rememberMe) {
-        localStorage.setItem('userType', userType);
-      }
-
       toast({
         title: "Welcome back",
-        description: `You have successfully logged in as a ${userType}.`,
+        description: "You have successfully logged in.",
       });
 
-      // Navigate based on user type
-      if (userType === "manager") {
-        navigate("/dashboard");
-      } else {
-        navigate("/tenant/dashboard");
-      }
+      // Navigate to the attempted URL or default route
+      navigate(from, { replace: true });
     } catch (error) {
       toast({
         title: "Error",
@@ -76,19 +70,6 @@ const Login = () => {
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="userType">I am a</Label>
-              <select
-                id="userType"
-                className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
-                value={userType}
-                onChange={(e) => setUserType(e.target.value as "tenant" | "manager")}
-              >
-                <option value="manager">Property Manager</option>
-                <option value="tenant">Tenant</option>
-              </select>
-            </div>
-
             <div className="relative">
               <Label htmlFor="email">Email address</Label>
               <div className="mt-1 relative rounded-md shadow-sm">
@@ -122,26 +103,6 @@ const Login = () => {
                   placeholder="••••••••"
                   required
                 />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                  Remember me
-                </label>
-              </div>
-              <div className="text-sm">
-                <a href="#" className="font-medium text-primary hover:text-primary/80">
-                  Forgot your password?
-                </a>
               </div>
             </div>
           </div>
