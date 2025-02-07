@@ -5,9 +5,10 @@ import { useToast } from "@/hooks/use-toast";
 
 interface PropertyControlsProps {
   onAddProperty: () => void;
+  onAction: (action: string) => void;
 }
 
-export const PropertyControls = ({ onAddProperty }: PropertyControlsProps) => {
+export const PropertyControls = ({ onAddProperty, onAction }: PropertyControlsProps) => {
   const { toast } = useToast();
 
   const handleFilterClick = () => {
@@ -18,27 +19,22 @@ export const PropertyControls = ({ onAddProperty }: PropertyControlsProps) => {
   };
 
   const handleViewListings = () => {
-    toast({
-      title: "View Listings",
-      description: "Property listings view coming soon",
-    });
+    onAction("View Listings");
   };
 
   const handlePropertyTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    toast({
-      title: "Property Type Changed",
-      description: `Selected: ${event.target.value}`,
-    });
+    onAction(`Filter by ${event.target.value}`);
   };
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <h2 className="text-xl font-semibold text-gray-900">Properties</h2>
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" role="toolbar" aria-label="Property controls">
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Properties</h2>
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex items-center gap-2">
           <select 
-            className="rounded-md border border-gray-300 px-3 py-1.5 bg-white shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+            className="rounded-md border border-gray-300 px-3 py-1.5 bg-white dark:bg-gray-800 dark:text-white shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
             onChange={handlePropertyTypeChange}
+            aria-label="Filter properties by type"
           >
             <option>All</option>
             <option>Vacant</option>
@@ -48,9 +44,10 @@ export const PropertyControls = ({ onAddProperty }: PropertyControlsProps) => {
             variant="outline" 
             size="sm" 
             onClick={handleFilterClick}
-            className="hover:bg-gray-50 transition-colors"
+            className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Open filter options"
           >
-            <Filter className="mr-2 h-4 w-4" />
+            <Filter className="mr-2 h-4 w-4" aria-hidden="true" />
             Filter
           </Button>
         </div>
@@ -59,17 +56,19 @@ export const PropertyControls = ({ onAddProperty }: PropertyControlsProps) => {
             variant="outline" 
             size="sm" 
             onClick={handleViewListings}
-            className="hover:bg-gray-50 transition-colors"
+            className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            aria-label="View property listings"
           >
-            <ListFilter className="mr-2 h-4 w-4" />
+            <ListFilter className="mr-2 h-4 w-4" aria-hidden="true" />
             View Listings (0)
           </Button>
           <Button 
             size="sm" 
             onClick={onAddProperty}
             className="bg-primary hover:bg-primary/90 transition-colors"
+            aria-label="Add a new property"
           >
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
             Add a Property
           </Button>
         </div>

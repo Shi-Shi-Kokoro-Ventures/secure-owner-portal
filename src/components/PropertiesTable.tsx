@@ -1,4 +1,3 @@
-
 import { Building2, MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
@@ -37,6 +36,11 @@ export const PropertiesTable = ({ properties, isLoading }: PropertiesTableProps)
   const { toast } = useToast();
 
   const handleAction = (action: string, propertyId: string) => {
+    if (action === "Delete") {
+      const confirmed = window.confirm("Are you sure you want to delete this property? This action cannot be undone.");
+      if (!confirmed) return;
+    }
+    
     toast({
       title: action,
       description: `${action} property ${propertyId}`,
@@ -45,16 +49,19 @@ export const PropertiesTable = ({ properties, isLoading }: PropertiesTableProps)
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="flex items-center space-x-4">
-            <Skeleton className="h-12 w-12" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[250px]" />
-              <Skeleton className="h-4 w-[200px]" />
+      <div className="space-y-4 p-4 border rounded-lg">
+        <div className="animate-pulse space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="flex items-center space-x-4">
+              <div className="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded-md"></div>
+              <div className="space-y-2 flex-1">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+              </div>
+              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     );
   }
@@ -62,9 +69,9 @@ export const PropertiesTable = ({ properties, isLoading }: PropertiesTableProps)
   if (!properties?.length) {
     return (
       <div className="flex flex-col items-center justify-center py-8 text-center">
-        <Building2 className="h-12 w-12 text-gray-400" />
+        <Building2 className="h-12 w-12 text-gray-400 dark:text-gray-600" aria-hidden="true" />
         <h3 className="mt-4 text-lg font-medium">No properties found</h3>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           Get started by adding a new property.
         </p>
       </div>
@@ -80,18 +87,22 @@ export const PropertiesTable = ({ properties, isLoading }: PropertiesTableProps)
   };
 
   return (
-    <div className="relative overflow-x-auto rounded-md border">
-      <table className="w-full text-left text-sm">
-        <thead className="bg-gray-50 text-xs uppercase text-gray-700">
+    <div className="relative overflow-x-auto rounded-md border dark:border-gray-700">
+      <table 
+        className="w-full text-left text-sm"
+        role="grid"
+        aria-label="Properties table"
+      >
+        <thead className="bg-gray-50 dark:bg-gray-800 text-xs uppercase text-gray-700 dark:text-gray-300">
           <tr>
-            <th className="px-6 py-3">Property</th>
-            <th className="px-6 py-3">Type</th>
-            <th className="px-6 py-3">Owner</th>
-            <th className="px-6 py-3">Units</th>
-            <th className="px-6 py-3">Status</th>
-            <th className="px-6 py-3">Revenue</th>
-            <th className="px-6 py-3">Last Inspection</th>
-            <th className="px-6 py-3">Actions</th>
+            <th scope="col" className="px-6 py-3">Property</th>
+            <th scope="col" className="px-6 py-3">Type</th>
+            <th scope="col" className="px-6 py-3">Owner</th>
+            <th scope="col" className="px-6 py-3">Units</th>
+            <th scope="col" className="px-6 py-3">Status</th>
+            <th scope="col" className="px-6 py-3">Revenue</th>
+            <th scope="col" className="px-6 py-3">Last Inspection</th>
+            <th scope="col" className="px-6 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>
