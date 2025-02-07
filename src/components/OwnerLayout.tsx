@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { OwnerSidebar } from "./OwnerSidebar";
@@ -8,11 +7,11 @@ export const OwnerLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50">
       <OwnerSidebar />
-      <div className="lg:pl-64">
+      <div className="flex-1 flex flex-col lg:pl-64">
         <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
-        <main className="py-8">
+        <main className="flex-1 overflow-y-auto bg-gray-50">
           <Outlet />
         </main>
       </div>

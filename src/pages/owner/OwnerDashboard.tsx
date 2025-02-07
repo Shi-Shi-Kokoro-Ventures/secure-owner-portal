@@ -1,8 +1,7 @@
 import { DashboardMetrics } from "@/components/owner/DashboardMetrics";
 import { PropertyCard } from "@/components/owner/PropertyCard";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Building2, Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 const properties = [
@@ -34,56 +33,42 @@ const properties = [
 
 const OwnerDashboard = () => {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
+    <div className="min-h-full bg-gray-50">
+      <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="flex flex-col gap-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">My Properties</h1>
-            <p className="mt-2 text-muted-foreground">
+            <h1 className="text-2xl font-semibold text-gray-900">My Properties</h1>
+            <p className="mt-1 text-sm text-gray-500">
               3 Property Place
             </p>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="relative">
+
+          <div className="flex items-center justify-between">
+            <div className="relative w-full max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 type="search"
                 placeholder="Search properties..."
-                className="pl-10 w-[300px] bg-white dark:bg-gray-800"
+                className="pl-10 w-full bg-white border-gray-200"
               />
             </div>
             <select 
-              className="rounded-lg border border-gray-200 px-4 py-2 bg-white dark:bg-gray-800 shadow-sm hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+              className="ml-4 rounded-lg border border-gray-200 px-4 py-2 bg-white text-sm text-gray-600 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
             >
               <option>All Properties</option>
               <option>Residential</option>
               <option>Commercial</option>
             </select>
           </div>
-        </div>
 
-        <DashboardMetrics />
+          <DashboardMetrics />
 
-        <div className="mt-8 space-y-6">
-          {properties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
-        </div>
-
-        <Card className="mt-8 p-6 bg-gradient-glass">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Add Another Property?</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Expand your portfolio by adding more properties
-              </p>
-            </div>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Property
-            </Button>
+          <div className="space-y-6">
+            {properties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
