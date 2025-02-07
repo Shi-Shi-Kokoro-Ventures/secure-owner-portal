@@ -5,12 +5,12 @@ import { logger } from "@/utils/logger";
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   // During development, bypass all checks
-  if (import.meta.env.MODE === 'development') {
-    logger.info('Development mode: bypassing all auth checks');
+  if (import.meta.env.DEV) {
+    logger.info('Development mode: bypassing auth checks');
     return <>{children}</>;
   }
 
-  const { data: session } = useQuery({
+  const { data: session, isLoading } = useQuery({
     queryKey: ['session'],
     queryFn: async () => {
       try {
@@ -27,6 +27,11 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
+
+  // Show loading state
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   // In production, check for authentication
   if (!session) {
