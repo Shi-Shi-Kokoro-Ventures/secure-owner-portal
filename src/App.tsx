@@ -8,6 +8,8 @@ import { tenantRoutes } from "./routes/tenantRoutes";
 import { ownerRoutes } from "./routes/ownerRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { vendorRoutes } from "./routes/vendorRoutes";
+import ErrorBoundary from "./components/ErrorBoundary";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,73 +22,87 @@ const queryClient = new QueryClient({
 
 const App: React.FC = () => {
   return (
-    <React.StrictMode>
+    <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <Router>
           <Routes>
+            {/* Common Routes */}
             {commonRoutes.map((route) => (
               <Route 
-                key={route.path || 'index'} 
+                key={`common-${route.path || 'index'}`}
                 path={route.path} 
                 element={route.element} 
               />
             ))}
+
+            {/* Property Manager Routes */}
             {propertyManagerRoutes.map((route) => (
               <Route 
-                key={route.path || 'pm-index'} 
+                key={`pm-${route.path || 'index'}`}
                 path={route.path} 
                 element={route.element} 
               />
             ))}
+
+            {/* Tenant Routes */}
             {tenantRoutes.map((route) => (
               <Route 
-                key={route.path || 'tenant-index'} 
+                key={`tenant-${route.path || 'index'}`}
                 path={route.path} 
                 element={route.element} 
               />
             ))}
+
+            {/* Owner Routes */}
             {ownerRoutes.map((route) => (
               <Route
-                key={route.path}
+                key={`owner-${route.path}`}
                 path={route.path}
                 element={route.element}
               >
                 {route.children?.map((childRoute) => (
                   <Route
-                    key={childRoute.path}
+                    key={`owner-child-${childRoute.path}`}
                     path={childRoute.path}
                     element={childRoute.element}
                   />
                 ))}
               </Route>
             ))}
+
+            {/* Admin Routes */}
             {adminRoutes.map((route) => (
               <Route 
-                key={route.key} 
+                key={`admin-${route.path}`}
                 path={route.path} 
                 element={route.element}
               />
             ))}
+
+            {/* Vendor Routes */}
             {vendorRoutes.map((route) => (
               <Route
-                key={route.path || 'vendor-index'}
+                key={`vendor-${route.path || 'index'}`}
                 path={route.path}
                 element={route.element}
               >
                 {route.children?.map((childRoute) => (
                   <Route
-                    key={childRoute.path}
+                    key={`vendor-child-${childRoute.path}`}
                     path={childRoute.path}
                     element={childRoute.element}
                   />
                 ))}
               </Route>
             ))}
+
+            {/* 404 Catch-all Route */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster />
         </Router>
       </QueryClientProvider>
-    </React.StrictMode>
+    </ErrorBoundary>
   );
 };
 
