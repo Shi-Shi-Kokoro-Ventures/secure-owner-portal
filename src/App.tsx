@@ -10,6 +10,7 @@ import { adminRoutes } from "./routes/adminRoutes";
 import { vendorRoutes } from "./routes/vendorRoutes";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
+import { logger } from "@/utils/logger";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,6 +22,17 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
+  // Add route change logging in development
+  React.useEffect(() => {
+    if (import.meta.env.DEV) {
+      const logRouteChange = () => {
+        logger.info('Route changed:', window.location.pathname);
+      };
+      window.addEventListener('popstate', logRouteChange);
+      return () => window.removeEventListener('popstate', logRouteChange);
+    }
+  }, []);
+
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
@@ -46,11 +58,19 @@ const App: React.FC = () => {
 
             {/* Tenant Routes */}
             {tenantRoutes.map((route) => (
-              <Route 
-                key={`tenant-${route.path || 'index'}`}
-                path={route.path} 
-                element={route.element} 
-              />
+              <Route
+                key={`tenant-${route.path}`}
+                path={route.path}
+                element={route.element}
+              >
+                {route.children?.map((childRoute) => (
+                  <Route
+                    key={`tenant-child-${childRoute.path}`}
+                    path={childRoute.path}
+                    element={childRoute.element}
+                  />
+                ))}
+              </Route>
             ))}
 
             {/* Owner Routes */}

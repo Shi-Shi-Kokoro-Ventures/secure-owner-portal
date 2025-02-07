@@ -10,7 +10,7 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <>{children}</>;
   }
 
-  const { data: session, isLoading } = useQuery({
+  const { data: session, isLoading, error } = useQuery({
     queryKey: ['session'],
     queryFn: async () => {
       try {
@@ -27,6 +27,11 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
+
+  // Log authentication attempts in development
+  if (import.meta.env.DEV) {
+    logger.info('Auth state:', { isLoading, session: !!session, error });
+  }
 
   // Show loading state
   if (isLoading) {
