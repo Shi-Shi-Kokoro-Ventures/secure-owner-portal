@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,23 +8,19 @@ import { AtSign, Key, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-const Login = () => {
+const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const { toast } = useToast();
-
-  // Get the redirect path from location state, default to /
-  const from = (location.state as { from?: string })?.from || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
@@ -39,13 +35,13 @@ const Login = () => {
       }
 
       toast({
-        title: "Welcome back",
-        description: "You have successfully logged in.",
+        title: "Success",
+        description: "Please check your email to confirm your account.",
       });
 
-      // Navigate to the attempted URL or default route
-      navigate(from, { replace: true });
-    } catch (error) {
+      // Navigate to login after successful signup
+      navigate("/login");
+    } catch (error: any) {
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
@@ -61,15 +57,15 @@ const Login = () => {
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-lg">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Welcome Back
+            Create an Account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Or{" "}
             <button
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/login")}
               className="font-medium text-primary hover:text-primary/80"
             >
-              create a new account
+              sign in to your account
             </button>
           </p>
         </div>
@@ -117,10 +113,10 @@ const Login = () => {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Signing in...
+                Creating account...
               </>
             ) : (
-              'Sign in'
+              'Sign up'
             )}
           </Button>
         </form>
@@ -129,4 +125,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

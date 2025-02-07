@@ -2,6 +2,7 @@
 import { Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
 import Services from "@/pages/Services";
 import TenantServices from "@/pages/TenantServices";
 
@@ -13,6 +14,10 @@ export const commonRoutes = [
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
   },
   {
     path: "/services",
