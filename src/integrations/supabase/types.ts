@@ -1374,7 +1374,7 @@ export type Database = {
       lease_status: "active" | "terminated" | "pending"
       lease_type_enum: "fixed" | "month-to-month" | "short-term"
       maintenance_status: "pending" | "in_progress" | "completed"
-      message_status: "sent" | "delivered" | "read"
+      message_status: "sent" | "delivered" | "read" | "unread"
       message_type: "text" | "image" | "video" | "file"
       payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal"
       payment_status: "pending" | "completed" | "failed"

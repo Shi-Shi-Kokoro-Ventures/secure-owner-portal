@@ -1,3 +1,4 @@
+
 export type AnnouncementAudience = 'all' | 'tenants' | 'owners' | 'property_managers' | 'admins';
 export type AnnouncementUrgency = 'low' | 'medium' | 'high' | 'critical';
 export type ContactFormStatus = 'pending' | 'in_progress' | 'completed';
@@ -6,7 +7,7 @@ export type EvictionStatus = 'initiated' | 'court_pending' | 'completed' | 'dism
 export type LeaseStatus = 'active' | 'terminated' | 'pending';
 export type LeaseTypeEnum = 'fixed' | 'month-to-month' | 'short-term';
 export type MaintenanceStatus = 'pending' | 'in_progress' | 'completed';
-export type MessageStatus = 'sent' | 'delivered' | 'read';
+export type MessageStatus = 'sent' | 'delivered' | 'read' | 'unread';
 export type MessageType = 'text' | 'image' | 'video' | 'file';
 export type SecurityDepositStatusEnum = 'pending' | 'received' | 'returned';
 export type UnitStatus = 'vacant' | 'occupied' | 'under_maintenance';
