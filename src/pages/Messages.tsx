@@ -1,7 +1,7 @@
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, MessageSquare, Phone, Video, MoreVertical, Paperclip, Mic, Send } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -10,7 +10,7 @@ import { MessageList } from "@/components/messages/MessageList";
 import { ComposeMessageDialog } from "@/components/messages/ComposeMessageDialog";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { Message } from "@/integrations/supabase/types/communication";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const MESSAGES_PER_PAGE = 10;
 
@@ -28,7 +28,8 @@ const Messages = () => {
           id,
           sender:users!messages_sender_id_fkey(
             first_name,
-            last_name
+            last_name,
+            profile_picture_url
           ),
           message_content,
           created_at
@@ -50,7 +51,8 @@ const Messages = () => {
       return data.map(message => ({
         id: message.id,
         from: `${message.sender.first_name} ${message.sender.last_name}`,
-        subject: message.message_content.substring(0, 50) + (message.message_content.length > 50 ? "..." : ""),
+        avatar: message.sender.profile_picture_url,
+        content: message.message_content,
         date: new Date(message.created_at).toLocaleDateString(),
       }));
     },
@@ -58,50 +60,8 @@ const Messages = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    setCurrentPage(0); // Reset to first page on new search
+    setCurrentPage(0);
     logger.info("Search query updated", { query });
-  };
-
-  const handleArchive = async (messageId: string) => {
-    try {
-      logger.info("Archiving message", { messageId });
-      toast({
-        title: "Message archived",
-        description: "The message has been moved to archives.",
-      });
-    } catch (error) {
-      logger.error("Failed to archive message", { messageId, error });
-      toast({
-        title: "Error",
-        description: "Failed to archive message. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDelete = async (messageId: string) => {
-    try {
-      logger.info("Deleting message", { messageId });
-      toast({
-        title: "Message deleted",
-        description: "The message has been permanently deleted.",
-      });
-    } catch (error) {
-      logger.error("Failed to delete message", { messageId, error });
-      toast({
-        title: "Error",
-        description: "Failed to delete message. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleView = (messageId: string) => {
-    logger.info("View message clicked", { messageId });
-    toast({
-      title: "Coming soon",
-      description: "This feature is under development.",
-    });
   };
 
   if (error) {
@@ -120,52 +80,99 @@ const Messages = () => {
   return (
     <Layout>
       <ErrorBoundary>
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold tracking-tight">Messages</h1>
-            <ComposeMessageDialog />
-          </div>
-
-          <div className="flex items-center gap-2 mb-6">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
-              <Input
-                placeholder="Search messages..."
-                className="pl-10"
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                disabled={isLoading}
-                aria-label="Search messages"
-              />
+        <div className="flex h-[calc(100vh-4rem)]">
+          {/* Left sidebar - Conversations list */}
+          <div className="w-80 border-r bg-white">
+            <div className="p-4 border-b">
+              <div className="flex items-center justify-between mb-4">
+                <h1 className="text-xl font-semibold">Messages</h1>
+                <ComposeMessageDialog />
+              </div>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search messages..."
+                  className="pl-10"
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+            <div className="overflow-y-auto h-[calc(100vh-12rem)]">
+              {data?.map((message) => (
+                <div key={message.id} className="p-4 hover:bg-gray-50 cursor-pointer border-b">
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarImage src={message.avatar} />
+                      <AvatarFallback>{message.from.substring(0, 2)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                        <h3 className="font-medium text-sm">{message.from}</h3>
+                        <span className="text-xs text-gray-500">{message.date}</span>
+                      </div>
+                      <p className="text-sm text-gray-600 truncate">{message.content}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <MessageList
-            messages={data || []}
-            isLoading={isLoading}
-            onArchive={handleArchive}
-            onDelete={handleDelete}
-            onView={handleView}
-          />
-
-          {data && data.length >= MESSAGES_PER_PAGE && (
-            <div className="flex justify-center gap-2 mt-4">
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
-                disabled={currentPage === 0 || isLoading}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(prev => prev + 1)}
-                disabled={data.length < MESSAGES_PER_PAGE || isLoading}
-              >
-                Next
-              </Button>
+          {/* Right side - Chat view */}
+          <div className="flex-1 flex flex-col bg-gray-50">
+            {/* Chat header */}
+            <div className="p-4 border-b bg-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Avatar>
+                    <AvatarImage src={data?.[0]?.avatar} />
+                    <AvatarFallback>{data?.[0]?.from.substring(0, 2)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className="font-medium">{data?.[0]?.from}</h2>
+                    <span className="text-sm text-gray-500">Active now</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button variant="ghost" size="icon">
+                    <Phone className="h-5 w-5" />
+                  </Button>
+                  <Button variant="ghost" size="icon">
+                    <Video className="h-5 w-5" />
+                  </Button>
+                  <Button variant="ghost" size="icon">
+                    <MoreVertical className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
             </div>
-          )}
+
+            {/* Chat messages */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {/* Messages will be rendered here */}
+            </div>
+
+            {/* Message input */}
+            <div className="p-4 border-t bg-white">
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon">
+                  <Paperclip className="h-5 w-5" />
+                </Button>
+                <Input 
+                  placeholder="Type a message..." 
+                  className="flex-1"
+                />
+                <Button variant="ghost" size="icon">
+                  <Mic className="h-5 w-5" />
+                </Button>
+                <Button>
+                  <Send className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </ErrorBoundary>
     </Layout>

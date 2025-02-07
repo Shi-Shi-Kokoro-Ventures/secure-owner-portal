@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -89,16 +89,16 @@ export const ComposeMessageDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Mail className="h-4 w-4" />
-          Compose
+        <Button variant="outline" size="sm" className="gap-2">
+          <MessageSquare className="h-4 w-4" />
+          New Message
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>New Message</DialogTitle>
           <DialogDescription>
-            Compose and send a new message to another user.
+            Start a new conversation
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
