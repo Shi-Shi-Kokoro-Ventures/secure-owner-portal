@@ -1,5 +1,5 @@
 
-import { RouteObject } from "react-router-dom";
+import { AppRoute } from "@/types/routes";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import OwnerDashboard from "@/pages/owner/OwnerDashboard";
 import OwnerProperties from "@/pages/owner/OwnerProperties";
@@ -14,7 +14,7 @@ import OwnerPayments from "@/pages/owner/OwnerPayments";
 import LeaseRenewals from "@/pages/owner/LeaseRenewals";
 import Applications from "@/pages/Applications";
 
-export const ownerRoutes: RouteObject[] = [
+export const ownerRoutes: AppRoute[] = [
   {
     path: "dashboard",
     element: (

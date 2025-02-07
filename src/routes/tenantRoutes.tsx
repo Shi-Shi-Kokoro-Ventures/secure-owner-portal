@@ -1,7 +1,6 @@
 
-import { RouteObject } from "react-router-dom";
+import { AppRoute } from "@/types/routes";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { TenantLayout } from "@/components/TenantLayout";
 import TenantDashboard from "@/pages/tenant/TenantDashboard";
 import TenantMaintenance from "@/pages/tenant/TenantMaintenance";
 import NewMaintenanceRequest from "@/pages/tenant/NewMaintenanceRequest";
@@ -15,67 +14,101 @@ import TenantSettings from "@/pages/tenant/TenantSettings";
 import Help from "@/pages/Help";
 import Notifications from "@/pages/Notifications";
 
-export const tenantRoutes: RouteObject[] = [
+export const tenantRoutes: AppRoute[] = [
   {
-    path: "/tenant",
+    path: "dashboard",
     element: (
-      <ProtectedRoute>
-        <TenantLayout />
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <TenantDashboard />
       </ProtectedRoute>
     ),
-    children: [
-      {
-        index: true,
-        element: <TenantDashboard />,
-      },
-      {
-        path: "dashboard",
-        element: <TenantDashboard />,
-      },
-      {
-        path: "maintenance",
-        element: <TenantMaintenance />,
-      },
-      {
-        path: "maintenance/new",
-        element: <NewMaintenanceRequest />,
-      },
-      {
-        path: "maintenance/:id",
-        element: <MaintenanceRequestDetail />,
-      },
-      {
-        path: "payments",
-        element: <TenantPayments />,
-      },
-      {
-        path: "payments/new",
-        element: <NewPayment />,
-      },
-      {
-        path: "documents",
-        element: <TenantDocuments />,
-      },
-      {
-        path: "communications",
-        element: <TenantCommunications />,
-      },
-      {
-        path: "communications/:id",
-        element: <TenantCommunicationDetail />,
-      },
-      {
-        path: "settings",
-        element: <TenantSettings />,
-      },
-      {
-        path: "help",
-        element: <Help />,
-      },
-      {
-        path: "notifications",
-        element: <Notifications />,
-      },
-    ],
+  },
+  {
+    path: "maintenance",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <TenantMaintenance />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "maintenance/new",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <NewMaintenanceRequest />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "maintenance/:id",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <MaintenanceRequestDetail />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "payments",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <TenantPayments />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "payments/new",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <NewPayment />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "documents",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <TenantDocuments />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "communications",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <TenantCommunications />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "communications/:id",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <TenantCommunicationDetail />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "settings",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <TenantSettings />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "help",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <Help />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "notifications",
+    element: (
+      <ProtectedRoute allowedRoles={["tenant"]}>
+        <Notifications />
+      </ProtectedRoute>
+    ),
   },
 ];

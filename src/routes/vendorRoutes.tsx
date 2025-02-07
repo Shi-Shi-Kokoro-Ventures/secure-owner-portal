@@ -1,5 +1,5 @@
 
-import { RouteObject } from "react-router-dom";
+import { AppRoute } from "@/types/routes";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import VendorDashboard from "@/pages/vendor/VendorDashboard";
 import VendorWorkOrders from "@/pages/vendor/VendorWorkOrders";
@@ -9,7 +9,7 @@ import VendorDocuments from "@/pages/vendor/VendorDocuments";
 import VendorCommunications from "@/pages/vendor/VendorCommunications";
 import VendorSettings from "@/pages/vendor/VendorSettings";
 
-export const vendorRoutes: RouteObject[] = [
+export const vendorRoutes: AppRoute[] = [
   {
     path: "dashboard",
     element: (
@@ -67,4 +67,3 @@ export const vendorRoutes: RouteObject[] = [
     ),
   }
 ];
-
