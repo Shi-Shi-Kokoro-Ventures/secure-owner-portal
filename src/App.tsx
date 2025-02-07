@@ -1,6 +1,6 @@
 
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/use-auth-context";
@@ -22,6 +22,7 @@ const queryClient = new QueryClient({
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
     },
   },
 });
@@ -33,9 +34,13 @@ const App: React.FC = () => {
         <Router>
           <AuthProvider>
             <Routes>
+              {/* Root redirect handler */}
               <Route path="/" element={<RootRedirect />} />
+              
+              {/* Auth routes */}
               <Route path="/login" element={<Login />} />
               
+              {/* Portal routes */}
               <ProtectedPortalRoute 
                 path="/owner" 
                 role="owner" 
@@ -66,6 +71,7 @@ const App: React.FC = () => {
                 routes={vendorRoutes as AppRoute[]} 
               />
 
+              {/* Common routes accessible to all authenticated users */}
               {commonRoutes.map((route) => (
                 <Route 
                   key={`common-${route.path}`}
@@ -74,6 +80,7 @@ const App: React.FC = () => {
                 />
               ))}
 
+              {/* Catch invalid routes */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
