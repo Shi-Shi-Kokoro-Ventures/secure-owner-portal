@@ -25,82 +25,43 @@ import { AccountSummary } from "@/components/tenant/dashboard/AccountSummary";
 import { PaymentHistory } from "@/components/tenant/dashboard/PaymentHistory";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useQuery } from "@tanstack/react-query";
 
-// Mock data types
-interface TenantData {
+// Mock data for development
+const mockData = {
   tenant: {
-    name: string;
-    leaseStart: string;
-    leaseEnd: string;
-    unit: string;
-    balance: number;
-    nextRentDue: string;
-    nextRentAmount: number;
-    openRequests: number;
-    unreadNotifications: number;
-  };
-  recentPayments: Array<{
-    id: string;
-    date: string;
-    amount: number;
-    status: "completed" | "pending" | "failed";
-  }>;
-}
-
-// Mock API call - replace with actual API call
-const fetchDashboardData = async (): Promise<TenantData> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Return mock data
-  return {
-    tenant: {
-      name: "John Doe",
-      leaseStart: "2024-01-01",
-      leaseEnd: "2024-12-31",
-      unit: "Apt 4B - 123 Main St",
-      balance: 1200.00,
-      nextRentDue: "2024-03-01",
-      nextRentAmount: 1500.00,
-      openRequests: 2,
-      unreadNotifications: 3
+    name: "John Doe",
+    leaseStart: "2024-01-01",
+    leaseEnd: "2024-12-31",
+    unit: "Apt 4B - 123 Main St",
+    balance: 1200.00,
+    nextRentDue: "2024-03-01",
+    nextRentAmount: 1500.00,
+    openRequests: 2,
+    unreadNotifications: 3
+  },
+  recentPayments: [
+    {
+      id: "1",
+      date: "2024-02-01",
+      amount: 1500.00,
+      status: "completed" as const,
     },
-    recentPayments: [
-      {
-        id: "1",
-        date: "2024-02-01",
-        amount: 1500.00,
-        status: "completed",
-      },
-      {
-        id: "2",
-        date: "2024-01-01",
-        amount: 1500.00,
-        status: "completed",
-      },
-    ]
-  };
+    {
+      id: "2",
+      date: "2024-01-01",
+      amount: 1500.00,
+      status: "completed" as const,
+    },
+  ]
 };
 
 const TenantDashboard = () => {
   const { toast } = useToast();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['tenantDashboard'],
-    queryFn: fetchDashboardData,
-    meta: {
-      onSettled: (data, error) => {
-        if (error) {
-          toast({
-            title: "Error",
-            description: "Failed to load dashboard data. Please try again later.",
-            variant: "destructive",
-          });
-        }
-      },
-    },
-  });
+  // Use mock data directly during development
+  const data = mockData;
+  const isLoading = false;
+  const error = null;
 
   // Show loading state with skeleton animation
   if (isLoading) {
