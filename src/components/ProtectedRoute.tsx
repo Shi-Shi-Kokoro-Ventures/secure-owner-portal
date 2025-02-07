@@ -1,5 +1,5 @@
 
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth-context";
 import { Loader2 } from "lucide-react";
 
@@ -11,10 +11,11 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ 
   children, 
-  redirectTo = "/auth",
+  redirectTo = "/login",
   requireAuth = true
 }: ProtectedRouteProps) => {
   const { user, isLoading } = useAuth();
+  const location = useLocation();
 
   // Show loading state with a spinner
   if (isLoading) {
@@ -27,8 +28,8 @@ export const ProtectedRoute = ({
 
   // Check authentication
   if (requireAuth && !user) {
-    // Even in development, we should redirect if authentication is required
-    return <Navigate to={redirectTo} replace />;
+    // Save the attempted URL for redirect after login
+    return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
   // Allow access if authenticated or if authentication is not required
