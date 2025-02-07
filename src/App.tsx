@@ -59,13 +59,13 @@ const App: React.FC = () => {
             {/* Tenant Routes */}
             {tenantRoutes.map((route) => (
               <Route
-                key={`tenant-${route.path}`}
+                key={`tenant-${route.path || 'index'}`}
                 path={route.path}
                 element={route.element}
               >
                 {route.children?.map((childRoute) => (
                   <Route
-                    key={`tenant-child-${childRoute.path}`}
+                    key={`tenant-child-${childRoute.path || 'index'}`}
                     path={childRoute.path}
                     element={childRoute.element}
                   />

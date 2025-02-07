@@ -23,7 +23,6 @@ export const tenantRoutes: RouteObject[] = [
         <TenantLayout />
       </ProtectedRoute>
     ),
-    errorElement: <div>Error loading tenant section</div>,
     children: [
       {
         index: true,
@@ -83,7 +82,5 @@ export const tenantRoutes: RouteObject[] = [
 
 // Add route change logging in development
 if (import.meta.env.DEV) {
-  window.addEventListener('popstate', () => {
-    logger.info('Route changed:', window.location.pathname);
-  });
+  logger.info('Tenant routes loaded');
 }
