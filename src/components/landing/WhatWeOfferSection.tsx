@@ -7,7 +7,7 @@ export const WhatWeOfferSection = () => {
     {
       title: "Short Term Rentals",
       description: "Flexible, fully-furnished accommodations perfect for temporary stays, vacations, or business trips. Experience comfort and convenience in prime locations.",
-      image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
+      image: "/lovable-uploads/744f84b5-867e-48b9-a7e8-bb1c342ac29e.png",
       icon: Bed
     },
     {
