@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, Calendar, Home } from "lucide-react";
 
-interface AccountSummaryProps {
+export interface AccountSummaryProps {
   tenant: {
     name: string;
     leaseStart: string;

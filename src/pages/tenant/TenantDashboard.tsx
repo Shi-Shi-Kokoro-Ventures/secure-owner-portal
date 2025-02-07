@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -17,9 +16,6 @@ import {
   Calendar,
   Bell,
   AlertCircle,
-  CheckCircle,
-  Clock,
-  ArrowRight,
 } from "lucide-react";
 import { AccountSummary } from "@/components/tenant/dashboard/AccountSummary";
 import { PaymentHistory } from "@/components/tenant/dashboard/PaymentHistory";
@@ -147,7 +143,7 @@ const TenantDashboard = () => {
       </div>
 
       {/* Account Summary */}
-      <AccountSummary data={data.tenant} />
+      <AccountSummary tenant={data.tenant} />
 
       {/* Payment History */}
       <PaymentHistory payments={data.recentPayments} />

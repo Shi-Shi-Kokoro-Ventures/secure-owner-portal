@@ -16,20 +16,22 @@ import Notifications from "@/pages/Notifications";
 
 export const tenantRoutes: RouteObject[] = [
   {
+    path: "/tenant",
     element: <ProtectedRoute><TenantLayout /></ProtectedRoute>,
     children: [
-      { path: "/tenant/dashboard", element: <TenantDashboard /> },
-      { path: "/tenant/maintenance", element: <TenantMaintenance /> },
-      { path: "/tenant/maintenance/new", element: <NewMaintenanceRequest /> },
-      { path: "/tenant/maintenance/:id", element: <MaintenanceRequestDetail /> },
-      { path: "/tenant/payments", element: <TenantPayments /> },
-      { path: "/tenant/payments/new", element: <NewPayment /> },
-      { path: "/tenant/documents", element: <TenantDocuments /> },
-      { path: "/tenant/communications", element: <TenantCommunications /> },
-      { path: "/tenant/communications/:id", element: <TenantCommunicationDetail /> },
-      { path: "/tenant/settings", element: <TenantSettings /> },
-      { path: "/tenant/help", element: <Help /> },
-      { path: "/tenant/notifications", element: <Notifications /> }
+      { index: true, element: <TenantDashboard /> },
+      { path: "dashboard", element: <TenantDashboard /> },
+      { path: "maintenance", element: <TenantMaintenance /> },
+      { path: "maintenance/new", element: <NewMaintenanceRequest /> },
+      { path: "maintenance/:id", element: <MaintenanceRequestDetail /> },
+      { path: "payments", element: <TenantPayments /> },
+      { path: "payments/new", element: <NewPayment /> },
+      { path: "documents", element: <TenantDocuments /> },
+      { path: "communications", element: <TenantCommunications /> },
+      { path: "communications/:id", element: <TenantCommunicationDetail /> },
+      { path: "settings", element: <TenantSettings /> },
+      { path: "help", element: <Help /> },
+      { path: "notifications", element: <Notifications /> }
     ]
   }
 ];
