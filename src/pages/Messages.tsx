@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import ErrorBoundary from "@/components/ErrorBoundary";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { logger } from "@/utils/logger";
 import { MessageList } from "@/components/messages/MessageList";
 import { ComposeMessageDialog } from "@/components/messages/ComposeMessageDialog";

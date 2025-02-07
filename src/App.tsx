@@ -8,7 +8,7 @@ import { tenantRoutes } from "./routes/tenantRoutes";
 import { ownerRoutes } from "./routes/ownerRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { vendorRoutes } from "./routes/vendorRoutes";
-import ErrorBoundary from "./components/ErrorBoundary";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
