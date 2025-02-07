@@ -1,5 +1,5 @@
+
 import { useQuery } from "@tanstack/react-query";
-import { useAuthenticatedQuery } from "@/hooks/use-authenticated-query";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,12 +7,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { CreditCard, Download, Plus } from "lucide-react";
 import { logger } from "@/utils/logger";
 import { Payment } from "@/types/payment.types";
+import { useAuth } from "@/hooks/use-auth-context";
 
 const TenantPayments = () => {
   const { toast } = useToast();
-  const { data: payments, isLoading, error } = useAuthenticatedQuery({
+  const { user } = useAuth();
+  
+  const { data: payments, isLoading, error } = useQuery({
     queryKey: ['payments'],
-    queryFn: async ({ user }) => {
+    queryFn: async () => {
+      if (!user) throw new Error("No authenticated user");
+      
       const { data, error } = await supabase
         .from('payments')
         .select('*')

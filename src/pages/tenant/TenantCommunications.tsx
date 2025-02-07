@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthenticatedQuery } from "@/hooks/use-authenticated-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,27 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from "@/components/ui/textarea";
 import { Archive, Check, MessageCircle, Plus, Search, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/utils/logger";
-
-interface MessageSender {
-  id: string;
-  first_name: string;
-  last_name: string;
-}
-
-interface Message {
-  id: string;
-  conversation_id: string;
-  sender_id: string;
-  receiver_id: string | null;
-  message_content: string;
-  status: string;
-  message_type: string;
-  created_at: string;
-  sender: MessageSender;
-}
+import { useAuth } from "@/hooks/use-auth-context";
+import { Message } from "@/integrations/supabase/types/communication";
 
 const TenantCommunications = () => {
   const navigate = useNavigate();
@@ -41,11 +24,14 @@ const TenantCommunications = () => {
   const [newMessage, setNewMessage] = useState({ subject: "", message: "" });
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   // Fetch messages
-  const { data: messages, isLoading } = useAuthenticatedQuery({
+  const { data: messages, isLoading } = useQuery({
     queryKey: ["messages", selectedTab, searchQuery],
-    queryFn: async ({ user }) => {
+    queryFn: async () => {
+      if (!user) throw new Error("No authenticated user");
+
       let query = supabase
         .from("messages")
         .select(`
@@ -71,7 +57,7 @@ const TenantCommunications = () => {
         throw error;
       }
 
-      return data;
+      return data as Message[];
     },
   });
 

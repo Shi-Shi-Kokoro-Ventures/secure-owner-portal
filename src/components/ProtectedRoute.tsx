@@ -35,7 +35,7 @@ export const ProtectedRoute = ({
 
   // Handle authentication check
   if (requireAuth && !user) {
-    logger.info('Protected route accessed without authentication:', currentPath);
+    logger.info('Protected route accessed without authentication');
     return <Navigate to={redirectTo} state={{ from: currentPath }} replace />;
   }
 
@@ -53,13 +53,13 @@ export const ProtectedRoute = ({
 
     // Special admins can access any route
     if (userProfile.role === 'special_admin') {
-      logger.info('Special admin accessing protected route:', currentPath);
+      logger.info('Special admin accessing protected route');
       return <>{children}</>;
     }
 
     // Check if user has required role
     if (!allowedRoles.includes(userProfile.role)) {
-      logger.warn('Access denied - User role:', userProfile.role, 'Required roles:', allowedRoles);
+      logger.warn('Access denied - User role does not match required roles');
       toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
@@ -80,7 +80,6 @@ export const ProtectedRoute = ({
     }
   }
 
-  logger.info('Access granted to protected route:', currentPath);
+  logger.info('Access granted to protected route');
   return <>{children}</>;
 };
-
