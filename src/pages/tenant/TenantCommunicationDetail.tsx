@@ -1,38 +1,28 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Archive, MessageCircle, Trash2, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { MessageHeader } from "@/components/communications/MessageHeader";
+import { MessageActions } from "@/components/communications/MessageActions";
+import { MessageContent } from "@/components/communications/MessageContent";
 
 const TenantCommunicationDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [replyMessage, setReplyMessage] = useState("");
 
   // Fetch conversation and messages
   const { data: messageData, isLoading } = useQuery({
     queryKey: ["message", id],
     queryFn: async () => {
-      // Get the message and its conversation
       const { data: message, error: messageError } = await supabase
         .from("messages")
         .select(`
           *,
-          sender:sender_id(first_name, last_name),
-          conversation:conversation_id(type)
+          sender:sender_id(*)
         `)
         .eq("id", id)
         .single();
@@ -67,7 +57,6 @@ const TenantCommunicationDetail = () => {
   const archiveMutation = useMutation({
     mutationFn: async () => {
       // In a real implementation, you would add an archived column to the messages table
-      // For now, we'll just show a success message
       await new Promise(resolve => setTimeout(resolve, 500)); // Simulated delay
     },
     onSuccess: () => {
@@ -121,7 +110,6 @@ const TenantCommunicationDetail = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      setReplyMessage("");
       toast({
         title: "Reply sent",
         description: "Your reply has been sent successfully.",
@@ -129,26 +117,6 @@ const TenantCommunicationDetail = () => {
       queryClient.invalidateQueries({ queryKey: ["messages"] });
     },
   });
-
-  const handleArchive = () => {
-    archiveMutation.mutate();
-  };
-
-  const handleDelete = () => {
-    deleteMutation.mutate();
-  };
-
-  const handleReply = () => {
-    if (!replyMessage.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter a message before sending.",
-        variant: "destructive",
-      });
-      return;
-    }
-    replyMutation.mutate(replyMessage);
-  };
 
   useEffect(() => {
     if (messageData?.status !== "read" && !markAsReadMutation.isPending) {
@@ -167,90 +135,21 @@ const TenantCommunicationDetail = () => {
   return (
     <div className="container mx-auto py-6 space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
-        <Button
-          variant="ghost"
-          className="gap-2"
-          onClick={() => navigate("/tenant/communications")}
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Communications
-        </Button>
-        <div className="flex gap-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <MessageCircle className="h-4 w-4" />
-                Reply
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Reply to message</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 mt-4">
-                <Textarea
-                  placeholder="Type your reply here..."
-                  className="min-h-[200px]"
-                  value={replyMessage}
-                  onChange={(e) => setReplyMessage(e.target.value)}
-                />
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => setReplyMessage("")}
-                  >
-                    Cancel
-                  </Button>
-                  <Button 
-                    onClick={handleReply}
-                    disabled={replyMutation.isPending}
-                    className="gap-2"
-                  >
-                    <Send className="h-4 w-4" />
-                    {replyMutation.isPending ? "Sending..." : "Send Reply"}
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-          <Button
-            variant="outline"
-            className="gap-2"
-            onClick={handleArchive}
-          >
-            <Archive className="h-4 w-4" />
-            Archive
-          </Button>
-          <Button
-            variant="destructive"
-            className="gap-2"
-            onClick={handleDelete}
-          >
-            <Trash2 className="h-4 w-4" />
-            Delete
-          </Button>
-        </div>
+        <MessageHeader />
+        <MessageActions
+          onArchive={() => archiveMutation.mutate()}
+          onDelete={() => deleteMutation.mutate()}
+          onReply={(message) => replyMutation.mutate(message)}
+          isReplying={replyMutation.isPending}
+        />
       </div>
 
-      <div className="space-y-6 bg-white p-6 rounded-lg border">
-        <div>
-          <h1 className="text-2xl font-bold">{messageData.message_content.substring(0, 50)}...</h1>
-          <div className="flex items-center gap-4 text-muted-foreground mt-2">
-            <span>From: {messageData.sender.first_name} {messageData.sender.last_name}</span>
-            <span>Date: {new Date(messageData.created_at).toLocaleDateString()}</span>
-            {messageData.status !== "read" && (
-              <span className="flex items-center gap-1 text-blue-500">
-                <MessageCircle className="h-4 w-4" />
-                Unread
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="prose max-w-none">
-          <p>{messageData.message_content}</p>
-        </div>
-      </div>
+      <MessageContent
+        content={messageData.message_content}
+        sender={messageData.sender}
+        createdAt={messageData.created_at}
+        status={messageData.status}
+      />
     </div>
   );
 };
