@@ -1,53 +1,92 @@
-import { Link, useLocation } from "react-router-dom";
-import { 
-  LayoutDashboard,
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  Home,
   Wrench,
-  CreditCard,
   FileText,
   MessageSquare,
   Settings,
+  CreditCard,
+  HelpCircle,
+  Bell,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { NavLink } from "react-router-dom";
 
-export const TenantSidebar = () => {
-  const location = useLocation();
-  
-  const navigation = [
-    { name: "Dashboard", href: "/tenant/dashboard", icon: LayoutDashboard },
-    { name: "Maintenance", href: "/tenant/maintenance", icon: Wrench },
-    { name: "Payments", href: "/tenant/payments", icon: CreditCard },
-    { name: "Documents", href: "/tenant/documents", icon: FileText },
-    { name: "Communications", href: "/tenant/communications", icon: MessageSquare },
-    { name: "Settings", href: "/tenant/settings", icon: Settings },
+interface TenantSidebarProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export const TenantSidebar = ({ open, onOpenChange }: TenantSidebarProps) => {
+  const isMobile = useIsMobile();
+
+  const links = [
+    { to: "/tenant/dashboard", icon: Home, label: "Dashboard" },
+    { to: "/tenant/maintenance", icon: Wrench, label: "Maintenance" },
+    { to: "/tenant/payments", icon: CreditCard, label: "Payments" },
+    { to: "/tenant/documents", icon: FileText, label: "Documents" },
+    { to: "/tenant/communications", icon: MessageSquare, label: "Messages" },
+    { to: "/tenant/settings", icon: Settings, label: "Settings" },
+    { to: "/tenant/help", icon: HelpCircle, label: "Help" },
+    { to: "/tenant/notifications", icon: Bell, label: "Notifications" },
   ];
 
-  return (
-    <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-      <div className="flex flex-col flex-grow bg-primary px-2 pb-4">
-        <div className="flex h-16 items-center px-4">
-          <img 
-            src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png" 
-            alt="Shi Shi Kokoro Property Management" 
-            className="h-12 w-12 object-contain"
-          />
-          <h1 className="text-white text-xl font-bold ml-2">Tenant Portal</h1>
-        </div>
-        <nav className="mt-5 flex-1 space-y-1 px-2">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={cn(
-                "group flex items-center px-3 py-2 text-sm font-medium rounded-md text-white hover:bg-primary-700",
-                location.pathname === item.href && "bg-primary-700"
-              )}
+  const sidebarContent = (
+    <>
+      <SheetHeader className="px-6 py-4">
+        <SheetTitle>Tenant Portal</SheetTitle>
+      </SheetHeader>
+      <ScrollArea className="flex-1 px-3">
+        <div className="space-y-1">
+          {links.map(({ to, icon: Icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                  "hover:bg-accent hover:text-accent-foreground",
+                  isActive
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground"
+                )
+              }
             >
-              <item.icon className="mr-3 h-5 w-5" aria-hidden="true" />
-              {item.name}
-            </Link>
+              <Icon className="h-4 w-4" />
+              {label}
+            </NavLink>
           ))}
-        </nav>
-      </div>
+        </div>
+      </ScrollArea>
+    </>
+  );
+
+  if (isMobile) {
+    return (
+      <Sheet open={open} onOpenChange={onOpenChange}>
+        <SheetContent side="left" className="w-64 p-0">
+          {sidebarContent}
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "fixed inset-y-0 z-50 flex w-64 flex-col bg-background transition-transform duration-300 ease-in-out",
+        open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      )}
+    >
+      {sidebarContent}
     </div>
   );
 };
