@@ -83,3 +83,4 @@ export const ProtectedRoute = ({
   logger.info('Access granted to protected route:', currentPath);
   return <>{children}</>;
 };
+
