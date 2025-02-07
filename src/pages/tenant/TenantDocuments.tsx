@@ -15,10 +15,30 @@ const TenantDocuments = () => {
   const { data: documents, isLoading } = useQuery({
     queryKey: ['tenant-documents'],
     queryFn: async () => {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError) {
+        toast({
+          title: "Error",
+          description: "Failed to get user information",
+          variant: "destructive",
+        });
+        throw userError;
+      }
+
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "No authenticated user found",
+          variant: "destructive",
+        });
+        throw new Error("No authenticated user");
+      }
+
       const { data, error } = await supabase
         .from('user_documents')
         .select('*')
-        .eq('user_id', (await supabase.auth.getUser()).data.user?.id);
+        .eq('user_id', user.id);
       
       if (error) {
         toast({
@@ -26,7 +46,7 @@ const TenantDocuments = () => {
           description: "Failed to load documents",
           variant: "destructive",
         });
-        return [];
+        throw error;
       }
       return data;
     },
