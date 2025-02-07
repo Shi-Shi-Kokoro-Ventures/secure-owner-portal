@@ -808,27 +808,72 @@ export type Database = {
       properties: {
         Row: {
           address: string
+          amenities: string[] | null
           created_at: string
+          description: string | null
+          expenses_ytd: number | null
           id: string
+          insurance_info: Json | null
+          last_inspection_date: string | null
+          last_modified_at: string | null
+          last_modified_by: string | null
+          maintenance_contact: string | null
           owner_id: string | null
+          parking_spots: number | null
+          property_image_url: string | null
           property_name: string
+          property_type: string | null
+          square_footage: number | null
+          status: string | null
+          total_revenue: number | null
           unit_count: number
+          year_built: number | null
         }
         Insert: {
           address: string
+          amenities?: string[] | null
           created_at?: string
+          description?: string | null
+          expenses_ytd?: number | null
           id?: string
+          insurance_info?: Json | null
+          last_inspection_date?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          maintenance_contact?: string | null
           owner_id?: string | null
+          parking_spots?: number | null
+          property_image_url?: string | null
           property_name: string
+          property_type?: string | null
+          square_footage?: number | null
+          status?: string | null
+          total_revenue?: number | null
           unit_count: number
+          year_built?: number | null
         }
         Update: {
           address?: string
+          amenities?: string[] | null
           created_at?: string
+          description?: string | null
+          expenses_ytd?: number | null
           id?: string
+          insurance_info?: Json | null
+          last_inspection_date?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          maintenance_contact?: string | null
           owner_id?: string | null
+          parking_spots?: number | null
+          property_image_url?: string | null
           property_name?: string
+          property_type?: string | null
+          square_footage?: number | null
+          status?: string | null
+          total_revenue?: number | null
           unit_count?: number
+          year_built?: number | null
         }
         Relationships: [
           {

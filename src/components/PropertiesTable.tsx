@@ -1,3 +1,4 @@
+
 import { Building2, MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
@@ -8,6 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 
 interface Property {
   id: string;
@@ -19,6 +22,10 @@ interface Property {
     last_name: string;
   } | null;
   units: any[];
+  status: string;
+  total_revenue: number;
+  property_type: string | null;
+  last_inspection_date: string | null;
 }
 
 interface PropertiesTableProps {
@@ -64,14 +71,26 @@ export const PropertiesTable = ({ properties, isLoading }: PropertiesTableProps)
     );
   }
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
+
   return (
-    <div className="relative overflow-x-auto">
+    <div className="relative overflow-x-auto rounded-md border">
       <table className="w-full text-left text-sm">
         <thead className="bg-gray-50 text-xs uppercase text-gray-700">
           <tr>
             <th className="px-6 py-3">Property</th>
+            <th className="px-6 py-3">Type</th>
             <th className="px-6 py-3">Owner</th>
             <th className="px-6 py-3">Units</th>
+            <th className="px-6 py-3">Status</th>
+            <th className="px-6 py-3">Revenue</th>
+            <th className="px-6 py-3">Last Inspection</th>
             <th className="px-6 py-3">Actions</th>
           </tr>
         </thead>
@@ -90,12 +109,28 @@ export const PropertiesTable = ({ properties, isLoading }: PropertiesTableProps)
                 </div>
               </td>
               <td className="px-6 py-4">
+                {property.property_type || 'N/A'}
+              </td>
+              <td className="px-6 py-4">
                 {property.owner
                   ? `${property.owner.first_name} ${property.owner.last_name}`
                   : "No owner assigned"}
               </td>
               <td className="px-6 py-4">
                 {property.units.length} / {property.unit_count}
+              </td>
+              <td className="px-6 py-4">
+                <Badge variant={property.status === 'active' ? 'default' : 'secondary'}>
+                  {property.status}
+                </Badge>
+              </td>
+              <td className="px-6 py-4">
+                {formatCurrency(property.total_revenue)}
+              </td>
+              <td className="px-6 py-4">
+                {property.last_inspection_date 
+                  ? format(new Date(property.last_inspection_date), 'MMM d, yyyy')
+                  : 'Not inspected'}
               </td>
               <td className="px-6 py-4">
                 <DropdownMenu>
