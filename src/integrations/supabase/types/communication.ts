@@ -1,3 +1,4 @@
+
 import { AnnouncementAudience, AnnouncementUrgency, ConversationType, MessageStatus, MessageType } from './enums';
 
 export interface SystemAnnouncement {
@@ -23,6 +24,12 @@ export interface Conversation {
   last_message_at: string;
 }
 
+interface MessageSender {
+  id: string;
+  first_name: string;
+  last_name: string;
+}
+
 export interface Message {
   id: string;
   conversation_id: string;
@@ -32,4 +39,5 @@ export interface Message {
   status: MessageStatus;
   message_type: MessageType;
   created_at: string;
+  sender: MessageSender;
 }
