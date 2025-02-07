@@ -14,7 +14,8 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { RootRedirect } from "./components/routing/RootRedirect";
-import { ProtectedPortalRoute } from "./components/routing/ProtectedPortalRoute";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Layout } from "./components/Layout";
 import { AppRoute } from "./types/routes";
 
 const queryClient = new QueryClient({
@@ -41,34 +42,99 @@ const App: React.FC = () => {
               <Route path="/login" element={<Login />} />
               
               {/* Portal routes */}
-              <ProtectedPortalRoute 
-                path="/owner" 
-                role="owner" 
-                routes={ownerRoutes as AppRoute[]} 
+              <Route
+                path="/owner/*"
+                element={
+                  <ProtectedRoute allowedRoles={["owner"]}>
+                    <Layout>
+                      <Routes>
+                        {ownerRoutes.map((route) => (
+                          <Route
+                            key={route.path}
+                            path={route.path}
+                            element={route.element}
+                          />
+                        ))}
+                      </Routes>
+                    </Layout>
+                  </ProtectedRoute>
+                }
               />
               
-              <ProtectedPortalRoute 
-                path="/admin" 
-                role="admin" 
-                routes={adminRoutes as AppRoute[]} 
+              <Route
+                path="/admin/*"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <Layout>
+                      <Routes>
+                        {adminRoutes.map((route) => (
+                          <Route
+                            key={route.path}
+                            path={route.path}
+                            element={route.element}
+                          />
+                        ))}
+                      </Routes>
+                    </Layout>
+                  </ProtectedRoute>
+                }
               />
               
-              <ProtectedPortalRoute 
-                path="/property-manager" 
-                role="property_manager" 
-                routes={propertyManagerRoutes as AppRoute[]} 
+              <Route
+                path="/property-manager/*"
+                element={
+                  <ProtectedRoute allowedRoles={["property_manager"]}>
+                    <Layout>
+                      <Routes>
+                        {propertyManagerRoutes.map((route) => (
+                          <Route
+                            key={route.path}
+                            path={route.path}
+                            element={route.element}
+                          />
+                        ))}
+                      </Routes>
+                    </Layout>
+                  </ProtectedRoute>
+                }
               />
               
-              <ProtectedPortalRoute 
-                path="/tenant" 
-                role="tenant" 
-                routes={tenantRoutes as AppRoute[]} 
+              <Route
+                path="/tenant/*"
+                element={
+                  <ProtectedRoute allowedRoles={["tenant"]}>
+                    <Layout>
+                      <Routes>
+                        {tenantRoutes.map((route) => (
+                          <Route
+                            key={route.path}
+                            path={route.path}
+                            element={route.element}
+                          />
+                        ))}
+                      </Routes>
+                    </Layout>
+                  </ProtectedRoute>
+                }
               />
               
-              <ProtectedPortalRoute 
-                path="/vendor" 
-                role="vendor" 
-                routes={vendorRoutes as AppRoute[]} 
+              <Route
+                path="/vendor/*"
+                element={
+                  <ProtectedRoute allowedRoles={["vendor"]}>
+                    <Layout>
+                      <Routes>
+                        {vendorRoutes.map((route) => (
+                          <Route
+                            key={route.path}
+                            path={route.path}
+                            element={route.element}
+                          />
+                        ))}
+                      </Routes>
+                    </Layout>
+                  </ProtectedRoute>
+                }
               />
 
               {/* Common routes accessible to all authenticated users */}
