@@ -38,73 +38,83 @@ const App: React.FC = () => {
               <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
 
               {/* Admin routes go first because they're like, the most important or whatever */}
-              {adminRoutes.map((route) => (
-                <Route 
-                  key={`admin-${route.path}`}
-                  path={route.path} 
-                  element={route.element}
-                />
-              ))}
+              <Route path="/admin">
+                {adminRoutes.map((route) => (
+                  <Route 
+                    key={`admin-${route.path}`}
+                    path={route.path.replace('/admin/', '')} 
+                    element={route.element}
+                  />
+                ))}
+              </Route>
 
               {/* Property Manager routes are next, because they're basically mini-admins */}
-              {propertyManagerRoutes.map((route) => (
-                <Route 
-                  key={`pm-${route.path || 'index'}`}
-                  path={route.path} 
-                  element={route.element} 
-                />
-              ))}
+              <Route path="/property-manager">
+                {propertyManagerRoutes.map((route) => (
+                  <Route 
+                    key={`pm-${route.path || 'index'}`}
+                    path={route.path.replace('/property-manager/', '')} 
+                    element={route.element} 
+                  />
+                ))}
+              </Route>
 
               {/* Owner routes - because they own stuff, duh */}
-              {ownerRoutes.map((route) => (
-                <Route
-                  key={`owner-${route.path}`}
-                  path={route.path}
-                  element={route.element}
-                >
-                  {route.children?.map((childRoute) => (
-                    <Route
-                      key={`owner-child-${childRoute.path}`}
-                      path={childRoute.path}
-                      element={childRoute.element}
-                    />
-                  ))}
-                </Route>
-              ))}
+              <Route path="/owner">
+                {ownerRoutes.map((route) => (
+                  <Route
+                    key={`owner-${route.path}`}
+                    path={route.path.replace('/owner/', '')}
+                    element={route.element}
+                  >
+                    {route.children?.map((childRoute) => (
+                      <Route
+                        key={`owner-child-${childRoute.path}`}
+                        path={childRoute.path}
+                        element={childRoute.element}
+                      />
+                    ))}
+                  </Route>
+                ))}
+              </Route>
 
               {/* Tenant routes - because like, people need a place to live */}
-              {tenantRoutes.map((route) => (
-                <Route
-                  key={`tenant-${route.path || 'index'}`}
-                  path={route.path}
-                  element={route.element}
-                >
-                  {route.children?.map((childRoute) => (
-                    <Route
-                      key={`tenant-child-${childRoute.path || 'index'}`}
-                      path={childRoute.path}
-                      element={childRoute.element}
-                    />
-                  ))}
-                </Route>
-              ))}
+              <Route path="/tenant">
+                {tenantRoutes.map((route) => (
+                  <Route
+                    key={`tenant-${route.path || 'index'}`}
+                    path={route.path.replace('/tenant/', '')}
+                    element={route.element}
+                  >
+                    {route.children?.map((childRoute) => (
+                      <Route
+                        key={`tenant-child-${childRoute.path || 'index'}`}
+                        path={childRoute.path}
+                        element={childRoute.element}
+                      />
+                    ))}
+                  </Route>
+                ))}
+              </Route>
 
               {/* Vendor Routes */}
-              {vendorRoutes.map((route) => (
-                <Route
-                  key={`vendor-${route.path || 'index'}`}
-                  path={route.path}
-                  element={route.element}
-                >
-                  {route.children?.map((childRoute) => (
-                    <Route
-                      key={`vendor-child-${childRoute.path}`}
-                      path={childRoute.path}
-                      element={childRoute.element}
-                    />
-                  ))}
-                </Route>
-              ))}
+              <Route path="/vendor">
+                {vendorRoutes.map((route) => (
+                  <Route
+                    key={`vendor-${route.path || 'index'}`}
+                    path={route.path.replace('/vendor/', '')}
+                    element={route.element}
+                  >
+                    {route.children?.map((childRoute) => (
+                      <Route
+                        key={`vendor-child-${childRoute.path}`}
+                        path={childRoute.path}
+                        element={childRoute.element}
+                      />
+                    ))}
+                  </Route>
+                ))}
+              </Route>
 
               {/* Common routes go last because they're like, super basic */}
               {commonRoutes.map((route) => (
