@@ -4,7 +4,7 @@ export const dashboardRoutes: AdminRoute[] = [
   {
     key: "admin-dashboard",
     path: "/admin/dashboard",
-    element: null, // Will be set in adminRoutes.tsx
+    element: null,
     requiresAuth: true,
     title: "Dashboard",
   }
@@ -67,6 +67,16 @@ export const userManagementRoutes: AdminRoute[] = [
     element: null,
     requiresAuth: true,
     title: "User Management",
+  }
+];
+
+export const newsletterRoutes: AdminRoute[] = [
+  {
+    key: "admin-newsletters",
+    path: "/admin/newsletters",
+    element: null,
+    requiresAuth: true,
+    title: "Newsletter Management",
   }
 ];
 

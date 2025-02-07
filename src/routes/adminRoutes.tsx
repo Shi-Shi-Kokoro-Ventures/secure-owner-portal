@@ -11,6 +11,7 @@ import {
   reportRoutes,
   userManagementRoutes,
   settingsRoutes,
+  newsletterRoutes,
 } from "./config/adminRoutesConfig";
 import { AdminRoute } from "@/types/routes";
 
@@ -23,6 +24,7 @@ const AdminMaintenance = lazy(() => import("@/pages/admin/AdminMaintenance"));
 const AdminLeases = lazy(() => import("@/pages/admin/AdminLeases"));
 const AdminSettings = lazy(() => import("@/pages/admin/AdminSettings"));
 const AdminReports = lazy(() => import("@/pages/admin/AdminReports"));
+const AdminNewsletters = lazy(() => import("@/pages/admin/AdminNewsletters"));
 
 // Loading component for suspense fallback
 const LoadingComponent = () => (
@@ -59,6 +61,8 @@ const mapRouteConfig = (config: AdminRoute): AdminRoute => {
       return { ...config, element: wrapComponent(AdminSettings) };
     case "admin-reports":
       return { ...config, element: wrapComponent(AdminReports) };
+    case "admin-newsletters":
+      return { ...config, element: wrapComponent(AdminNewsletters) };
     default:
       return config;
   }
@@ -78,5 +82,6 @@ export const adminRoutes: AdminRoute[] = [
   ...maintenanceRoutes,
   ...reportRoutes,
   ...userManagementRoutes,
+  ...newsletterRoutes,
   ...settingsRoutes,
 ].map(mapRouteConfig);
