@@ -2,7 +2,8 @@ import { DashboardMetrics } from "@/components/owner/DashboardMetrics";
 import { PropertyCard } from "@/components/owner/PropertyCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Building2, Plus } from "lucide-react";
+import { Building2, Plus, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const properties = [
   {
@@ -13,7 +14,7 @@ const properties = [
     units: 32,
     occupancyRate: 75,
     revenue: 12000,
-    imageUrl: "/lovable-uploads/654bda82-66ad-4b81-96b5-2acfa997dc7a.png",
+    imageUrl: "/lovable-uploads/e5ea4050-58aa-4ce1-a86a-7d8c5f04fc39.png",
     tenantCount: 10,
     maintenanceCount: 8
   },
@@ -33,32 +34,43 @@ const properties = [
 
 const OwnerDashboard = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Dashboard</h1>
-        <p className="mt-2 text-muted-foreground">
-          Welcome back! Here's an overview of your properties.
-        </p>
-      </div>
-
-      <DashboardMetrics />
-
-      <div className="mt-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Your Properties</h2>
-          <Button variant="outline" size="sm">
-            <Building2 className="h-4 w-4 mr-2" />
-            View All Properties
-          </Button>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">My Properties</h1>
+            <p className="mt-2 text-muted-foreground">
+              3 Property Place
+            </p>
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                type="search"
+                placeholder="Search properties..."
+                className="pl-10 w-[300px] bg-white dark:bg-gray-800"
+              />
+            </div>
+            <select 
+              className="rounded-lg border border-gray-200 px-4 py-2 bg-white dark:bg-gray-800 shadow-sm hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+            >
+              <option>All Properties</option>
+              <option>Residential</option>
+              <option>Commercial</option>
+            </select>
+          </div>
         </div>
 
-        <div className="grid gap-6">
+        <DashboardMetrics />
+
+        <div className="mt-8 space-y-6">
           {properties.map((property) => (
             <PropertyCard key={property.id} property={property} />
           ))}
         </div>
 
-        <Card className="mt-6 p-6 bg-gray-50 dark:bg-gray-800/50">
+        <Card className="mt-8 p-6 bg-gradient-glass">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Add Another Property?</h3>
@@ -66,7 +78,7 @@ const OwnerDashboard = () => {
                 Expand your portfolio by adding more properties
               </p>
             </div>
-            <Button>
+            <Button className="bg-blue-600 hover:bg-blue-700">
               <Plus className="h-4 w-4 mr-2" />
               Add Property
             </Button>

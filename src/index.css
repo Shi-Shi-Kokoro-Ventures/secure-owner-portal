@@ -72,7 +72,27 @@
     @apply bg-gradient-glass backdrop-blur-md shadow-lg;
   }
 
+  .bg-gradient-glass {
+    @apply bg-gradient-to-br from-white/60 to-white/30 dark:from-gray-800/60 dark:to-gray-800/30;
+  }
+
   .animate-float {
     animation: float 3s ease-in-out infinite;
+  }
+
+  .status-badge {
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+  }
+
+  .status-occupied {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .status-vacant {
+    @apply bg-purple-100 text-purple-800;
+  }
+
+  .status-maintenance {
+    @apply bg-orange-100 text-orange-800;
   }
 }
