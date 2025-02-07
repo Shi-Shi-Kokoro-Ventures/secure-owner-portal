@@ -3,35 +3,42 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Filter, Plus } from "lucide-react";
+import { Filter, Plus, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-
-// Mock data - replace with actual API call
-const mockRequests = [
-  {
-    id: "REQ-001",
-    title: "Leaking Faucet",
-    dateSubmitted: "2024-02-04",
-    category: "Plumbing",
-    status: "Open",
-    lastUpdated: "2024-02-04",
-  },
-  {
-    id: "REQ-002",
-    title: "AC Not Working",
-    dateSubmitted: "2024-02-03",
-    category: "HVAC",
-    status: "In Progress",
-    lastUpdated: "2024-02-04",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { MaintenanceRequest } from "@/integrations/supabase/types/maintenance";
 
 const TenantMaintenance = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("all");
+
+  const { data: requests, isLoading, error } = useQuery({
+    queryKey: ['maintenanceRequests', statusFilter],
+    queryFn: async () => {
+      let query = supabase
+        .from('maintenance_requests')
+        .select('*')
+        .eq('tenant_id', await supabase.auth.getUser().then(res => res.data.user?.id));
+
+      if (statusFilter !== 'all') {
+        query = query.eq('status', statusFilter);
+      }
+
+      const { data, error } = await query;
+      
+      if (error) {
+        console.error('Error fetching maintenance requests:', error);
+        throw error;
+      }
+      
+      return data as MaintenanceRequest[];
+    },
+    enabled: import.meta.env.DEV || supabase.auth.getUser() !== null,
+  });
 
   const handleNewRequest = () => {
     navigate("/tenant/maintenance/new");
@@ -40,13 +47,33 @@ const TenantMaintenance = () => {
   const handleFilter = () => {
     toast({
       title: "Filter Applied",
-      description: "Filtering functionality coming soon",
+      description: "Maintenance requests filtered by status",
     });
   };
 
   const handleRowClick = (id: string) => {
     navigate(`/tenant/maintenance/${id}`);
   };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-6 flex justify-center items-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="bg-destructive/15 text-destructive px-4 py-2 rounded-md">
+          Error loading maintenance requests. Please try again later.
+        </div>
+      </div>
+    );
+  }
+
+  const displayRequests = requests || [];
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -57,7 +84,6 @@ const TenantMaintenance = () => {
         </p>
       </div>
 
-      {/* Actions */}
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={handleFilter}>
@@ -70,8 +96,8 @@ const TenantMaintenance = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option value="all">All Status</option>
-            <option value="open">Open</option>
-            <option value="in-progress">In Progress</option>
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
             <option value="completed">Completed</option>
           </select>
         </div>
@@ -81,47 +107,42 @@ const TenantMaintenance = () => {
         </Button>
       </div>
 
-      {/* Requests Table */}
       <div className="rounded-lg border">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Request ID</TableHead>
-              <TableHead>Title</TableHead>
+              <TableHead>Description</TableHead>
               <TableHead>Date Submitted</TableHead>
-              <TableHead>Category</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Last Updated</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockRequests.length === 0 ? (
+            {displayRequests.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
                   No maintenance requests found
                 </TableCell>
               </TableRow>
             ) : (
-              mockRequests.map((request) => (
+              displayRequests.map((request) => (
                 <TableRow
                   key={request.id}
                   className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleRowClick(request.id)}
                 >
-                  <TableCell>{request.id}</TableCell>
-                  <TableCell>{request.title}</TableCell>
-                  <TableCell>{request.dateSubmitted}</TableCell>
-                  <TableCell>{request.category}</TableCell>
+                  <TableCell>{request.id.slice(0, 8)}</TableCell>
+                  <TableCell>{request.description}</TableCell>
+                  <TableCell>{new Date(request.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium
-                      ${request.status === 'Open' ? 'bg-yellow-100 text-yellow-800' : ''}
-                      ${request.status === 'In Progress' ? 'bg-blue-100 text-blue-800' : ''}
-                      ${request.status === 'Completed' ? 'bg-green-100 text-green-800' : ''}
+                      ${request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : ''}
+                      ${request.status === 'in_progress' ? 'bg-blue-100 text-blue-800' : ''}
+                      ${request.status === 'completed' ? 'bg-green-100 text-green-800' : ''}
                     `}>
                       {request.status}
                     </span>
                   </TableCell>
-                  <TableCell>{request.lastUpdated}</TableCell>
                 </TableRow>
               ))
             )}
@@ -129,7 +150,6 @@ const TenantMaintenance = () => {
         </Table>
       </div>
 
-      {/* Pagination */}
       <Pagination>
         <PaginationContent>
           <PaginationItem>
