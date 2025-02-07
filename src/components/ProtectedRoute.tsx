@@ -1,8 +1,6 @@
 
 import { Navigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { logger } from "@/utils/logger";
+import { useAuth } from "@/hooks/use-auth-context";
 import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
@@ -19,19 +17,7 @@ export const ProtectedRoute = ({
     return <>{children}</>;
   }
 
-  const { data: session, isLoading, error } = useQuery({
-    queryKey: ['session'],
-    queryFn: async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) {
-        logger.error('Auth error:', error);
-        return null;
-      }
-      return session;
-    },
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    retry: 1,
-  });
+  const { user, isLoading } = useAuth();
 
   // Show loading state with a spinner
   if (isLoading) {
@@ -42,14 +28,8 @@ export const ProtectedRoute = ({
     );
   }
 
-  // Log any authentication errors
-  if (error) {
-    logger.error('Protected route error:', error);
-    return <Navigate to={redirectTo} replace />;
-  }
-
   // In production, check for authentication
-  if (!session) {
+  if (!user) {
     return <Navigate to={redirectTo} replace />;
   }
 

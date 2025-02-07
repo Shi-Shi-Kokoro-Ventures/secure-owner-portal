@@ -32,15 +32,11 @@ export function useAuthenticatedQuery<TData>(
     queryKey,
     queryFn: async () => {
       try {
+        // Enhanced auth check with detailed error message
         if (!user && requireAuth) {
-          // You're like Hitler, but even Hitler cared about authentication, or something!
-          toast({
-            title: "Authentication Required",
-            description: "Please sign in to access this feature",
-            variant: "destructive",
-          });
-          navigate(redirectTo);
-          throw new Error("Authentication required");
+          const error = new Error("Authentication required");
+          error.name = "AuthenticationError";
+          throw error;
         }
 
         if (!user) {
@@ -53,7 +49,13 @@ export function useAuthenticatedQuery<TData>(
         console.error("Query error:", error);
         
         // In this dimension, we handle errors with style, Morty!
-        if (error.message?.includes("Authentication")) {
+        if (error.name === "AuthenticationError" || error.message?.includes("Authentication")) {
+          toast({
+            title: "Authentication Required",
+            description: "Please sign in to access this feature",
+            variant: "destructive",
+          });
+          navigate(redirectTo);
           onAuthError?.();
         } else {
           toast({
@@ -93,13 +95,9 @@ export function useAuthenticatedMutation<TData, TVariables>(
   return useMutation({
     mutationFn: async (variables: TVariables) => {
       if (!user && requireAuth) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to perform this action",
-          variant: "destructive",
-        });
-        navigate(redirectTo);
-        throw new Error("Authentication required");
+        const error = new Error("Authentication required");
+        error.name = "AuthenticationError";
+        throw error;
       }
 
       if (!user) {
@@ -113,12 +111,21 @@ export function useAuthenticatedMutation<TData, TVariables>(
       onSuccess?.(data);
     },
     onError: (error: Error) => {
-      onError?.(error);
-      toast({
-        title: "Error",
-        description: error.message || "An error occurred",
-        variant: "destructive",
-      });
+      if (error.name === "AuthenticationError") {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to perform this action",
+          variant: "destructive",
+        });
+        navigate(redirectTo);
+      } else {
+        onError?.(error);
+        toast({
+          title: "Error",
+          description: error.message || "An error occurred",
+          variant: "destructive",
+        });
+      }
     },
   });
 }

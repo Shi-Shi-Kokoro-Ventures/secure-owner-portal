@@ -10,6 +10,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
+  refreshSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,18 +22,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // A handy function to refresh the session
+  const refreshSession = async () => {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      setUser(session?.user ?? null);
+    } catch (error) {
+      console.error('Error refreshing session:', error);
+      setUser(null);
+    }
+  };
+
   useEffect(() => {
     // Oh geez Rick, we're setting up a subscription to auth changes!
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
 
     // Get the initial session like getting the initial seed for a dimension
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-    });
+    refreshSession().finally(() => setIsLoading(false));
 
     // Clean up our mess when we're done, Morty!
     return () => {
@@ -59,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, signOut }}>
+    <AuthContext.Provider value={{ user, isLoading, signOut, refreshSession }}>
       {children}
     </AuthContext.Provider>
   );
