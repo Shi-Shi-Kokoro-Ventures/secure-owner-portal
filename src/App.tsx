@@ -32,15 +32,6 @@ const App: React.FC = () => {
               {/* Root redirect */}
               <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
 
-              {/* Common Routes */}
-              {commonRoutes.map((route) => (
-                <Route 
-                  key={`common-${route.path || 'index'}`}
-                  path={route.path} 
-                  element={route.element} 
-                />
-              ))}
-
               {/* Admin Routes - First to match /admin path */}
               {adminRoutes.map((route) => (
                 <Route 
@@ -59,23 +50,6 @@ const App: React.FC = () => {
                 />
               ))}
 
-              {/* Tenant Routes */}
-              {tenantRoutes.map((route) => (
-                <Route
-                  key={`tenant-${route.path || 'index'}`}
-                  path={route.path}
-                  element={route.element}
-                >
-                  {route.children?.map((childRoute) => (
-                    <Route
-                      key={`tenant-child-${childRoute.path || 'index'}`}
-                      path={childRoute.path}
-                      element={childRoute.element}
-                    />
-                  ))}
-                </Route>
-              ))}
-
               {/* Owner Routes */}
               {ownerRoutes.map((route) => (
                 <Route
@@ -86,6 +60,23 @@ const App: React.FC = () => {
                   {route.children?.map((childRoute) => (
                     <Route
                       key={`owner-child-${childRoute.path}`}
+                      path={childRoute.path}
+                      element={childRoute.element}
+                    />
+                  ))}
+                </Route>
+              ))}
+
+              {/* Tenant Routes */}
+              {tenantRoutes.map((route) => (
+                <Route
+                  key={`tenant-${route.path || 'index'}`}
+                  path={route.path}
+                  element={route.element}
+                >
+                  {route.children?.map((childRoute) => (
+                    <Route
+                      key={`tenant-child-${childRoute.path || 'index'}`}
                       path={childRoute.path}
                       element={childRoute.element}
                     />
@@ -108,6 +99,15 @@ const App: React.FC = () => {
                     />
                   ))}
                 </Route>
+              ))}
+
+              {/* Common Routes - Less specific routes */}
+              {commonRoutes.map((route) => (
+                <Route 
+                  key={`common-${route.path || 'index'}`}
+                  path={route.path} 
+                  element={route.element} 
+                />
               ))}
 
               {/* Catch all 404 route - Must be last */}
