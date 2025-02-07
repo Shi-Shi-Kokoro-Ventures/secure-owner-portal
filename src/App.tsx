@@ -13,10 +13,10 @@ import { vendorRoutes } from "./routes/vendorRoutes";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import Index from "./pages/Index";
 import { RootRedirect } from "./components/routing/RootRedirect";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Layout } from "./components/Layout";
-import { AppRoute } from "./types/routes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,10 +35,8 @@ const App: React.FC = () => {
         <Router>
           <AuthProvider>
             <Routes>
-              {/* Root redirect handler */}
-              <Route path="/" element={<RootRedirect />} />
-              
-              {/* Auth routes */}
+              {/* Public routes */}
+              <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               
               {/* Portal routes */}
@@ -137,7 +135,7 @@ const App: React.FC = () => {
                 }
               />
 
-              {/* Common routes accessible to all authenticated users */}
+              {/* Common routes accessible to all users */}
               {commonRoutes.map((route) => (
                 <Route 
                   key={`common-${route.path}`}
