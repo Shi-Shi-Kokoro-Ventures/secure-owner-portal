@@ -15,13 +15,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const MESSAGES_PER_PAGE = 10;
 
 const Messages = () => {
+  // *burp* Listen up! This is where we keep track of all our interdimensional message stuff
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const { toast } = useToast();
 
+  // This query is like cable TV for your messages, Morty!
+  // But instead of interdimensional channels, you get conversation threads
   const { data, isLoading, error } = useQuery({
     queryKey: ['messages', currentPage, searchQuery],
     queryFn: async () => {
+      // Time to get riggity riggity wrecked with some database queries!
       let query = supabase
         .from('messages')
         .select(`
@@ -37,6 +41,7 @@ const Messages = () => {
         .order('created_at', { ascending: false })
         .range(currentPage * MESSAGES_PER_PAGE, (currentPage + 1) * MESSAGES_PER_PAGE - 1);
 
+      // Aw jeez, Rick! We're filtering messages!
       if (searchQuery) {
         query = query.ilike('message_content', `%${searchQuery}%`);
       }
@@ -48,6 +53,7 @@ const Messages = () => {
         throw error;
       }
 
+      // Transform this data like we're making concentrated dark matter!
       return data.map(message => ({
         id: message.id,
         from: `${message.sender.first_name} ${message.sender.last_name}`,
@@ -58,12 +64,15 @@ const Messages = () => {
     },
   });
 
+  // This function is like a portal gun for your search queries
+  // Point it at what you want to find, and BAM! Results!
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(0);
     logger.info("Search query updated", { query });
   };
 
+  // In case something goes terribly wrong, like when Morty touches everything
   if (error) {
     return (
       <Layout>
@@ -77,6 +86,7 @@ const Messages = () => {
     );
   }
 
+  // The rest is just your regular old Earth dimension C-137 JSX
   return (
     <Layout>
       <ErrorBoundary>

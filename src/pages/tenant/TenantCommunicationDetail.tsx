@@ -9,6 +9,8 @@ import { MessageActions } from "@/components/communications/MessageActions";
 import { MessageContent } from "@/components/communications/MessageContent";
 import { useAuthenticatedQuery } from "@/hooks/use-authenticated-query";
 
+// Listen up M-Morty, these interfaces are like the DNA of our data
+// They tell us what shape our weird message creatures should take
 interface MessageSender {
   id: string;
   first_name: string;
@@ -27,12 +29,15 @@ interface Message {
   sender: MessageSender;
 }
 
+// Aww geez Rick, this component is like a whole universe of message handling
 const TenantCommunicationDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // *burp* This query is like a transdimensional cable box
+  // but instead of infinite TV channels, we get message data
   const { data: messageData, isLoading } = useAuthenticatedQuery<Message>(
     ["message", id],
     async (userId) => {
@@ -55,6 +60,8 @@ const TenantCommunicationDetail = () => {
     }
   );
 
+  // Time to get schwifty with some mutations!
+  // This one marks messages as read, like putting a stamp on an interdimensional letter
   const markAsReadMutation = useMutation({
     mutationFn: async () => {
       if (!messageData) return;
@@ -66,6 +73,7 @@ const TenantCommunicationDetail = () => {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Boom! Big reveal! The message is now read!
       queryClient.invalidateQueries({ queryKey: ["messages"] });
       queryClient.invalidateQueries({ queryKey: ["message", id] });
       toast({
@@ -75,6 +83,8 @@ const TenantCommunicationDetail = () => {
     },
   });
 
+  // This mutation is like a black hole, Morty!
+  // It makes messages disappear, but in a controlled way
   const deleteMutation = useMutation({
     mutationFn: async () => {
       if (!messageData) return;
@@ -94,6 +104,7 @@ const TenantCommunicationDetail = () => {
     },
   });
 
+  // Ooh wee! This mutation sends replies faster than a Meeseeks completes a task!
   const replyMutation = useMutation({
     mutationFn: async (content: string) => {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -115,6 +126,7 @@ const TenantCommunicationDetail = () => {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Grass... tastes bad! But this success message tastes good!
       toast({
         title: "Reply sent",
         description: "Your reply has been sent successfully.",
@@ -123,6 +135,8 @@ const TenantCommunicationDetail = () => {
     },
   });
 
+  // This effect is like a mindreader that knows when to mark messages as read
+  // It's automated, Morty! No hands required!
   useEffect(() => {
     if (messageData?.status !== "read" && !markAsReadMutation.isPending) {
       markAsReadMutation.mutate();
@@ -137,6 +151,8 @@ const TenantCommunicationDetail = () => {
     return <div>Message not found</div>;
   }
 
+  // And here's where the magic happens, Morty!
+  // We render this beautiful mess of components like a well-oiled multiverse machine
   return (
     <div className="container mx-auto py-6 space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
