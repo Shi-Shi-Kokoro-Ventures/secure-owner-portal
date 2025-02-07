@@ -23,9 +23,10 @@ const properties = [
 
 const OwnerDashboard = () => {
   return (
-    <div className="min-h-full bg-gray-50/50">
+    <div className="min-h-full bg-gray-50">
       <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto">
         <div className="flex flex-col gap-8">
+          {/* Header */}
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900">Overview</h1>
@@ -36,7 +37,7 @@ const OwnerDashboard = () => {
                 <Input
                   type="search"
                   placeholder="Search properties..."
-                  className="pl-10 w-full min-w-[300px] bg-white border-gray-200"
+                  className="pl-10 w-[300px] bg-white border-gray-200"
                 />
               </div>
               <select 
@@ -51,25 +52,25 @@ const OwnerDashboard = () => {
 
           {/* Payment Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
               <div className="space-y-1">
                 <p className="text-sm text-gray-500">Rent</p>
                 <p className="text-2xl font-bold">$223,600</p>
               </div>
             </Card>
-            <Card className="p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
               <div className="space-y-1">
                 <p className="text-sm text-gray-500">Additional services</p>
                 <p className="text-2xl font-bold">$24,840</p>
               </div>
             </Card>
-            <Card className="p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
               <div className="space-y-1">
                 <p className="text-sm text-gray-500">Maintenance</p>
                 <p className="text-2xl font-bold">$31,840</p>
               </div>
             </Card>
-            <Card className="p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
               <div className="space-y-1">
                 <p className="text-sm text-gray-500">Debt</p>
                 <p className="text-2xl font-bold text-red-500">$16,485</p>
@@ -77,13 +78,14 @@ const OwnerDashboard = () => {
             </Card>
           </div>
 
+          {/* Property Cards */}
           <div className="space-y-6">
             {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
           </div>
 
-          {/* Work Orders Section */}
+          {/* Work Orders and Staff Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="p-6 bg-white shadow-sm">
               <h2 className="text-lg font-semibold mb-4">Work Orders</h2>
@@ -112,18 +114,16 @@ const OwnerDashboard = () => {
                 <h2 className="text-lg font-semibold">On-site staff</h2>
                 <Button variant="outline" size="sm">Schedule</Button>
               </div>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium">Security</p>
-                    <p className="text-sm text-gray-500">Louis Hodges</p>
-                    <p className="text-sm text-gray-500">+971 5 927 6701</p>
-                  </div>
-                  <div>
-                    <p className="font-medium">Maintenance</p>
-                    <p className="text-sm text-gray-500">Hans Bowman</p>
-                    <p className="text-sm text-gray-500">+971 5 927 6701</p>
-                  </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="font-medium">Security</p>
+                  <p className="text-sm text-gray-500">Louis Hodges</p>
+                  <p className="text-sm text-gray-500">+971 5 927 6701</p>
+                </div>
+                <div>
+                  <p className="font-medium">Maintenance</p>
+                  <p className="text-sm text-gray-500">Hans Bowman</p>
+                  <p className="text-sm text-gray-500">+971 5 927 6701</p>
                 </div>
               </div>
             </Card>
