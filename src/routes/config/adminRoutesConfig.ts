@@ -89,3 +89,13 @@ export const settingsRoutes: AdminRoute[] = [
     title: "Settings",
   }
 ];
+
+export const messageRoutes: AdminRoute[] = [
+  {
+    key: "admin-messages",
+    path: "/admin/messages",
+    element: null,
+    requiresAuth: true,
+    title: "Messages",
+  }
+];
