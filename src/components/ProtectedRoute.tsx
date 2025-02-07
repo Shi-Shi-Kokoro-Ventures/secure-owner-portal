@@ -14,25 +14,15 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { data: session, isLoading, error } = useQuery({
     queryKey: ['session'],
     queryFn: async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          logger.error('Auth error:', error);
-          return null;
-        }
-        return session;
-      } catch (error) {
-        logger.error('Session error:', error);
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        logger.error('Auth error:', error);
         return null;
       }
+      return session;
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
-
-  // Log authentication attempts in development
-  if (import.meta.env.DEV) {
-    logger.info('Auth state:', { isLoading, session: !!session, error });
-  }
 
   // Show loading state
   if (isLoading) {
