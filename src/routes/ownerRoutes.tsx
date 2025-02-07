@@ -1,7 +1,6 @@
 
 import { RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import OwnerLayout from "@/components/OwnerLayout";
 import OwnerDashboard from "@/pages/owner/OwnerDashboard";
 import OwnerProperties from "@/pages/owner/OwnerProperties";
 import OwnerStatements from "@/pages/owner/OwnerStatements";
@@ -17,22 +16,99 @@ import Applications from "@/pages/Applications";
 
 export const ownerRoutes: RouteObject[] = [
   {
-    path: "/owner",
-    element: <ProtectedRoute><OwnerLayout /></ProtectedRoute>,
-    children: [
-      { index: true, element: <OwnerDashboard /> },
-      { path: "dashboard", element: <OwnerDashboard /> },
-      { path: "properties", element: <OwnerProperties /> },
-      { path: "statements", element: <OwnerStatements /> },
-      { path: "documents", element: <OwnerDocuments /> },
-      { path: "reports", element: <OwnerReports /> },
-      { path: "communications", element: <OwnerCommunications /> },
-      { path: "settings", element: <OwnerSettings /> },
-      { path: "maintenance", element: <OwnerMaintenance /> },
-      { path: "maintenance/:id", element: <OwnerMaintenanceDetail /> },
-      { path: "payments", element: <OwnerPayments /> },
-      { path: "lease-renewals", element: <LeaseRenewals /> },
-      { path: "applications", element: <Applications /> }
-    ]
+    path: "dashboard",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "properties",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerProperties />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "statements",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerStatements />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "documents",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerDocuments />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "reports",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerReports />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "communications",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerCommunications />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "settings",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerSettings />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "maintenance",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerMaintenance />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "maintenance/:id",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerMaintenanceDetail />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "payments",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerPayments />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "lease-renewals",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <LeaseRenewals />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "applications",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <Applications />
+      </ProtectedRoute>
+    ),
   }
 ];

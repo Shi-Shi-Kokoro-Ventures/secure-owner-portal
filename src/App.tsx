@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import { useAuth } from "./hooks/use-auth-context";
 import { Layout } from "./components/Layout";
 import { useToast } from "./hooks/use-toast";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -79,62 +80,6 @@ const RootRedirect = () => {
   }
 };
 
-// Layout wrapper components with proper role protection
-const AdminLayoutWrapper = () => {
-  const { userProfile } = useAuth();
-  return userProfile?.role === 'admin' ? (
-    <Layout>
-      <Outlet />
-    </Layout>
-  ) : (
-    <Navigate to="/" replace />
-  );
-};
-
-const PropertyManagerLayoutWrapper = () => {
-  const { userProfile } = useAuth();
-  return userProfile?.role === 'property_manager' ? (
-    <Layout>
-      <Outlet />
-    </Layout>
-  ) : (
-    <Navigate to="/" replace />
-  );
-};
-
-const OwnerLayoutWrapper = () => {
-  const { userProfile } = useAuth();
-  return userProfile?.role === 'owner' ? (
-    <Layout>
-      <Outlet />
-    </Layout>
-  ) : (
-    <Navigate to="/" replace />
-  );
-};
-
-const TenantLayoutWrapper = () => {
-  const { userProfile } = useAuth();
-  return userProfile?.role === 'tenant' ? (
-    <Layout>
-      <Outlet />
-    </Layout>
-  ) : (
-    <Navigate to="/" replace />
-  );
-};
-
-const VendorLayoutWrapper = () => {
-  const { userProfile } = useAuth();
-  return userProfile?.role === 'vendor' ? (
-    <Layout>
-      <Outlet />
-    </Layout>
-  ) : (
-    <Navigate to="/" replace />
-  );
-};
-
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
@@ -148,60 +93,93 @@ const App: React.FC = () => {
               {/* Auth routes */}
               <Route path="/login" element={<Login />} />
 
-              {/* Admin routes with Layout and role protection */}
-              <Route path="/admin" element={<AdminLayoutWrapper />}>
-                {adminRoutes.map((route) => (
-                  <Route
-                    key={`admin-${route.path}`}
-                    path={route.path}
-                    element={route.element}
-                  />
-                ))}
-              </Route>
-
-              {/* Property Manager routes with Layout and role protection */}
-              <Route path="/property-manager" element={<PropertyManagerLayoutWrapper />}>
-                {propertyManagerRoutes.map((route) => (
-                  <Route
-                    key={`pm-${route.path}`}
-                    path={route.path}
-                    element={route.element}
-                  />
-                ))}
-              </Route>
-
               {/* Owner routes with Layout and role protection */}
-              <Route path="/owner" element={<OwnerLayoutWrapper />}>
-                {ownerRoutes.map((route) => (
-                  <Route
-                    key={`owner-${route.path}`}
-                    path={route.path}
-                    element={route.element}
-                  />
-                ))}
-              </Route>
+              <Route 
+                path="/owner/*" 
+                element={
+                  <ProtectedRoute allowedRoles={["owner"]}>
+                    <Layout>
+                      <Routes>
+                        {ownerRoutes.map((route) => (
+                          <Route
+                            key={route.path}
+                            path={route.path}
+                            element={route.element}
+                          />
+                        ))}
+                      </Routes>
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
 
-              {/* Tenant routes with Layout and role protection */}
-              <Route path="/tenant" element={<TenantLayoutWrapper />}>
-                {tenantRoutes.map((route) => (
-                  <Route
-                    key={`tenant-${route.path}`}
-                    path={route.path}
-                    element={route.element}
-                  />
-                ))}
-              </Route>
+              {/* Admin routes */}
+              <Route path="/admin/*" element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <Layout>
+                    <Routes>
+                      {adminRoutes.map((route) => (
+                        <Route
+                          key={route.path}
+                          path={route.path}
+                          element={route.element}
+                        />
+                      ))}
+                    </Routes>
+                  </Layout>
+                </ProtectedRoute>
+              } />
 
-              {/* Vendor Routes with Layout and role protection */}
-              <Route path="/vendor" element={<VendorLayoutWrapper />}>
-                {vendorRoutes.map((route) => (
-                  <Route
-                    key={`vendor-${route.path}`}
-                    path={route.path}
-                    element={route.element}
-                  />
-                ))}
-              </Route>
+              {/* Property Manager routes */}
+              <Route path="/property-manager/*" element={
+                <ProtectedRoute allowedRoles={["property_manager"]}>
+                  <Layout>
+                    <Routes>
+                      {propertyManagerRoutes.map((route) => (
+                        <Route
+                          key={route.path}
+                          path={route.path}
+                          element={route.element}
+                        />
+                      ))}
+                    </Routes>
+                  </Layout>
+                </ProtectedRoute>
+              } />
+
+              {/* Tenant routes */}
+              <Route path="/tenant/*" element={
+                <ProtectedRoute allowedRoles={["tenant"]}>
+                  <Layout>
+                    <Routes>
+                      {tenantRoutes.map((route) => (
+                        <Route
+                          key={route.path}
+                          path={route.path}
+                          element={route.element}
+                        />
+                      ))}
+                    </Routes>
+                  </Layout>
+                </ProtectedRoute>
+              } />
+
+              {/* Vendor routes */}
+              <Route path="/vendor/*" element={
+                <ProtectedRoute allowedRoles={["vendor"]}>
+                  <Layout>
+                    <Routes>
+                      {vendorRoutes.map((route) => (
+                        <Route
+                          key={route.path}
+                          path={route.path}
+                          element={route.element}
+                        />
+                      ))}
+                    </Routes>
+                  </Layout>
+                </ProtectedRoute>
+              } />
 
               {/* Common routes */}
               {commonRoutes.map((route) => (
