@@ -12,6 +12,7 @@ import {
   BarChart2,
   Megaphone,
   Mail,
+  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -60,6 +61,11 @@ export const AdminSidebar = ({ open, onOpenChange }: AdminSidebarProps) => {
       name: "Reports",
       path: "/admin/reports",
       icon: BarChart2,
+    },
+    {
+      name: "Messages",
+      path: "/admin/messages",
+      icon: MessageSquare,
     },
     {
       name: "Newsletters",
