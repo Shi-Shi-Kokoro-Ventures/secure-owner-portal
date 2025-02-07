@@ -1,14 +1,15 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, Calendar, Home } from "lucide-react";
 
-export interface AccountSummaryProps {
+type AccountSummaryProps = {
   tenant: {
     name: string;
     leaseStart: string;
     leaseEnd: string;
     unit: string;
   };
-}
+};
 
 export const AccountSummary = ({ tenant }: AccountSummaryProps) => {
   return (

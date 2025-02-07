@@ -1,3 +1,4 @@
+
 import { RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { TenantLayout } from "@/components/TenantLayout";
@@ -13,7 +14,6 @@ import TenantCommunicationDetail from "@/pages/tenant/TenantCommunicationDetail"
 import TenantSettings from "@/pages/tenant/TenantSettings";
 import Help from "@/pages/Help";
 import Notifications from "@/pages/Notifications";
-import { logger } from "@/utils/logger";
 
 export const tenantRoutes: RouteObject[] = [
   {
@@ -79,8 +79,3 @@ export const tenantRoutes: RouteObject[] = [
     ],
   },
 ];
-
-// Add route change logging in development
-if (import.meta.env.DEV) {
-  logger.info('Tenant routes loaded');
-}

@@ -53,9 +53,7 @@ interface State {
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
 const addToRemoveQueue = (toastId: string) => {
-  if (toastTimeouts.has(toastId)) {
-    return
-  }
+  if (toastTimeouts.has(toastId)) return;
 
   const timeout = setTimeout(() => {
     toastTimeouts.delete(toastId)
@@ -107,16 +105,13 @@ export const reducer = (state: State, action: Action): State => {
         ),
       }
     }
+    
     case "REMOVE_TOAST":
-      if (action.toastId === undefined) {
-        return {
-          ...state,
-          toasts: [],
-        }
-      }
       return {
         ...state,
-        toasts: state.toasts.filter((t) => t.id !== action.toastId),
+        toasts: action.toastId === undefined 
+          ? [] 
+          : state.toasts.filter((t) => t.id !== action.toastId),
       }
   }
 }
