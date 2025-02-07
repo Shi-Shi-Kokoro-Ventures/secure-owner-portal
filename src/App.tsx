@@ -13,6 +13,9 @@ import { vendorRoutes } from "./routes/vendorRoutes";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
 
+// OMG, like, this is totally the brain of our app or whatever
+// Grandpa Rick says it's important to configure the query client 
+// so our app doesn't like, totally spam the server
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -22,6 +25,8 @@ const queryClient = new QueryClient({
   },
 });
 
+// Ugh, organizing routes is like organizing my closet
+// You gotta put the specific stuff first, or everything gets messed up
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
@@ -29,10 +34,10 @@ const App: React.FC = () => {
         <Router>
           <AuthProvider>
             <Routes>
-              {/* Root redirect */}
+              {/* Like, this is the default path when you're lost */}
               <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
 
-              {/* Admin Routes - First to match /admin path */}
+              {/* Admin routes go first because they're like, the most important or whatever */}
               {adminRoutes.map((route) => (
                 <Route 
                   key={`admin-${route.path}`}
@@ -41,7 +46,7 @@ const App: React.FC = () => {
                 />
               ))}
 
-              {/* Property Manager Routes */}
+              {/* Property Manager routes are next, because they're basically mini-admins */}
               {propertyManagerRoutes.map((route) => (
                 <Route 
                   key={`pm-${route.path || 'index'}`}
@@ -50,7 +55,7 @@ const App: React.FC = () => {
                 />
               ))}
 
-              {/* Owner Routes */}
+              {/* Owner routes - because they own stuff, duh */}
               {ownerRoutes.map((route) => (
                 <Route
                   key={`owner-${route.path}`}
@@ -67,7 +72,7 @@ const App: React.FC = () => {
                 </Route>
               ))}
 
-              {/* Tenant Routes */}
+              {/* Tenant routes - because like, people need a place to live */}
               {tenantRoutes.map((route) => (
                 <Route
                   key={`tenant-${route.path || 'index'}`}
@@ -101,7 +106,7 @@ const App: React.FC = () => {
                 </Route>
               ))}
 
-              {/* Common Routes - Less specific routes */}
+              {/* Common routes go last because they're like, super basic */}
               {commonRoutes.map((route) => (
                 <Route 
                   key={`common-${route.path || 'index'}`}
@@ -110,7 +115,7 @@ const App: React.FC = () => {
                 />
               ))}
 
-              {/* Catch all 404 route - Must be last */}
+              {/* This is for when you're totally lost, like Morty in literally any dimension */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
