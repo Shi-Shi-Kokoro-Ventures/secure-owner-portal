@@ -17,7 +17,11 @@ import Notifications from "@/pages/Notifications";
 export const tenantRoutes: RouteObject[] = [
   {
     path: "/tenant",
-    element: <ProtectedRoute><TenantLayout /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <TenantLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { index: true, element: <TenantDashboard /> },
       { path: "dashboard", element: <TenantDashboard /> },
