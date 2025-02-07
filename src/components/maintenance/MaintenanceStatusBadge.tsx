@@ -20,7 +20,7 @@ const statusConfig = {
   },
   completed: {
     label: "Completed",
-    variant: "success" as const,
+    variant: "default" as const,
     icon: CheckCircle2,
   },
 };
