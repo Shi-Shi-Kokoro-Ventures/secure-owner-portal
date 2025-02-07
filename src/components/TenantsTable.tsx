@@ -11,7 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
-export const TenantsTable = () => {
+interface TenantsTableProps {
+  onAddTenant?: () => void;
+}
+
+export const TenantsTable = ({ onAddTenant }: TenantsTableProps) => {
   const { toast } = useToast();
 
   const { data: tenants, isLoading, error } = useQuery({
@@ -53,31 +57,36 @@ export const TenantsTable = () => {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Phone</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {tenants?.map((tenant) => (
-          <TableRow key={tenant.id}>
-            <TableCell>{`${tenant.first_name} ${tenant.last_name}`}</TableCell>
-            <TableCell>{tenant.email}</TableCell>
-            <TableCell>{tenant.phone || 'N/A'}</TableCell>
-            <TableCell>{tenant.status}</TableCell>
-            <TableCell>
-              <Button variant="outline" size="sm">
-                View Details
-              </Button>
-            </TableCell>
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button onClick={onAddTenant}>Add Tenant</Button>
+      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Phone</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {tenants?.map((tenant) => (
+            <TableRow key={tenant.id}>
+              <TableCell>{`${tenant.first_name} ${tenant.last_name}`}</TableCell>
+              <TableCell>{tenant.email}</TableCell>
+              <TableCell>{tenant.phone || 'N/A'}</TableCell>
+              <TableCell>{tenant.status}</TableCell>
+              <TableCell>
+                <Button variant="outline" size="sm">
+                  View Details
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
