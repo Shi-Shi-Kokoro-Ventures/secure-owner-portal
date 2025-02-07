@@ -74,6 +74,7 @@ export const EditUserDialog = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="special_admin">Special Admin</SelectItem>
                 <SelectItem value="property_manager">Property Manager</SelectItem>
                 <SelectItem value="owner">Owner</SelectItem>
                 <SelectItem value="tenant">Tenant</SelectItem>
