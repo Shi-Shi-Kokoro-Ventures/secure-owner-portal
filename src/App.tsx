@@ -1,6 +1,6 @@
 
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/use-auth-context";
@@ -29,12 +29,24 @@ const App: React.FC = () => {
         <Router>
           <AuthProvider>
             <Routes>
+              {/* Root redirect */}
+              <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+
               {/* Common Routes */}
               {commonRoutes.map((route) => (
                 <Route 
                   key={`common-${route.path || 'index'}`}
                   path={route.path} 
                   element={route.element} 
+                />
+              ))}
+
+              {/* Admin Routes - First to match /admin path */}
+              {adminRoutes.map((route) => (
+                <Route 
+                  key={`admin-${route.path}`}
+                  path={route.path} 
+                  element={route.element}
                 />
               ))}
 
@@ -81,15 +93,6 @@ const App: React.FC = () => {
                 </Route>
               ))}
 
-              {/* Admin Routes */}
-              {adminRoutes.map((route) => (
-                <Route 
-                  key={`admin-${route.path}`}
-                  path={route.path} 
-                  element={route.element}
-                />
-              ))}
-
               {/* Vendor Routes */}
               {vendorRoutes.map((route) => (
                 <Route
@@ -107,7 +110,7 @@ const App: React.FC = () => {
                 </Route>
               ))}
 
-              {/* 404 Catch-all Route */}
+              {/* Catch all 404 route - Must be last */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
