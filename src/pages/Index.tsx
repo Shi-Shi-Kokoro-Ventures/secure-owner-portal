@@ -9,6 +9,7 @@ import { ServicesSection } from "@/components/landing/ServicesSection";
 import { LocationsSection } from "@/components/landing/LocationsSection";
 import { ContactSection } from "@/components/landing/ContactSection";
 import { Footer } from "@/components/landing/Footer";
+import { WhatWeOfferSection } from "@/components/landing/WhatWeOfferSection";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
@@ -97,6 +98,7 @@ const Index = () => {
       
       <Hero />
       <AboutSection />
+      <WhatWeOfferSection />
       <ServicesSection />
       <LocationsSection />
       <ContactSection />
