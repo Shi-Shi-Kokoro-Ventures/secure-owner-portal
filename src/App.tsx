@@ -1,6 +1,6 @@
 
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/use-auth-context";
@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { useAuth } from "./hooks/use-auth-context";
 import { Layout } from "./components/Layout";
+import { useToast } from "./hooks/use-toast";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,10 +26,13 @@ const queryClient = new QueryClient({
   },
 });
 
-// Root redirect component that handles authentication and role-based routing
+// Enhanced RootRedirect component with proper authentication handling
 const RootRedirect = () => {
   const { user, userProfile, isLoading } = useAuth();
+  const location = useLocation();
+  const { toast } = useToast();
 
+  // Show loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -37,12 +41,24 @@ const RootRedirect = () => {
     );
   }
 
+  // Handle unauthenticated users
   if (!user) {
+    // Save the attempted URL for redirect after login
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  // Handle authenticated users without a profile
+  if (!userProfile) {
+    toast({
+      title: "Profile Error",
+      description: "Unable to load user profile. Please try logging in again.",
+      variant: "destructive",
+    });
     return <Navigate to="/login" replace />;
   }
 
-  // Role-based redirects
-  switch (userProfile?.role) {
+  // Role-based redirects with proper error handling
+  switch (userProfile.role) {
     case 'admin':
       return <Navigate to="/admin/dashboard" replace />;
     case 'property_manager':
@@ -54,40 +70,70 @@ const RootRedirect = () => {
     case 'vendor':
       return <Navigate to="/vendor/dashboard" replace />;
     default:
+      toast({
+        title: "Invalid Role",
+        description: "Your user account has an invalid role. Please contact support.",
+        variant: "destructive",
+      });
       return <Navigate to="/login" replace />;
   }
 };
 
-// Layout wrapper components for each role
-const AdminLayoutWrapper = () => (
-  <Layout>
-    <Outlet />
-  </Layout>
-);
+// Layout wrapper components with proper role protection
+const AdminLayoutWrapper = () => {
+  const { userProfile } = useAuth();
+  return userProfile?.role === 'admin' ? (
+    <Layout>
+      <Outlet />
+    </Layout>
+  ) : (
+    <Navigate to="/" replace />
+  );
+};
 
-const PropertyManagerLayoutWrapper = () => (
-  <Layout>
-    <Outlet />
-  </Layout>
-);
+const PropertyManagerLayoutWrapper = () => {
+  const { userProfile } = useAuth();
+  return userProfile?.role === 'property_manager' ? (
+    <Layout>
+      <Outlet />
+    </Layout>
+  ) : (
+    <Navigate to="/" replace />
+  );
+};
 
-const OwnerLayoutWrapper = () => (
-  <Layout>
-    <Outlet />
-  </Layout>
-);
+const OwnerLayoutWrapper = () => {
+  const { userProfile } = useAuth();
+  return userProfile?.role === 'owner' ? (
+    <Layout>
+      <Outlet />
+    </Layout>
+  ) : (
+    <Navigate to="/" replace />
+  );
+};
 
-const TenantLayoutWrapper = () => (
-  <Layout>
-    <Outlet />
-  </Layout>
-);
+const TenantLayoutWrapper = () => {
+  const { userProfile } = useAuth();
+  return userProfile?.role === 'tenant' ? (
+    <Layout>
+      <Outlet />
+    </Layout>
+  ) : (
+    <Navigate to="/" replace />
+  );
+};
 
-const VendorLayoutWrapper = () => (
-  <Layout>
-    <Outlet />
-  </Layout>
-);
+const VendorLayoutWrapper = () => {
+  const { userProfile } = useAuth();
+  return userProfile?.role === 'vendor' ? (
+    <Layout>
+      <Outlet />
+    </Layout>
+  ) : (
+    <Navigate to="/" replace />
+  );
+};
 
 const App: React.FC = () => {
   return (
@@ -96,24 +142,24 @@ const App: React.FC = () => {
         <Router>
           <AuthProvider>
             <Routes>
-              {/* Root redirect with auth check */}
+              {/* Root redirect with enhanced auth check */}
               <Route path="/" element={<RootRedirect />} />
 
               {/* Auth routes */}
               <Route path="/login" element={<Login />} />
 
-              {/* Admin routes with Layout */}
+              {/* Admin routes with Layout and role protection */}
               <Route path="/admin" element={<AdminLayoutWrapper />}>
                 {adminRoutes.map((route) => (
                   <Route
-                    key={route.key}
+                    key={`admin-${route.path}`}
                     path={route.path}
                     element={route.element}
                   />
                 ))}
               </Route>
 
-              {/* Property Manager routes with Layout */}
+              {/* Property Manager routes with Layout and role protection */}
               <Route path="/property-manager" element={<PropertyManagerLayoutWrapper />}>
                 {propertyManagerRoutes.map((route) => (
                   <Route
@@ -124,7 +170,7 @@ const App: React.FC = () => {
                 ))}
               </Route>
 
-              {/* Owner routes with Layout */}
+              {/* Owner routes with Layout and role protection */}
               <Route path="/owner" element={<OwnerLayoutWrapper />}>
                 {ownerRoutes.map((route) => (
                   <Route
@@ -135,7 +181,7 @@ const App: React.FC = () => {
                 ))}
               </Route>
 
-              {/* Tenant routes with Layout */}
+              {/* Tenant routes with Layout and role protection */}
               <Route path="/tenant" element={<TenantLayoutWrapper />}>
                 {tenantRoutes.map((route) => (
                   <Route
@@ -146,7 +192,7 @@ const App: React.FC = () => {
                 ))}
               </Route>
 
-              {/* Vendor Routes with Layout */}
+              {/* Vendor Routes with Layout and role protection */}
               <Route path="/vendor" element={<VendorLayoutWrapper />}>
                 {vendorRoutes.map((route) => (
                   <Route
