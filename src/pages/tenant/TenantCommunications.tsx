@@ -70,16 +70,12 @@ const TenantCommunications = () => {
         .from("messages")
         .select(`
           *,
-          sender:users!messages_sender_id_fkey(
-            id,
-            first_name,
-            last_name
-          )
+          sender:users!messages_sender_id_fkey(id, first_name, last_name)
         `)
         .or(`sender_id.eq.${userData.user.id},receiver_id.eq.${userData.user.id}`);
 
       if (selectedTab === "unread") {
-        query = query.eq("status", "sent");
+        query = query.eq("status", "unread");
       } else if (selectedTab === "read") {
         query = query.eq("status", "read");
       }

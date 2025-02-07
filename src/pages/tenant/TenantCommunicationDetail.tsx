@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -36,20 +35,16 @@ const TenantCommunicationDetail = () => {
   const { data: messageData, isLoading } = useQuery<Message>({
     queryKey: ["message", id],
     queryFn: async () => {
-      const { data: message, error: messageError } = await supabase
+      const { data: message, error } = await supabase
         .from("messages")
         .select(`
           *,
-          sender:users!messages_sender_id_fkey(
-            id,
-            first_name,
-            last_name
-          )
+          sender:users!messages_sender_id_fkey(id, first_name, last_name)
         `)
         .eq("id", id)
         .single();
 
-      if (messageError) throw messageError;
+      if (error) throw error;
       if (!message) throw new Error("Message not found");
       return message;
     },
