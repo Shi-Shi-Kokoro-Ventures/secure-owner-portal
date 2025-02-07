@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { RootRedirect } from "./components/routing/RootRedirect";
 import { ProtectedPortalRoute } from "./components/routing/ProtectedPortalRoute";
+import { AppRoute } from "./types/routes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,31 +39,31 @@ const App: React.FC = () => {
               <ProtectedPortalRoute 
                 path="/owner" 
                 role="owner" 
-                routes={ownerRoutes} 
+                routes={ownerRoutes as AppRoute[]} 
               />
               
               <ProtectedPortalRoute 
                 path="/admin" 
                 role="admin" 
-                routes={adminRoutes} 
+                routes={adminRoutes as AppRoute[]} 
               />
               
               <ProtectedPortalRoute 
                 path="/property-manager" 
                 role="property_manager" 
-                routes={propertyManagerRoutes} 
+                routes={propertyManagerRoutes as AppRoute[]} 
               />
               
               <ProtectedPortalRoute 
                 path="/tenant" 
                 role="tenant" 
-                routes={tenantRoutes} 
+                routes={tenantRoutes as AppRoute[]} 
               />
               
               <ProtectedPortalRoute 
                 path="/vendor" 
                 role="vendor" 
-                routes={vendorRoutes} 
+                routes={vendorRoutes as AppRoute[]} 
               />
 
               {commonRoutes.map((route) => (

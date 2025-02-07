@@ -2,14 +2,12 @@
 import { Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { AppRoute } from "@/types/routes";
 
 interface ProtectedPortalRouteProps {
   path: string;
   role: string;
-  routes: Array<{
-    path: string;
-    element: React.ReactNode;
-  }>;
+  routes: AppRoute[];
 }
 
 export const ProtectedPortalRoute = ({ path, role, routes }: ProtectedPortalRouteProps) => {
@@ -22,7 +20,7 @@ export const ProtectedPortalRoute = ({ path, role, routes }: ProtectedPortalRout
             <Routes>
               {routes.map((route) => (
                 <Route
-                  key={route.path}
+                  key={route.path || `route-${Math.random()}`}
                   path={route.path}
                   element={route.element}
                 />
