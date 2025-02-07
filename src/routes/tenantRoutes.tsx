@@ -1,6 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import TenantLayout from "@/components/TenantLayout";
+import { TenantLayout } from "@/components/TenantLayout";
 import TenantDashboard from "@/pages/tenant/TenantDashboard";
 import TenantMaintenance from "@/pages/tenant/TenantMaintenance";
 import NewMaintenanceRequest from "@/pages/tenant/NewMaintenanceRequest";
@@ -16,7 +16,7 @@ import Notifications from "@/pages/Notifications";
 
 export const tenantRoutes: RouteObject[] = [
   {
-    path: "/tenant",
+    path: "tenant",
     element: (
       <ProtectedRoute>
         <TenantLayout />
