@@ -1,35 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthenticatedQuery } from "@/hooks/use-authenticated-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Archive, Check, MessageCircle, Plus, Search, Trash2, X } from "lucide-react";
+import { Archive, Check, MessageCircle, Plus, Search, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/utils/logger";
 
 interface MessageSender {
   id: string;
@@ -60,19 +43,16 @@ const TenantCommunications = () => {
   const queryClient = useQueryClient();
 
   // Fetch messages
-  const { data: messages, isLoading } = useQuery<Message[]>({
+  const { data: messages, isLoading } = useAuthenticatedQuery({
     queryKey: ["messages", selectedTab, searchQuery],
-    queryFn: async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) throw new Error("Not authenticated");
-
+    queryFn: async ({ user }) => {
       let query = supabase
         .from("messages")
         .select(`
           *,
           sender:users!messages_sender_id_fkey(id, first_name, last_name)
         `)
-        .or(`sender_id.eq.${userData.user.id},receiver_id.eq.${userData.user.id}`);
+        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
 
       if (selectedTab === "unread") {
         query = query.eq("status", "unread");
@@ -86,7 +66,11 @@ const TenantCommunications = () => {
 
       const { data, error } = await query.order("created_at", { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        logger.error('Error fetching messages:', error);
+        throw error;
+      }
+
       return data;
     },
   });
