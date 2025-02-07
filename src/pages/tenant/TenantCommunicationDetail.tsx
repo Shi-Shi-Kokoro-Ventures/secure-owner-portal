@@ -8,6 +8,24 @@ import { MessageHeader } from "@/components/communications/MessageHeader";
 import { MessageActions } from "@/components/communications/MessageActions";
 import { MessageContent } from "@/components/communications/MessageContent";
 
+interface MessageSender {
+  id: string;
+  first_name: string;
+  last_name: string;
+}
+
+interface Message {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  receiver_id: string | null;
+  message_content: string;
+  status: string;
+  message_type: string;
+  created_at: string;
+  sender: MessageSender;
+}
+
 const TenantCommunicationDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -15,14 +33,14 @@ const TenantCommunicationDetail = () => {
   const queryClient = useQueryClient();
 
   // Fetch conversation and messages
-  const { data: messageData, isLoading } = useQuery({
+  const { data: messageData, isLoading } = useQuery<Message>({
     queryKey: ["message", id],
     queryFn: async () => {
       const { data: message, error: messageError } = await supabase
         .from("messages")
         .select(`
           *,
-          sender:sender_id(
+          sender:users!messages_sender_id_fkey(
             id,
             first_name,
             last_name

@@ -31,6 +31,24 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+interface MessageSender {
+  id: string;
+  first_name: string;
+  last_name: string;
+}
+
+interface Message {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  receiver_id: string | null;
+  message_content: string;
+  status: string;
+  message_type: string;
+  created_at: string;
+  sender: MessageSender;
+}
+
 const TenantCommunications = () => {
   const navigate = useNavigate();
   const [sortBy, setSortBy] = useState<string>("date");
@@ -42,7 +60,7 @@ const TenantCommunications = () => {
   const queryClient = useQueryClient();
 
   // Fetch messages
-  const { data: messages, isLoading } = useQuery({
+  const { data: messages, isLoading } = useQuery<Message[]>({
     queryKey: ["messages", selectedTab, searchQuery],
     queryFn: async () => {
       const { data: userData } = await supabase.auth.getUser();
@@ -52,7 +70,7 @@ const TenantCommunications = () => {
         .from("messages")
         .select(`
           *,
-          sender:sender_id(
+          sender:users!messages_sender_id_fkey(
             id,
             first_name,
             last_name
