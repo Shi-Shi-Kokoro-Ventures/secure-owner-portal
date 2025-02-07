@@ -101,8 +101,8 @@ export const NewsletterList = () => {
               <TableCell>
                 <Badge variant={
                   newsletter.status === 'draft' ? 'secondary' :
-                  newsletter.status === 'pending_review' ? 'warning' :
-                  newsletter.status === 'approved' ? 'success' :
+                  newsletter.status === 'pending_review' ? 'outline' :
+                  newsletter.status === 'approved' ? 'default' :
                   newsletter.status === 'sent' ? 'default' : 'destructive'
                 }>
                   {newsletter.status}
