@@ -6,8 +6,16 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { logger } from '@/utils/logger';
 
+interface UserProfile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  role: string;
+}
+
 interface AuthContextType {
   user: User | null;
+  userProfile: UserProfile | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
   refreshSession: () => Promise<void>;
@@ -17,9 +25,26 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('id, first_name, last_name, role')
+        .eq('id', userId)
+        .single();
+
+      if (error) throw error;
+      setUserProfile(data);
+    } catch (error: any) {
+      logger.error('Error fetching user profile:', error);
+      setUserProfile(null);
+    }
+  };
 
   const refreshSession = async () => {
     try {
@@ -28,10 +53,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logger.error('Error refreshing session:', error);
         throw error;
       }
-      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        setUser(session.user);
+        await fetchUserProfile(session.user.id);
+      } else {
+        setUser(null);
+        setUserProfile(null);
+      }
     } catch (error: any) {
       logger.error('Failed to refresh session:', error);
       setUser(null);
+      setUserProfile(null);
       toast({
         title: "Authentication Error",
         description: "Failed to verify your session. Please try signing in again.",
@@ -42,13 +75,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    // Set up auth state change subscription
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       logger.info('Auth state changed:', event);
       setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        await fetchUserProfile(session.user.id);
+      } else {
+        setUserProfile(null);
+      }
+      
       setIsLoading(false);
 
-      // Handle specific auth events
       switch (event) {
         case 'SIGNED_IN':
           toast({
@@ -74,10 +112,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    // Get initial session
     refreshSession().finally(() => setIsLoading(false));
 
-    // Cleanup subscription
     return () => {
       subscription.unsubscribe();
     };
@@ -98,7 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, signOut, refreshSession }}>
+    <AuthContext.Provider value={{ user, userProfile, isLoading, signOut, refreshSession }}>
       {children}
     </AuthContext.Provider>
   );

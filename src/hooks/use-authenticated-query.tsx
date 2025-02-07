@@ -1,5 +1,5 @@
 
-import { useQuery, UseQueryOptions, useMutation } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions, useMutation, UseMutationOptions } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ export interface AuthenticatedQueryOptions<TData> extends Omit<Omit<UseQueryOpti
   requireAuth?: boolean;
   onAuthError?: () => void;
   redirectTo?: string;
+  errorMessage?: string;
 }
 
 export function useAuthenticatedQuery<TData>(
@@ -24,6 +25,7 @@ export function useAuthenticatedQuery<TData>(
     requireAuth = true, 
     onAuthError, 
     redirectTo = "/auth",
+    errorMessage = "An error occurred while fetching data",
     ...queryOptions 
   } = options;
 
@@ -61,7 +63,7 @@ export function useAuthenticatedQuery<TData>(
         } else {
           toast({
             title: "Error",
-            description: error.message || "An error occurred while fetching data",
+            description: errorMessage,
             variant: "destructive",
           });
         }
@@ -70,39 +72,41 @@ export function useAuthenticatedQuery<TData>(
     },
     enabled: !authLoading && (!requireAuth || !!user),
     retry: (failureCount, error: any) => {
-      // Don't retry on auth errors
       if (error.name === "AuthenticationError") return false;
-      // Retry other errors up to 2 times
       return failureCount < 2;
     },
     ...queryOptions,
   });
 }
 
+export interface AuthenticatedMutationOptions<TData, TVariables> extends Omit<UseMutationOptions<TData, Error, TVariables>, 'mutationFn'> {
+  requireAuth?: boolean;
+  redirectTo?: string;
+  successMessage?: string;
+  errorMessage?: string;
+}
+
 export function useAuthenticatedMutation<TData, TVariables>(
   mutationFn: (userId: string, variables: TVariables) => Promise<TData>,
-  options: {
-    onSuccess?: (data: TData) => void;
-    onError?: (error: Error) => void;
-    requireAuth?: boolean;
-    redirectTo?: string;
-  } = {}
+  options: AuthenticatedMutationOptions<TData, TVariables> = {}
 ) {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user, refreshSession } = useAuth();
   const { 
-    onSuccess, 
-    onError, 
     requireAuth = true,
-    redirectTo = "/auth"
+    redirectTo = "/auth",
+    successMessage,
+    errorMessage = "An error occurred",
+    onSuccess,
+    onError,
+    ...mutationOptions
   } = options;
 
   return useMutation({
     mutationFn: async (variables: TVariables) => {
       try {
         if (!user && requireAuth) {
-          // Try to refresh the session before giving up
           await refreshSession();
           if (!user) {
             const error = new Error("Authentication required");
@@ -123,6 +127,12 @@ export function useAuthenticatedMutation<TData, TVariables>(
       }
     },
     onSuccess: (data) => {
+      if (successMessage) {
+        toast({
+          title: "Success",
+          description: successMessage,
+        });
+      }
       onSuccess?.(data);
     },
     onError: (error: Error) => {
@@ -137,11 +147,12 @@ export function useAuthenticatedMutation<TData, TVariables>(
         onError?.(error);
         toast({
           title: "Error",
-          description: error.message || "An error occurred",
+          description: errorMessage || error.message,
           variant: "destructive",
         });
       }
     },
+    ...mutationOptions,
   });
 }
 

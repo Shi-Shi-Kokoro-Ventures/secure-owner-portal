@@ -6,17 +6,14 @@ import { Loader2 } from "lucide-react";
 interface ProtectedRouteProps {
   children: React.ReactNode;
   redirectTo?: string;
+  requireAuth?: boolean;
 }
 
 export const ProtectedRoute = ({ 
   children, 
-  redirectTo = "/auth" 
+  redirectTo = "/auth",
+  requireAuth = true
 }: ProtectedRouteProps) => {
-  // During development, bypass all checks
-  if (import.meta.env.DEV) {
-    return <>{children}</>;
-  }
-
   const { user, isLoading } = useAuth();
 
   // Show loading state with a spinner
@@ -28,11 +25,12 @@ export const ProtectedRoute = ({
     );
   }
 
-  // In production, check for authentication
-  if (!user) {
+  // Check authentication
+  if (requireAuth && !user) {
+    // Even in development, we should redirect if authentication is required
     return <Navigate to={redirectTo} replace />;
   }
 
-  // Allow access if authenticated
+  // Allow access if authenticated or if authentication is not required
   return <>{children}</>;
 };
