@@ -1,84 +1,75 @@
-import { Card } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Building2, DollarSign, Users } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface PropertyCardProps {
   property: {
     name: string;
     address: string;
     units: number;
-    tenantCount: number;
-    maintenanceCount: number;
-    upcomingCount: number;
     occupancyRate: number;
+    revenue: number;
     imageUrl: string;
   }
 }
 
 export const PropertyCard = ({ property }: PropertyCardProps) => {
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
+
   return (
-    <Card className="bg-white shadow-sm hover:shadow-md transition-all duration-300">
-      <div className="flex flex-col md:flex-row">
-        <div className="relative w-full md:w-1/3 h-[200px] md:h-auto overflow-hidden">
-          <img 
-            src={property.imageUrl} 
-            alt={property.name}
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute top-4 left-4">
-            <span className="px-3 py-1 bg-white/90 rounded-full text-sm">
-              {property.address}
-            </span>
-          </div>
-        </div>
-        
-        <div className="p-6 flex-1">
-          <div className="flex justify-between items-start mb-8">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-1">{property.name}</h3>
-            </div>
-            <button className="text-gray-400 hover:text-gray-600">
-              <ArrowRight className="h-6 w-6" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-4 gap-6">
-            <div>
-              <p className="text-2xl font-bold">{property.tenantCount}</p>
-              <p className="text-sm text-gray-500">Residents</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold">{property.units}</p>
-              <p className="text-sm text-gray-500">Units</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold">{property.maintenanceCount}</p>
-              <p className="text-sm text-gray-500">Vacant</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold">{property.upcomingCount}</p>
-              <p className="text-sm text-gray-500">Upcoming</p>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <div className="relative pt-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-semibold inline-block text-gray-600">
-                    Leased by {property.occupancyRate}%
-                  </span>
-                </div>
-              </div>
-              <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-100 mt-1">
-                <div 
-                  style={{ width: `${property.occupancyRate}%` }}
-                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-yellow-400"
-                />
-              </div>
-            </div>
-          </div>
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+      <div className="relative h-48 overflow-hidden">
+        <img 
+          src={property.imageUrl} 
+          alt={property.name}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <h3 className="text-xl font-semibold text-white mb-1">{property.name}</h3>
+          <p className="text-sm text-white/90 font-medium">{property.address}</p>
         </div>
       </div>
+      <CardContent className="p-6">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center text-muted-foreground">
+              <Building2 className="h-4 w-4 mr-2" />
+              <span className="text-sm font-medium">Units</span>
+            </div>
+            <p className="text-lg font-semibold">{property.units}</p>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center text-muted-foreground">
+              <Users className="h-4 w-4 mr-2" />
+              <span className="text-sm font-medium">Occupancy</span>
+            </div>
+            <p className="text-lg font-semibold">
+              <span className={cn(
+                "px-2 py-0.5 rounded-full text-sm",
+                property.occupancyRate >= 90 ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
+                property.occupancyRate >= 70 ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400" :
+                "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+              )}>
+                {property.occupancyRate}%
+              </span>
+            </p>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center text-muted-foreground">
+              <DollarSign className="h-4 w-4 mr-2" />
+              <span className="text-sm font-medium">Revenue</span>
+            </div>
+            <p className="text-lg font-semibold">{formatCurrency(property.revenue)}</p>
+          </div>
+        </div>
+      </CardContent>
     </Card>
   );
 };

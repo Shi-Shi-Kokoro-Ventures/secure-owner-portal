@@ -1,133 +1,102 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardMetrics } from "@/components/owner/DashboardMetrics";
-import { PropertyCard } from "@/components/owner/PropertyCard";
-import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
+import { QuickActions } from "@/components/owner/QuickActions";
+import { LeaseReviewSection } from "@/components/owner/LeaseReviewSection";
+import { ApplicationReviewSection } from "@/components/owner/ApplicationReviewSection";
+import { PropertyStats } from "@/components/owner/PropertyStats";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
-const properties = [
-  {
-    id: 1,
-    name: "Sobha Garden",
-    address: "Residential",
-    type: "Apartment Complex",
-    units: 1032,
-    occupancyRate: 87,
-    revenue: 223600,
-    imageUrl: "/lovable-uploads/531687d0-0128-43a9-a912-780524a157d5.png",
-    tenantCount: 1810,
-    maintenanceCount: 134,
-    upcomingCount: 73
-  }
+const performanceData = [
+  { month: "Jan", income: 42000, expenses: 15000 },
+  { month: "Feb", income: 45000, expenses: 14000 },
+  { month: "Mar", income: 48000, expenses: 16000 },
+  { month: "Apr", income: 47000, expenses: 13000 },
+  { month: "May", income: 46000, expenses: 15000 },
+  { month: "Jun", income: 48000, expenses: 14000 },
 ];
 
 const OwnerDashboard = () => {
   return (
-    <div className="min-h-full bg-gray-50">
-      <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto">
-        <div className="flex flex-col gap-8">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Overview</h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  type="search"
-                  placeholder="Search properties..."
-                  className="pl-10 w-[300px] bg-white border-gray-200"
-                />
-              </div>
-              <select 
-                className="rounded-lg border border-gray-200 px-4 py-2 bg-white text-sm text-gray-600 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-              >
-                <option>All Properties</option>
-                <option>Residential</option>
-                <option>Commercial</option>
-              </select>
-            </div>
-          </div>
+    <div className="container mx-auto px-4 py-8 space-y-8 animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+          Welcome Back
+        </h1>
+        <p className="text-muted-foreground text-lg">
+          Here's an overview of your property portfolio
+        </p>
+      </div>
 
-          {/* Payment Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
-              <div className="space-y-1">
-                <p className="text-sm text-gray-500">Rent</p>
-                <p className="text-2xl font-bold">$223,600</p>
-              </div>
-            </Card>
-            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
-              <div className="space-y-1">
-                <p className="text-sm text-gray-500">Additional services</p>
-                <p className="text-2xl font-bold">$24,840</p>
-              </div>
-            </Card>
-            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
-              <div className="space-y-1">
-                <p className="text-sm text-gray-500">Maintenance</p>
-                <p className="text-2xl font-bold">$31,840</p>
-              </div>
-            </Card>
-            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
-              <div className="space-y-1">
-                <p className="text-sm text-gray-500">Debt</p>
-                <p className="text-2xl font-bold text-red-500">$16,485</p>
-              </div>
-            </Card>
-          </div>
+      <PropertyStats />
 
-          {/* Property Cards */}
-          <div className="space-y-6">
-            {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-          </div>
+      <div className="space-y-8">
+        <DashboardMetrics />
 
-          {/* Work Orders and Staff Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="p-6 bg-white shadow-sm">
-              <h2 className="text-lg font-semibold mb-4">Work Orders</h2>
-              <div className="grid grid-cols-4 gap-4 mb-6">
-                <div>
-                  <p className="text-3xl font-bold">9</p>
-                  <p className="text-sm text-gray-500">New</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold">34</p>
-                  <p className="text-sm text-gray-500">Open</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold">18</p>
-                  <p className="text-sm text-gray-500">In Progress</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold">3</p>
-                  <p className="text-sm text-gray-500">Delayed</p>
-                </div>
+        <div className="grid gap-8 md:grid-cols-2">
+          <Card className="transition-all duration-300 hover:shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold">Financial Performance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={performanceData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <XAxis 
+                      dataKey="month" 
+                      stroke="#6B7280"
+                      tick={{ fill: '#6B7280' }}
+                    />
+                    <YAxis 
+                      stroke="#6B7280"
+                      tick={{ fill: '#6B7280' }}
+                      tickFormatter={(value) => `$${value.toLocaleString()}`}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#FFF',
+                        border: '1px solid #E5E7EB',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
+                      formatter={(value) => [`$${value.toLocaleString()}`, '']}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="income"
+                      stroke="#9b87f5"
+                      strokeWidth={2}
+                      dot={{ fill: '#9b87f5', strokeWidth: 2 }}
+                      name="Income"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="expenses"
+                      stroke="#7E69AB"
+                      strokeWidth={2}
+                      dot={{ fill: '#7E69AB', strokeWidth: 2 }}
+                      name="Expenses"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
-            </Card>
+            </CardContent>
+          </Card>
 
-            <Card className="p-6 bg-white shadow-sm">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">On-site staff</h2>
-                <Button variant="outline" size="sm">Schedule</Button>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="font-medium">Security</p>
-                  <p className="text-sm text-gray-500">Louis Hodges</p>
-                  <p className="text-sm text-gray-500">+971 5 927 6701</p>
-                </div>
-                <div>
-                  <p className="font-medium">Maintenance</p>
-                  <p className="text-sm text-gray-500">Hans Bowman</p>
-                  <p className="text-sm text-gray-500">+971 5 927 6701</p>
-                </div>
-              </div>
-            </Card>
-          </div>
+          <QuickActions />
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-2">
+          <LeaseReviewSection />
+          <ApplicationReviewSection />
         </div>
       </div>
     </div>
