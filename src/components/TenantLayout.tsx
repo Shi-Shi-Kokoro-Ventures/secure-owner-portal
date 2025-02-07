@@ -4,7 +4,6 @@ import { TenantSidebar } from "./TenantSidebar";
 import { Header } from "./Header";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const TenantLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -22,9 +21,7 @@ export const TenantLayout = () => {
           <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
           <main className="flex-1 overflow-y-auto">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <ErrorBoundary>
-                <Outlet />
-              </ErrorBoundary>
+              <Outlet />
             </div>
           </main>
         </div>
