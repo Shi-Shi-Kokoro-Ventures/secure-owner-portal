@@ -1430,7 +1430,13 @@ export type Database = {
       payment_status: "pending" | "completed" | "failed"
       security_deposit_status_enum: "pending" | "received" | "returned"
       unit_status: "vacant" | "occupied" | "under_maintenance"
-      user_role: "tenant" | "property_manager" | "owner" | "admin" | "vendor"
+      user_role:
+        | "tenant"
+        | "property_manager"
+        | "owner"
+        | "admin"
+        | "vendor"
+        | "special_admin"
       user_status: "active" | "pending_approval" | "suspended" | "archived"
       vendor_type:
         | "plumbing"
