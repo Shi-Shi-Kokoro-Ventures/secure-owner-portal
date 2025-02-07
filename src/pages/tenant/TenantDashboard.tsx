@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,56 +17,111 @@ import {
   Calendar,
   Bell,
   AlertCircle,
+  Loader2,
 } from "lucide-react";
 import { AccountSummary } from "@/components/tenant/dashboard/AccountSummary";
 import { PaymentHistory } from "@/components/tenant/dashboard/PaymentHistory";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useAuthenticatedQuery } from "@/hooks/use-authenticated-query";
+import { supabase } from "@/integrations/supabase/client";
+import { formatCurrency } from "@/utils/formatters";
 
-// Mock data for development
-const mockData = {
-  tenant: {
-    name: "John Doe",
-    leaseStart: "2024-01-01",
-    leaseEnd: "2024-12-31",
-    unit: "Apt 4B - 123 Main St",
-    balance: 1200.00,
-    nextRentDue: "2024-03-01",
-    nextRentAmount: 1500.00,
-    openRequests: 2,
-    unreadNotifications: 3
-  },
-  recentPayments: [
-    {
-      id: "1",
-      date: "2024-02-01",
-      amount: 1500.00,
-      status: "completed" as const,
-    },
-    {
-      id: "2",
-      date: "2024-01-01",
-      amount: 1500.00,
-      status: "completed" as const,
-    },
-  ]
+const fetchDashboardData = async (userId: string) => {
+  // Fetch active lease details
+  const { data: leaseData, error: leaseError } = await supabase
+    .from('leases')
+    .select(`
+      *,
+      units:unit_id (
+        unit_number,
+        property:property_id (
+          property_name,
+          address
+        )
+      )
+    `)
+    .eq('tenant_id', userId)
+    .eq('status', 'active')
+    .single();
+
+  if (leaseError) throw leaseError;
+
+  // Fetch recent payments
+  const { data: payments, error: paymentsError } = await supabase
+    .from('payments')
+    .select('*')
+    .eq('tenant_id', userId)
+    .order('payment_date', { ascending: false })
+    .limit(5);
+
+  if (paymentsError) throw paymentsError;
+
+  // Fetch maintenance requests count
+  const { count: openRequests, error: maintenanceError } = await supabase
+    .from('maintenance_requests')
+    .select('*', { count: 'exact', head: true })
+    .eq('tenant_id', userId)
+    .in('status', ['pending', 'in_progress']);
+
+  if (maintenanceError) throw maintenanceError;
+
+  // Fetch unread notifications count (you might need to adjust this based on your notifications implementation)
+  const { count: unreadNotifications, error: notificationsError } = await supabase
+    .from('messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('receiver_id', userId)
+    .eq('status', 'sent');
+
+  if (notificationsError) throw notificationsError;
+
+  return {
+    lease: leaseData,
+    payments,
+    openRequests: openRequests || 0,
+    unreadNotifications: unreadNotifications || 0
+  };
 };
 
 const TenantDashboard = () => {
   const { toast } = useToast();
 
-  // Use mock data directly during development
-  const data = mockData;
+  const { data, isLoading, error } = useAuthenticatedQuery(
+    ['tenant-dashboard'],
+    fetchDashboardData
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>
+          Failed to load dashboard data. Please try again later.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  const { lease, payments, openRequests, unreadNotifications } = data || {};
 
   return (
     <div className="space-y-6">
       {/* Welcome Alert */}
       <Alert>
         <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Welcome back, {data.tenant.name}!</AlertTitle>
+        <AlertTitle>Welcome back!</AlertTitle>
         <AlertDescription>
-          Your next rent payment of ${data.tenant.nextRentAmount} is due on{" "}
-          {new Date(data.tenant.nextRentDue).toLocaleDateString()}.
+          Your next rent payment of ${lease?.monthly_rent} is due on{" "}
+          {new Date(lease?.rent_due_day || Date.now()).toLocaleDateString()}.
         </AlertDescription>
       </Alert>
 
@@ -77,7 +133,7 @@ const TenantDashboard = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${data.tenant.balance}</div>
+            <div className="text-2xl font-bold">{formatCurrency(lease?.monthly_rent || 0)}</div>
           </CardContent>
         </Card>
 
@@ -87,7 +143,7 @@ const TenantDashboard = () => {
             <Wrench className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.tenant.openRequests}</div>
+            <div className="text-2xl font-bold">{openRequests}</div>
           </CardContent>
         </Card>
 
@@ -98,7 +154,7 @@ const TenantDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {new Date(data.tenant.leaseEnd).toLocaleDateString()}
+              {lease?.end_date ? new Date(lease.end_date).toLocaleDateString() : 'N/A'}
             </div>
           </CardContent>
         </Card>
@@ -109,7 +165,7 @@ const TenantDashboard = () => {
             <Bell className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.tenant.unreadNotifications}</div>
+            <div className="text-2xl font-bold">{unreadNotifications}</div>
           </CardContent>
         </Card>
       </div>
@@ -143,10 +199,26 @@ const TenantDashboard = () => {
       </div>
 
       {/* Account Summary */}
-      <AccountSummary tenant={data.tenant} />
+      {lease && (
+        <AccountSummary
+          tenant={{
+            name: "", // This should come from the user profile
+            leaseStart: lease.start_date,
+            leaseEnd: lease.end_date,
+            unit: `${lease.units?.unit_number} - ${lease.units?.property?.address}`
+          }}
+        />
+      )}
 
       {/* Payment History */}
-      <PaymentHistory payments={data.recentPayments} />
+      <PaymentHistory
+        payments={payments?.map(payment => ({
+          id: payment.id,
+          date: payment.payment_date,
+          amount: payment.amount_paid,
+          status: payment.status
+        })) || []}
+      />
     </div>
   );
 };
