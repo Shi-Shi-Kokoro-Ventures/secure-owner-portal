@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { Newsletter } from "@/integrations/supabase/types/newsletter";
+import type { Newsletter, NewsletterSubscriber } from "@/integrations/supabase/types/newsletter";
 import { SubscriberCount } from "./SubscriberCount";
 import { AddSubscriberDialog } from "./AddSubscriberDialog";
 import { NewsletterActions } from "./NewsletterActions";
@@ -45,7 +45,7 @@ export const NewsletterList = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as NewsletterSubscriber[];
     },
   });
 
