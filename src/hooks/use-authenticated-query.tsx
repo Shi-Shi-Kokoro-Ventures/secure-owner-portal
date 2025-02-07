@@ -4,15 +4,14 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./use-auth-context";
+import { logger } from '@/utils/logger';
 
-// Wubba lubba dub dub! Here's some sweet TypeScript magic for ya!
 export interface AuthenticatedQueryOptions<TData> extends Omit<Omit<UseQueryOptions<TData>, 'queryFn'>, 'queryKey'> {
   requireAuth?: boolean;
   onAuthError?: () => void;
   redirectTo?: string;
 }
 
-// *burp* Listen up Morty! This hook is like a portal gun for your API calls
 export function useAuthenticatedQuery<TData>(
   queryKey: string[],
   queryFn: (userId: string) => Promise<TData>,
@@ -20,7 +19,7 @@ export function useAuthenticatedQuery<TData>(
 ) {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, refreshSession } = useAuth();
   const { 
     requireAuth = true, 
     onAuthError, 
@@ -32,23 +31,25 @@ export function useAuthenticatedQuery<TData>(
     queryKey,
     queryFn: async () => {
       try {
-        // Enhanced auth check with detailed error message
         if (!user && requireAuth) {
-          const error = new Error("Authentication required");
-          error.name = "AuthenticationError";
-          throw error;
+          // Try to refresh the session before giving up
+          await refreshSession();
+          if (!user) {
+            const error = new Error("Authentication required");
+            error.name = "AuthenticationError";
+            throw error;
+          }
         }
 
         if (!user) {
           throw new Error("No authenticated user");
         }
 
-        // Time to get schwifty with that data fetch!
+        logger.info(`Executing authenticated query for user ${user.id}`, { queryKey });
         return await queryFn(user.id);
       } catch (error: any) {
-        console.error("Query error:", error);
+        logger.error("Query error:", error);
         
-        // In this dimension, we handle errors with style, Morty!
         if (error.name === "AuthenticationError" || error.message?.includes("Authentication")) {
           toast({
             title: "Authentication Required",
@@ -68,11 +69,16 @@ export function useAuthenticatedQuery<TData>(
       }
     },
     enabled: !authLoading && (!requireAuth || !!user),
+    retry: (failureCount, error: any) => {
+      // Don't retry on auth errors
+      if (error.name === "AuthenticationError") return false;
+      // Retry other errors up to 2 times
+      return failureCount < 2;
+    },
     ...queryOptions,
   });
 }
 
-// This bad boy right here handles authenticated mutations
 export function useAuthenticatedMutation<TData, TVariables>(
   mutationFn: (userId: string, variables: TVariables) => Promise<TData>,
   options: {
@@ -84,7 +90,7 @@ export function useAuthenticatedMutation<TData, TVariables>(
 ) {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, refreshSession } = useAuth();
   const { 
     onSuccess, 
     onError, 
@@ -94,18 +100,27 @@ export function useAuthenticatedMutation<TData, TVariables>(
 
   return useMutation({
     mutationFn: async (variables: TVariables) => {
-      if (!user && requireAuth) {
-        const error = new Error("Authentication required");
-        error.name = "AuthenticationError";
+      try {
+        if (!user && requireAuth) {
+          // Try to refresh the session before giving up
+          await refreshSession();
+          if (!user) {
+            const error = new Error("Authentication required");
+            error.name = "AuthenticationError";
+            throw error;
+          }
+        }
+
+        if (!user) {
+          throw new Error("No authenticated user");
+        }
+
+        logger.info(`Executing authenticated mutation for user ${user.id}`);
+        return await mutationFn(user.id, variables);
+      } catch (error: any) {
+        logger.error("Mutation error:", error);
         throw error;
       }
-
-      if (!user) {
-        throw new Error("No authenticated user");
-      }
-
-      // Now we can get riggity riggity wrecked with our mutation!
-      return await mutationFn(user.id, variables);
     },
     onSuccess: (data) => {
       onSuccess?.(data);
@@ -130,8 +145,6 @@ export function useAuthenticatedMutation<TData, TVariables>(
   });
 }
 
-// And here's a little helper to get the current user ID
-// It's like having a dimensional compass, but for authentication!
 export async function getCurrentUserId(): Promise<string> {
   const { data: { user }, error } = await supabase.auth.getUser();
   

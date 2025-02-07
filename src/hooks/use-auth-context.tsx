@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
+import { logger } from '@/utils/logger';
 
-// Wubba lubba dub dub! Let's create some interdimensional context!
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
@@ -15,54 +15,83 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Rick's favorite component - it wraps everything like a warm blanket of security!
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // A handy function to refresh the session
   const refreshSession = async () => {
     try {
       const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) throw error;
+      if (error) {
+        logger.error('Error refreshing session:', error);
+        throw error;
+      }
       setUser(session?.user ?? null);
-    } catch (error) {
-      console.error('Error refreshing session:', error);
+    } catch (error: any) {
+      logger.error('Failed to refresh session:', error);
       setUser(null);
+      toast({
+        title: "Authentication Error",
+        description: "Failed to verify your session. Please try signing in again.",
+        variant: "destructive",
+      });
+      navigate('/auth');
     }
   };
 
   useEffect(() => {
-    // Oh geez Rick, we're setting up a subscription to auth changes!
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    // Set up auth state change subscription
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      logger.info('Auth state changed:', event);
       setUser(session?.user ?? null);
       setIsLoading(false);
+
+      // Handle specific auth events
+      switch (event) {
+        case 'SIGNED_IN':
+          toast({
+            title: "Welcome back!",
+            description: "You've successfully signed in.",
+          });
+          break;
+        case 'SIGNED_OUT':
+          toast({
+            title: "Signed out",
+            description: "You've been successfully signed out.",
+          });
+          break;
+        case 'TOKEN_REFRESHED':
+          logger.info('Session token refreshed');
+          break;
+        case 'USER_UPDATED':
+          toast({
+            title: "Profile Updated",
+            description: "Your profile has been successfully updated.",
+          });
+          break;
+      }
     });
 
-    // Get the initial session like getting the initial seed for a dimension
+    // Get initial session
     refreshSession().finally(() => setIsLoading(false));
 
-    // Clean up our mess when we're done, Morty!
+    // Cleanup subscription
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate, toast]);
 
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
       navigate('/auth');
-      toast({
-        title: "Signed out",
-        description: "You've been successfully signed out",
-      });
     } catch (error: any) {
-      console.error('Error signing out:', error);
+      logger.error('Error signing out:', error);
       toast({
         title: "Error",
-        description: "There was a problem signing out",
+        description: "There was a problem signing out. Please try again.",
         variant: "destructive",
       });
     }
@@ -75,7 +104,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// *burp* Listen up, Morty! This hook is your portal gun to the auth dimension!
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
