@@ -1,21 +1,16 @@
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download, FileText, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { uploadTenantDocument } from "@/integrations/supabase/storage";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
+import { DocumentsTable } from "@/components/tenant/documents/DocumentsTable";
+import { UploadDocumentDialog } from "@/components/tenant/documents/UploadDocumentDialog";
 
 const TenantDocuments = () => {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [documentType, setDocumentType] = useState("");
 
   const { data: documents, isLoading } = useQuery({
     queryKey: ['tenant-documents'],
@@ -36,43 +31,6 @@ const TenantDocuments = () => {
       return data;
     },
   });
-
-  const uploadMutation = useMutation({
-    mutationFn: async () => {
-      if (!selectedFile || !documentType) {
-        throw new Error("Please select a file and enter a document type");
-      }
-      return await uploadTenantDocument(selectedFile, documentType);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tenant-documents'] });
-      setUploadDialogOpen(false);
-      setSelectedFile(null);
-      setDocumentType("");
-      toast({
-        title: "Success",
-        description: "Document uploaded successfully",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to upload document",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
-  };
-
-  const handleUpload = async () => {
-    uploadMutation.mutate();
-  };
 
   const handleDownload = (fileUrl: string) => {
     window.open(fileUrl, '_blank');
@@ -100,93 +58,18 @@ const TenantDocuments = () => {
       </div>
 
       <div className="flex justify-end gap-2">
-        <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Upload className="h-4 w-4 mr-2" />
-              Upload Document
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Upload Document</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="documentType" className="block text-sm font-medium mb-1">
-                  Document Type
-                </label>
-                <Input
-                  id="documentType"
-                  placeholder="e.g., Lease Agreement, ID, Insurance"
-                  value={documentType}
-                  onChange={(e) => setDocumentType(e.target.value)}
-                />
-              </div>
-              <div>
-                <label htmlFor="file" className="block text-sm font-medium mb-1">
-                  Select File
-                </label>
-                <Input
-                  id="file"
-                  type="file"
-                  onChange={handleFileChange}
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                />
-              </div>
-              <Button 
-                onClick={handleUpload} 
-                disabled={!selectedFile || !documentType || uploadMutation.isPending}
-                className="w-full"
-              >
-                {uploadMutation.isPending ? "Uploading..." : "Upload"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button onClick={() => setUploadDialogOpen(true)}>
+          <Upload className="h-4 w-4 mr-2" />
+          Upload Document
+        </Button>
       </div>
 
-      <div className="rounded-lg border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Date Added</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {documents && documents.length > 0 ? (
-              documents.map((doc) => (
-                <TableRow key={doc.id}>
-                  <TableCell className="flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    {doc.document_type}
-                  </TableCell>
-                  <TableCell>{doc.document_type}</TableCell>
-                  <TableCell>{new Date(doc.created_at).toLocaleDateString()}</TableCell>
-                  <TableCell>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => handleDownload(doc.file_url)}
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                  No documents found
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <DocumentsTable documents={documents} onDownload={handleDownload} />
+      
+      <UploadDocumentDialog 
+        open={uploadDialogOpen}
+        onOpenChange={setUploadDialogOpen}
+      />
     </div>
   );
 };
