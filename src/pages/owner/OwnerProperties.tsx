@@ -15,7 +15,8 @@ const properties = [
     revenue: 12000,
     imageUrl: "/lovable-uploads/654bda82-66ad-4b81-96b5-2acfa997dc7a.png",
     tenantCount: 10,
-    maintenanceCount: 8
+    maintenanceCount: 8,
+    upcomingCount: 3
   },
   {
     id: 2,
@@ -27,7 +28,8 @@ const properties = [
     revenue: 18000,
     imageUrl: "https://images.unsplash.com/photo-1486718448742-163732cd1544",
     tenantCount: 10,
-    maintenanceCount: 3
+    maintenanceCount: 3,
+    upcomingCount: 2
   }
 ];
 

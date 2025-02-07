@@ -41,7 +41,7 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
             </button>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-4 gap-6">
             <div>
               <p className="text-2xl font-bold">{property.tenantCount}</p>
               <p className="text-sm text-gray-500">Residents</p>

@@ -14,7 +14,7 @@ const properties = [
     units: 1032,
     occupancyRate: 87,
     revenue: 223600,
-    imageUrl: "/lovable-uploads/b1733967-2750-4149-8c99-4f7d3042086c.png",
+    imageUrl: "/lovable-uploads/531687d0-0128-43a9-a912-780524a157d5.png",
     tenantCount: 1810,
     maintenanceCount: 134,
     upcomingCount: 73
