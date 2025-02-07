@@ -1,4 +1,3 @@
-
 import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +5,7 @@ import { logger } from "@/utils/logger";
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   // During development, bypass all checks
-  if (import.meta.env.DEV) {
+  if (import.meta.env.MODE === 'development') {
     logger.info('Development mode: bypassing all auth checks');
     return <>{children}</>;
   }

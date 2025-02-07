@@ -644,9 +644,13 @@ export type Database = {
           content: string
           created_at: string
           created_by: string | null
+          delivery_status: string | null
+          error_log: Json | null
           id: string
+          last_delivery_attempt: string | null
           scheduled_for: string | null
           sent_at: string | null
+          sent_count: number | null
           status: string
           title: string
           updated_at: string
@@ -657,9 +661,13 @@ export type Database = {
           content: string
           created_at?: string
           created_by?: string | null
+          delivery_status?: string | null
+          error_log?: Json | null
           id?: string
+          last_delivery_attempt?: string | null
           scheduled_for?: string | null
           sent_at?: string | null
+          sent_count?: number | null
           status?: string
           title: string
           updated_at?: string
@@ -670,9 +678,13 @@ export type Database = {
           content?: string
           created_at?: string
           created_by?: string | null
+          delivery_status?: string | null
+          error_log?: Json | null
           id?: string
+          last_delivery_attempt?: string | null
           scheduled_for?: string | null
           sent_at?: string | null
+          sent_count?: number | null
           status?: string
           title?: string
           updated_at?: string
