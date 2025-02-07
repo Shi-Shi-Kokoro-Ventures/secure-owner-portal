@@ -3,8 +3,17 @@ import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/utils/logger";
+import { Loader2 } from "lucide-react";
 
-export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  redirectTo?: string;
+}
+
+export const ProtectedRoute = ({ 
+  children, 
+  redirectTo = "/auth" 
+}: ProtectedRouteProps) => {
   // During development, bypass all checks
   if (import.meta.env.DEV) {
     return <>{children}</>;
@@ -21,16 +30,27 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       return session;
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    retry: 1,
   });
 
-  // Show loading state
+  // Show loading state with a spinner
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Log any authentication errors
+  if (error) {
+    logger.error('Protected route error:', error);
+    return <Navigate to={redirectTo} replace />;
   }
 
   // In production, check for authentication
   if (!session) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={redirectTo} replace />;
   }
 
   // Allow access if authenticated
