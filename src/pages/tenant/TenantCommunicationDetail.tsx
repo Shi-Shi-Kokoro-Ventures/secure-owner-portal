@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,8 +32,7 @@ const TenantCommunicationDetail = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch conversation and messages
-  const { data: messageData, isLoading } = useQuery<Message>({
+  const { data: messageData, isLoading } = useQuery({
     queryKey: ["message", id],
     queryFn: async () => {
       const { data: message, error } = await supabase
@@ -50,7 +50,6 @@ const TenantCommunicationDetail = () => {
     },
   });
 
-  // Mark as read mutation
   const markAsReadMutation = useMutation({
     mutationFn: async () => {
       if (!messageData) return;
@@ -71,22 +70,6 @@ const TenantCommunicationDetail = () => {
     },
   });
 
-  // Archive mutation
-  const archiveMutation = useMutation({
-    mutationFn: async () => {
-      // In a real implementation, you would add an archived column to the messages table
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulated delay
-    },
-    onSuccess: () => {
-      toast({
-        title: "Message archived",
-        description: "The message has been archived successfully.",
-      });
-      navigate("/tenant/communications");
-    },
-  });
-
-  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async () => {
       if (!messageData) return;
@@ -106,7 +89,6 @@ const TenantCommunicationDetail = () => {
     },
   });
 
-  // Reply mutation
   const replyMutation = useMutation({
     mutationFn: async (content: string) => {
       if (!messageData) throw new Error("No message data");
@@ -155,7 +137,6 @@ const TenantCommunicationDetail = () => {
       <div className="flex items-center justify-between">
         <MessageHeader />
         <MessageActions
-          onArchive={() => archiveMutation.mutate()}
           onDelete={() => deleteMutation.mutate()}
           onReply={(message) => replyMutation.mutate(message)}
           isReplying={replyMutation.isPending}

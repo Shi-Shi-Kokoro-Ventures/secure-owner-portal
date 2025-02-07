@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useQuery } from "@tanstack/react-query";
 
-// Mock data - replace with actual API call
 const fetchRequestDetails = async (id: string) => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));
@@ -100,13 +100,7 @@ const MaintenanceRequestDetail = () => {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Maintenance Requests
         </Button>
-        <Badge
-          className={`
-            ${request?.status === 'Open' ? 'bg-yellow-100 text-yellow-800' : ''}
-            ${request?.status === 'In Progress' ? 'bg-blue-100 text-blue-800' : ''}
-            ${request?.status === 'Completed' ? 'bg-green-100 text-green-800' : ''}
-          `}
-        >
+        <Badge variant="outline">
           {request?.status}
         </Badge>
       </div>
