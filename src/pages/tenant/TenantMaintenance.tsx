@@ -9,12 +9,15 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MaintenanceRequest } from "@/integrations/supabase/types/maintenance";
+import { MaintenanceStatus } from "@/integrations/supabase/types/enums";
+
+type StatusFilter = MaintenanceStatus | "all";
 
 const TenantMaintenance = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
   const { data: requests, isLoading, error } = useQuery({
     queryKey: ['maintenanceRequests', statusFilter],
@@ -93,7 +96,7 @@ const TenantMaintenance = () => {
           <select
             className="border rounded-md px-3 py-1 text-sm"
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
           >
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
