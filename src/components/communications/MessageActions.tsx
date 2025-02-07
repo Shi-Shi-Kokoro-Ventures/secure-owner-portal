@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Archive, MessageCircle, Trash2 } from "lucide-react";
+import { MessageCircle, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,10 +13,10 @@ import { Send } from "lucide-react";
 import { useState } from "react";
 
 interface MessageActionsProps {
-  onArchive: () => void;
   onDelete: () => void;
   onReply: (message: string) => void;
   isReplying: boolean;
+  onArchive?: () => void; // Made optional with ?
 }
 
 export const MessageActions = ({ onArchive, onDelete, onReply, isReplying }: MessageActionsProps) => {
@@ -66,14 +66,15 @@ export const MessageActions = ({ onArchive, onDelete, onReply, isReplying }: Mes
           </div>
         </DialogContent>
       </Dialog>
-      <Button
-        variant="outline"
-        className="gap-2"
-        onClick={onArchive}
-      >
-        <Archive className="h-4 w-4" />
-        Archive
-      </Button>
+      {onArchive && (
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={onArchive}
+        >
+          Archive
+        </Button>
+      )}
       <Button
         variant="destructive"
         className="gap-2"
