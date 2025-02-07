@@ -19,6 +19,7 @@ import {
   Bell,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { Dispatch, SetStateAction } from "react";
 
 interface TenantSidebarProps {
   open?: boolean;
