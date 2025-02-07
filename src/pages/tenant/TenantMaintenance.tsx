@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -26,24 +27,45 @@ const TenantMaintenance = () => {
   const { data: requests, isLoading, error } = useQuery({
     queryKey: ['maintenanceRequests', statusFilter],
     queryFn: async () => {
+      // First get the user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError) {
+        toast({
+          title: "Error fetching user information",
+          description: userError.message,
+          variant: "destructive",
+        });
+        throw userError;
+      }
+
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to view maintenance requests",
+          variant: "destructive",
+        });
+        throw new Error("User not authenticated");
+      }
+
       let query = supabase
         .from('maintenance_requests')
         .select('*')
-        .eq('tenant_id', (await supabase.auth.getUser()).data.user?.id);
+        .eq('tenant_id', user.id);
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
       }
 
-      const { data, error } = await query;
+      const { data, error: requestsError } = await query;
 
-      if (error) {
+      if (requestsError) {
         toast({
           title: "Error fetching maintenance requests",
-          description: error.message,
+          description: requestsError.message,
           variant: "destructive",
         });
-        throw error;
+        throw requestsError;
       }
 
       return data as MaintenanceRequest[];
