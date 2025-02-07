@@ -22,12 +22,17 @@ const TenantCommunicationDetail = () => {
         .from("messages")
         .select(`
           *,
-          sender:sender_id(*)
+          sender:sender_id(
+            id,
+            first_name,
+            last_name
+          )
         `)
         .eq("id", id)
         .single();
 
       if (messageError) throw messageError;
+      if (!message) throw new Error("Message not found");
       return message;
     },
   });

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -53,8 +52,11 @@ const TenantCommunications = () => {
         .from("messages")
         .select(`
           *,
-          sender:sender_id(first_name, last_name),
-          conversation:conversation_id(type)
+          sender:sender_id(
+            id,
+            first_name,
+            last_name
+          )
         `)
         .or(`sender_id.eq.${userData.user.id},receiver_id.eq.${userData.user.id}`);
 
