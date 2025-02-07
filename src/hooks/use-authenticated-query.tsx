@@ -88,7 +88,8 @@ export interface AuthenticatedMutationOptions<TData, TVariables> extends Omit<Us
 
 export function useAuthenticatedMutation<TData, TVariables>(
   mutationFn: (userId: string, variables: TVariables) => Promise<TData>,
-  options: AuthenticatedMutationOptions<TData, TVariables> = {}
+  options: AuthenticatedMutationOptions<TData, TVariables> = {},
+  userId?: string
 ) {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -126,16 +127,18 @@ export function useAuthenticatedMutation<TData, TVariables>(
         throw error;
       }
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables, context) => {
       if (successMessage) {
         toast({
           title: "Success",
           description: successMessage,
         });
       }
-      onSuccess?.(data);
+      if (onSuccess) {
+        onSuccess(data, variables, context);
+      }
     },
-    onError: (error: Error) => {
+    onError: (error: Error, variables, context) => {
       if (error.name === "AuthenticationError") {
         toast({
           title: "Authentication Required",
@@ -144,7 +147,9 @@ export function useAuthenticatedMutation<TData, TVariables>(
         });
         navigate(redirectTo);
       } else {
-        onError?.(error);
+        if (onError) {
+          onError(error, variables, context);
+        }
         toast({
           title: "Error",
           description: errorMessage || error.message,
