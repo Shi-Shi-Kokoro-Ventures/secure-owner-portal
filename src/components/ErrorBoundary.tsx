@@ -32,7 +32,8 @@ export class ErrorBoundary extends Component<Props, State> {
     logger.error("Error caught by boundary:", {
       error: error.message,
       stack: error.stack,
-      componentStack: errorInfo.componentStack
+      componentStack: errorInfo.componentStack,
+      location: window.location.pathname
     });
     
     this.setState({
