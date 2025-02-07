@@ -19,7 +19,7 @@ export const WhatWeOfferSection = () => {
     {
       title: "Property Maintenance",
       description: "Comprehensive maintenance services to keep your property in pristine condition. From routine upkeep to emergency repairs, we've got you covered.",
-      image: "https://images.unsplash.com/photo-1486718448742-163732cd1544",
+      image: "/lovable-uploads/147caf5a-ef6d-4b52-a1d8-80df8bb6f75b.png",
       icon: Wrench
     }
   ];
@@ -59,4 +59,3 @@ export const WhatWeOfferSection = () => {
     </section>
   );
 };
-
