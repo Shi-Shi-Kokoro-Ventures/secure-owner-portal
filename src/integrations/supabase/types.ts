@@ -506,14 +506,54 @@ export type Database = {
           },
         ]
       }
+      maintenance_request_updates: {
+        Row: {
+          created_at: string | null
+          id: string
+          request_id: string | null
+          update_content: string
+          update_type: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          request_id?: string | null
+          update_content: string
+          update_type: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          request_id?: string | null
+          update_content?: string
+          update_type?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_request_updates_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       maintenance_requests: {
         Row: {
           assigned_vendor: string | null
           created_at: string
           description: string
           id: string
+          last_updated_at: string | null
+          preferred_appointment_times: Json | null
+          priority: string | null
           status: Database["public"]["Enums"]["maintenance_status"]
+          technician_notes: string | null
           tenant_id: string | null
+          title: string
           unit_id: string | null
         }
         Insert: {
@@ -521,8 +561,13 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          last_updated_at?: string | null
+          preferred_appointment_times?: Json | null
+          priority?: string | null
           status?: Database["public"]["Enums"]["maintenance_status"]
+          technician_notes?: string | null
           tenant_id?: string | null
+          title?: string
           unit_id?: string | null
         }
         Update: {
@@ -530,8 +575,13 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          last_updated_at?: string | null
+          preferred_appointment_times?: Json | null
+          priority?: string | null
           status?: Database["public"]["Enums"]["maintenance_status"]
+          technician_notes?: string | null
           tenant_id?: string | null
+          title?: string
           unit_id?: string | null
         }
         Relationships: [

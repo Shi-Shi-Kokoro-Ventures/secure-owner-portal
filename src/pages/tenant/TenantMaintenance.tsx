@@ -15,19 +15,30 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MaintenanceRequest } from "@/integrations/supabase/types/maintenance";
 import { MaintenanceStatus } from "@/integrations/supabase/types/enums";
+import { MaintenanceStatusBadge } from "@/components/maintenance/MaintenanceStatusBadge";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Plus, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type StatusFilter = MaintenanceStatus | "all";
+type SortOrder = "desc" | "asc";
 
 const TenantMaintenance = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
   const { data: requests, isLoading, error } = useQuery({
-    queryKey: ['maintenanceRequests', statusFilter],
+    queryKey: ['maintenanceRequests', statusFilter, sortOrder],
     queryFn: async () => {
-      // First get the user
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
       if (userError) {
@@ -51,7 +62,8 @@ const TenantMaintenance = () => {
       let query = supabase
         .from('maintenance_requests')
         .select('*')
-        .eq('tenant_id', user.id);
+        .eq('tenant_id', user.id)
+        .order('created_at', { ascending: sortOrder === 'asc' });
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
@@ -76,12 +88,17 @@ const TenantMaintenance = () => {
     navigate('/tenant/maintenance/new');
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   if (error) {
-    return <div>Error loading maintenance requests</div>;
+    return (
+      <div className="container mx-auto py-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Error loading maintenance requests. Please try again later.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
   }
 
   return (
@@ -94,26 +111,48 @@ const TenantMaintenance = () => {
           </p>
         </div>
         <Button onClick={handleNewRequest}>
+          <Plus className="h-4 w-4 mr-2" />
           New Request
         </Button>
       </div>
 
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end gap-4">
         <div className="flex items-center gap-2">
           <label htmlFor="status-filter" className="text-sm font-medium">
             Filter by status:
           </label>
-          <select
-            id="status-filter"
-            className="border rounded-md px-3 py-1 text-sm"
+          <Select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+            onValueChange={(value) => setStatusFilter(value as StatusFilter)}
           >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="in_progress">In Progress</option>
-            <option value="completed">Completed</option>
-          </select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="in_progress">In Progress</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <label htmlFor="sort-order" className="text-sm font-medium">
+            Sort by date:
+          </label>
+          <Select
+            value={sortOrder}
+            onValueChange={(value) => setSortOrder(value as SortOrder)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Sort order" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="desc">Newest first</SelectItem>
+              <SelectItem value="asc">Oldest first</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -121,21 +160,33 @@ const TenantMaintenance = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Description</TableHead>
+              <TableHead>Title</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Created</TableHead>
+              <TableHead>Last Updated</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {requests && requests.length > 0 ? (
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                </TableRow>
+              ))
+            ) : requests && requests.length > 0 ? (
               requests.map((request) => (
                 <TableRow key={request.id}>
+                  <TableCell>{request.title}</TableCell>
                   <TableCell>
-                    {new Date(request.created_at).toLocaleDateString()}
+                    <MaintenanceStatusBadge status={request.status} />
                   </TableCell>
-                  <TableCell>{request.description}</TableCell>
-                  <TableCell>{request.status}</TableCell>
+                  <TableCell>{new Date(request.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell>{new Date(request.last_updated_at).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <Button
                       variant="outline"
@@ -149,7 +200,7 @@ const TenantMaintenance = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-4">
+                <TableCell colSpan={5} className="text-center py-4">
                   No maintenance requests found
                 </TableCell>
               </TableRow>
