@@ -1,6 +1,6 @@
 
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/use-auth-context";
@@ -58,6 +58,37 @@ const RootRedirect = () => {
   }
 };
 
+// Layout wrapper components for each role
+const AdminLayoutWrapper = () => (
+  <Layout>
+    <Outlet />
+  </Layout>
+);
+
+const PropertyManagerLayoutWrapper = () => (
+  <Layout>
+    <Outlet />
+  </Layout>
+);
+
+const OwnerLayoutWrapper = () => (
+  <Layout>
+    <Outlet />
+  </Layout>
+);
+
+const TenantLayoutWrapper = () => (
+  <Layout>
+    <Outlet />
+  </Layout>
+);
+
+const VendorLayoutWrapper = () => (
+  <Layout>
+    <Outlet />
+  </Layout>
+);
+
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
@@ -72,7 +103,7 @@ const App: React.FC = () => {
               <Route path="/login" element={<Login />} />
 
               {/* Admin routes with Layout */}
-              <Route path="/admin" element={<Layout />}>
+              <Route path="/admin" element={<AdminLayoutWrapper />}>
                 {adminRoutes.map((route) => (
                   <Route
                     key={route.key}
@@ -83,7 +114,7 @@ const App: React.FC = () => {
               </Route>
 
               {/* Property Manager routes with Layout */}
-              <Route path="/property-manager" element={<Layout />}>
+              <Route path="/property-manager" element={<PropertyManagerLayoutWrapper />}>
                 {propertyManagerRoutes.map((route) => (
                   <Route
                     key={`pm-${route.path}`}
@@ -94,7 +125,7 @@ const App: React.FC = () => {
               </Route>
 
               {/* Owner routes with Layout */}
-              <Route path="/owner" element={<Layout />}>
+              <Route path="/owner" element={<OwnerLayoutWrapper />}>
                 {ownerRoutes.map((route) => (
                   <Route
                     key={`owner-${route.path}`}
@@ -105,7 +136,7 @@ const App: React.FC = () => {
               </Route>
 
               {/* Tenant routes with Layout */}
-              <Route path="/tenant" element={<Layout />}>
+              <Route path="/tenant" element={<TenantLayoutWrapper />}>
                 {tenantRoutes.map((route) => (
                   <Route
                     key={`tenant-${route.path}`}
@@ -116,7 +147,7 @@ const App: React.FC = () => {
               </Route>
 
               {/* Vendor Routes with Layout */}
-              <Route path="/vendor" element={<Layout />}>
+              <Route path="/vendor" element={<VendorLayoutWrapper />}>
                 {vendorRoutes.map((route) => (
                   <Route
                     key={`vendor-${route.path}`}
