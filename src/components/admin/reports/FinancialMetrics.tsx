@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { LoadingState } from "./metrics/LoadingState";
+import { ErrorState } from "./metrics/ErrorState";
+import { FinancialChart } from "./metrics/FinancialChart";
 
 const mockData = [
   { month: 'Jan', income: 4000, expenses: 2400 },
@@ -31,27 +31,11 @@ export const FinancialMetrics = () => {
   });
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-center h-[300px] animate-pulse">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <LoadingState />;
   }
 
   if (error) {
-    return (
-      <Card className="border-destructive">
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-center h-[300px] text-destructive">
-            Error loading financial data
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <ErrorState />;
   }
 
   const chartData = financialData?.data || mockData;
@@ -62,56 +46,7 @@ export const FinancialMetrics = () => {
         <CardTitle>Financial Overview</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
-          <ChartContainer
-            config={{
-              income: {
-                label: "Income",
-                color: "#10B981",
-              },
-              expenses: {
-                label: "Expenses",
-                color: "#EF4444",
-              },
-            }}
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <XAxis 
-                  dataKey="month" 
-                  tick={{ fill: 'currentColor' }}
-                  tickLine={{ stroke: 'currentColor' }}
-                />
-                <YAxis 
-                  tick={{ fill: 'currentColor' }}
-                  tickLine={{ stroke: 'currentColor' }}
-                />
-                <Tooltip 
-                  content={({ active, payload, label }) => (
-                    <ChartTooltip 
-                      active={active} 
-                      payload={payload} 
-                      label={label}
-                    />
-                  )}
-                  wrapperStyle={{ outline: 'none' }}
-                />
-                <Bar 
-                  dataKey="income" 
-                  fill="var(--color-income)"
-                  radius={[4, 4, 0, 0]}
-                  className="animate-fade-in"
-                />
-                <Bar 
-                  dataKey="expenses" 
-                  fill="var(--color-expenses)"
-                  radius={[4, 4, 0, 0]}
-                  className="animate-fade-in"
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </div>
+        <FinancialChart data={chartData} />
       </CardContent>
     </Card>
   );
