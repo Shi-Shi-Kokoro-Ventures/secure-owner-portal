@@ -1,9 +1,11 @@
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, Home, FileText, MessageSquare, Settings, HelpCircle, Bell, WrenchIcon, CreditCard } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TenantSidebarProps {
   open?: boolean;
@@ -13,6 +15,7 @@ interface TenantSidebarProps {
 export function TenantSidebar({ open, onOpenChange }: TenantSidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useIsMobile();
 
   const routes = [
     {
@@ -59,13 +62,13 @@ export function TenantSidebar({ open, onOpenChange }: TenantSidebarProps) {
 
   const onNavigate = (href: string) => {
     navigate(href);
-    if (onOpenChange) {
+    if (onOpenChange && isMobile) {
       onOpenChange(false);
     }
   };
 
-  return (
-    <>
+  if (isMobile) {
+    return (
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetTrigger asChild>
           <Button
@@ -102,36 +105,39 @@ export function TenantSidebar({ open, onOpenChange }: TenantSidebarProps) {
           </ScrollArea>
         </SheetContent>
       </Sheet>
-      <div className={cn(
-        "hidden lg:flex lg:flex-col",
-        "h-screen w-64 border-r bg-background",
-        "fixed left-0 top-0 z-40",
-        open ? "translate-x-0" : "-translate-x-full",
-        "transition-transform duration-300 ease-in-out"
-      )}>
-        <ScrollArea className="flex-1 py-6">
-          <div className="space-y-4">
-            <div className="px-3 py-2">
-              <h2 className="mb-2 px-4 text-lg font-semibold">
-                Tenant Portal
-              </h2>
-              <div className="space-y-1">
-                {routes.map((route) => (
-                  <Button
-                    key={route.href}
-                    variant={location.pathname === route.href ? "secondary" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => onNavigate(route.href)}
-                  >
-                    <route.icon className="mr-2 h-4 w-4" />
-                    {route.label}
-                  </Button>
-                ))}
-              </div>
+    );
+  }
+
+  return (
+    <div className={cn(
+      "hidden lg:flex lg:flex-col",
+      "h-screen w-64 border-r bg-background",
+      "fixed left-0 top-0 z-40",
+      open ? "translate-x-0" : "-translate-x-full",
+      "transition-transform duration-300 ease-in-out"
+    )}>
+      <ScrollArea className="flex-1 py-6">
+        <div className="space-y-4">
+          <div className="px-3 py-2">
+            <h2 className="mb-2 px-4 text-lg font-semibold">
+              Tenant Portal
+            </h2>
+            <div className="space-y-1">
+              {routes.map((route) => (
+                <Button
+                  key={route.href}
+                  variant={location.pathname === route.href ? "secondary" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => onNavigate(route.href)}
+                >
+                  <route.icon className="mr-2 h-4 w-4" />
+                  {route.label}
+                </Button>
+              ))}
             </div>
           </div>
-        </ScrollArea>
-      </div>
-    </>
+        </div>
+      </ScrollArea>
+    </div>
   );
 }

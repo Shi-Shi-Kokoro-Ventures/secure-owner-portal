@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { TenantSidebar } from "./TenantSidebar";
 import { Header } from "./Header";
@@ -10,6 +10,10 @@ export const TenantLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
 
+  useEffect(() => {
+    setSidebarOpen(!isMobile);
+  }, [isMobile]);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="flex h-screen overflow-hidden">
@@ -17,7 +21,7 @@ export const TenantLayout = () => {
         <div className={cn(
           "flex flex-col flex-1 w-full",
           "transition-all duration-300 ease-in-out",
-          sidebarOpen ? "lg:pl-64" : "lg:pl-0"
+          sidebarOpen && !isMobile ? "lg:pl-64" : "lg:pl-0"
         )}>
           <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
           <main className="flex-1 overflow-y-auto">
