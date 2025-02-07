@@ -1389,6 +1389,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_special_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       redeem_rewards: {
         Args: {
           p_tenant_id: string

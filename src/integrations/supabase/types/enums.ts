@@ -11,6 +11,6 @@ export type MessageStatus = 'sent' | 'delivered' | 'read' | 'unread';
 export type MessageType = 'text' | 'image' | 'video' | 'file';
 export type SecurityDepositStatusEnum = 'pending' | 'received' | 'returned';
 export type UnitStatus = 'vacant' | 'occupied' | 'under_maintenance';
-export type UserRole = 'tenant' | 'property_manager' | 'owner' | 'admin' | 'vendor';
+export type UserRole = 'tenant' | 'property_manager' | 'owner' | 'admin' | 'vendor' | 'special_admin';
 export type UserStatus = 'active' | 'pending_approval' | 'suspended' | 'archived';
 export type VendorType = 'plumbing' | 'electrical' | 'cleaning' | 'general_maintenance' | 'hvac' | 'landscaping' | 'pest_control' | 'security';
