@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Archive, MessageCircle, Trash2, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -13,66 +15,47 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-// Types
-interface Communication {
-  id: string;
-  title: string;
-  message: string;
-  date: string;
-  isRead: boolean;
-  type: "notification" | "message";
-  from: string;
-}
-
-// Mock data - in a real app, this would come from an API
-const mockCommunications: Communication[] = [
-  {
-    id: "MSG-001",
-    title: "Maintenance Update",
-    message: "Your maintenance request #1234 has been completed. Please review and confirm.",
-    date: "2024-02-04",
-    isRead: false,
-    type: "notification",
-    from: "Property Manager",
-  },
-  {
-    id: "MSG-002",
-    title: "Rent Reminder",
-    message: "This is a friendly reminder that your rent payment is due in 5 days.",
-    date: "2024-02-01",
-    isRead: true,
-    type: "message",
-    from: "System",
-  },
-];
-
 const TenantCommunicationDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [replyMessage, setReplyMessage] = useState("");
 
-  const { data: message, isLoading } = useQuery({
-    queryKey: ["communication", id],
+  // Fetch conversation and messages
+  const { data: messageData, isLoading } = useQuery({
+    queryKey: ["message", id],
     queryFn: async () => {
-      // Replace with actual API call
-      return mockCommunications.find((m) => m.id === id);
+      // Get the message and its conversation
+      const { data: message, error: messageError } = await supabase
+        .from("messages")
+        .select(`
+          *,
+          sender:sender_id(first_name, last_name),
+          conversation:conversation_id(type)
+        `)
+        .eq("id", id)
+        .single();
+
+      if (messageError) throw messageError;
+      return message;
     },
   });
 
   // Mark as read mutation
   const markAsReadMutation = useMutation({
     mutationFn: async () => {
-      if (!message) return;
-      // Replace with actual API call
-      message.isRead = true;
-      return message;
+      if (!messageData) return;
+      const { error } = await supabase
+        .from("messages")
+        .update({ status: "read" })
+        .eq("id", id);
+      
+      if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["communications"] });
-      queryClient.invalidateQueries({ queryKey: ["communication", id] });
+      queryClient.invalidateQueries({ queryKey: ["messages"] });
+      queryClient.invalidateQueries({ queryKey: ["message", id] });
       toast({
         title: "Message marked as read",
         description: "The message has been marked as read.",
@@ -80,37 +63,79 @@ const TenantCommunicationDetail = () => {
     },
   });
 
-  // Reply mutation
-  const replyMutation = useMutation({
-    mutationFn: async (replyText: string) => {
-      // Replace with actual API call
-      console.log("Sending reply:", replyText);
-      return { success: true };
+  // Archive mutation
+  const archiveMutation = useMutation({
+    mutationFn: async () => {
+      // In a real implementation, you would add an archived column to the messages table
+      // For now, we'll just show a success message
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulated delay
     },
     onSuccess: () => {
-      setIsReplyOpen(false);
+      toast({
+        title: "Message archived",
+        description: "The message has been archived successfully.",
+      });
+      navigate("/tenant/communications");
+    },
+  });
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      if (!messageData) return;
+      const { error } = await supabase
+        .from("messages")
+        .delete()
+        .eq("id", id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Message deleted",
+        description: "The message has been deleted successfully.",
+      });
+      navigate("/tenant/communications");
+    },
+  });
+
+  // Reply mutation
+  const replyMutation = useMutation({
+    mutationFn: async (content: string) => {
+      if (!messageData) throw new Error("No message data");
+
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from("messages")
+        .insert({
+          conversation_id: messageData.conversation_id,
+          sender_id: userData.user.id,
+          receiver_id: messageData.sender_id,
+          message_content: content,
+          status: "sent",
+          message_type: "text"
+        });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
       setReplyMessage("");
       toast({
         title: "Reply sent",
         description: "Your reply has been sent successfully.",
       });
+      queryClient.invalidateQueries({ queryKey: ["messages"] });
     },
   });
 
   const handleArchive = () => {
-    toast({
-      title: "Message archived",
-      description: "The message has been archived successfully.",
-    });
-    navigate("/tenant/communications");
+    archiveMutation.mutate();
   };
 
   const handleDelete = () => {
-    toast({
-      title: "Message deleted",
-      description: "The message has been deleted successfully.",
-    });
-    navigate("/tenant/communications");
+    deleteMutation.mutate();
   };
 
   const handleReply = () => {
@@ -126,16 +151,16 @@ const TenantCommunicationDetail = () => {
   };
 
   useEffect(() => {
-    if (message && !message.isRead && !markAsReadMutation.isPending) {
+    if (messageData?.status !== "read" && !markAsReadMutation.isPending) {
       markAsReadMutation.mutate();
     }
-  }, [message?.isRead, markAsReadMutation.isPending]);
+  }, [messageData?.status, markAsReadMutation.isPending]);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!message) {
+  if (!messageData) {
     return <div>Message not found</div>;
   }
 
@@ -172,10 +197,7 @@ const TenantCommunicationDetail = () => {
                 <div className="flex justify-end gap-2">
                   <Button
                     variant="outline"
-                    onClick={() => {
-                      setIsReplyOpen(false);
-                      setReplyMessage("");
-                    }}
+                    onClick={() => setReplyMessage("")}
                   >
                     Cancel
                   </Button>
@@ -212,11 +234,11 @@ const TenantCommunicationDetail = () => {
 
       <div className="space-y-6 bg-white p-6 rounded-lg border">
         <div>
-          <h1 className="text-2xl font-bold">{message.title}</h1>
+          <h1 className="text-2xl font-bold">{messageData.message_content.substring(0, 50)}...</h1>
           <div className="flex items-center gap-4 text-muted-foreground mt-2">
-            <span>From: {message.from}</span>
-            <span>Date: {message.date}</span>
-            {!message.isRead && (
+            <span>From: {messageData.sender.first_name} {messageData.sender.last_name}</span>
+            <span>Date: {new Date(messageData.created_at).toLocaleDateString()}</span>
+            {messageData.status !== "read" && (
               <span className="flex items-center gap-1 text-blue-500">
                 <MessageCircle className="h-4 w-4" />
                 Unread
@@ -226,7 +248,7 @@ const TenantCommunicationDetail = () => {
         </div>
 
         <div className="prose max-w-none">
-          <p>{message.message}</p>
+          <p>{messageData.message_content}</p>
         </div>
       </div>
     </div>
