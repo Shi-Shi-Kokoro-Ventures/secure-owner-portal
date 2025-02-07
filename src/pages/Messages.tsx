@@ -10,15 +10,19 @@ import { MessageList } from "@/components/messages/MessageList";
 import { ComposeMessageDialog } from "@/components/messages/ComposeMessageDialog";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Message } from "@/integrations/supabase/types/communication";
+
+const MESSAGES_PER_PAGE = 10;
 
 const Messages = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
   const { toast } = useToast();
 
-  const { data: messages, isLoading } = useQuery({
-    queryKey: ['messages'],
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['messages', currentPage, searchQuery],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('messages')
         .select(`
           id,
@@ -29,7 +33,14 @@ const Messages = () => {
           message_content,
           created_at
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .range(currentPage * MESSAGES_PER_PAGE, (currentPage + 1) * MESSAGES_PER_PAGE - 1);
+
+      if (searchQuery) {
+        query = query.ilike('message_content', `%${searchQuery}%`);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         logger.error("Failed to fetch messages", error);
@@ -39,7 +50,7 @@ const Messages = () => {
       return data.map(message => ({
         id: message.id,
         from: `${message.sender.first_name} ${message.sender.last_name}`,
-        subject: message.message_content.substring(0, 50) + "...",
+        subject: message.message_content.substring(0, 50) + (message.message_content.length > 50 ? "..." : ""),
         date: new Date(message.created_at).toLocaleDateString(),
       }));
     },
@@ -47,6 +58,7 @@ const Messages = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+    setCurrentPage(0); // Reset to first page on new search
     logger.info("Search query updated", { query });
   };
 
@@ -92,6 +104,19 @@ const Messages = () => {
     });
   };
 
+  if (error) {
+    return (
+      <Layout>
+        <ErrorBoundary>
+          <div className="p-4 text-center">
+            <h2 className="text-lg font-semibold text-red-600">Error loading messages</h2>
+            <p className="text-gray-600">Please try refreshing the page</p>
+          </div>
+        </ErrorBoundary>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <ErrorBoundary>
@@ -116,12 +141,31 @@ const Messages = () => {
           </div>
 
           <MessageList
-            messages={messages || []}
+            messages={data || []}
             isLoading={isLoading}
             onArchive={handleArchive}
             onDelete={handleDelete}
             onView={handleView}
           />
+
+          {data && data.length >= MESSAGES_PER_PAGE && (
+            <div className="flex justify-center gap-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                disabled={currentPage === 0 || isLoading}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setCurrentPage(prev => prev + 1)}
+                disabled={data.length < MESSAGES_PER_PAGE || isLoading}
+              >
+                Next
+              </Button>
+            </div>
+          )}
         </div>
       </ErrorBoundary>
     </Layout>
