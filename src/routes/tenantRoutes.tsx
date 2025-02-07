@@ -17,7 +17,7 @@ import { logger } from "@/utils/logger";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // Wrap component with error boundary
-const withErrorBoundary = (Component: React.ComponentType<any>, name: string) => {
+const withErrorBoundary = (Component: React.ComponentType<any>) => {
   return (
     <ErrorBoundary>
       <Component />
@@ -37,60 +37,60 @@ export const tenantRoutes: RouteObject[] = [
     ),
     errorElement: <div>Error loading tenant section</div>,
     children: [
-      { 
-        index: true, 
-        element: withErrorBoundary(TenantDashboard, "TenantDashboard"),
+      {
+        index: true,
+        element: withErrorBoundary(TenantDashboard),
       },
-      { 
-        path: "dashboard", 
-        element: withErrorBoundary(TenantDashboard, "TenantDashboard"),
+      {
+        path: "dashboard",
+        element: withErrorBoundary(TenantDashboard),
       },
-      { 
-        path: "maintenance", 
-        element: withErrorBoundary(TenantMaintenance, "TenantMaintenance"),
+      {
+        path: "maintenance",
+        element: withErrorBoundary(TenantMaintenance),
       },
-      { 
-        path: "maintenance/new", 
-        element: withErrorBoundary(NewMaintenanceRequest, "NewMaintenanceRequest"),
+      {
+        path: "maintenance/new",
+        element: withErrorBoundary(NewMaintenanceRequest),
       },
-      { 
-        path: "maintenance/:id", 
-        element: withErrorBoundary(MaintenanceRequestDetail, "MaintenanceRequestDetail"),
+      {
+        path: "maintenance/:id",
+        element: withErrorBoundary(MaintenanceRequestDetail),
       },
-      { 
-        path: "payments", 
-        element: withErrorBoundary(TenantPayments, "TenantPayments"),
+      {
+        path: "payments",
+        element: withErrorBoundary(TenantPayments),
       },
-      { 
-        path: "payments/new", 
-        element: withErrorBoundary(NewPayment, "NewPayment"),
+      {
+        path: "payments/new",
+        element: withErrorBoundary(NewPayment),
       },
-      { 
-        path: "documents", 
-        element: withErrorBoundary(TenantDocuments, "TenantDocuments"),
+      {
+        path: "documents",
+        element: withErrorBoundary(TenantDocuments),
       },
-      { 
-        path: "communications", 
-        element: withErrorBoundary(TenantCommunications, "TenantCommunications"),
+      {
+        path: "communications",
+        element: withErrorBoundary(TenantCommunications),
       },
-      { 
-        path: "communications/:id", 
-        element: withErrorBoundary(TenantCommunicationDetail, "TenantCommunicationDetail"),
+      {
+        path: "communications/:id",
+        element: withErrorBoundary(TenantCommunicationDetail),
       },
-      { 
-        path: "settings", 
-        element: withErrorBoundary(TenantSettings, "TenantSettings"),
+      {
+        path: "settings",
+        element: withErrorBoundary(TenantSettings),
       },
-      { 
-        path: "help", 
-        element: withErrorBoundary(Help, "Help"),
+      {
+        path: "help",
+        element: withErrorBoundary(Help),
       },
-      { 
-        path: "notifications", 
-        element: withErrorBoundary(Notifications, "Notifications"),
-      }
-    ]
-  }
+      {
+        path: "notifications",
+        element: withErrorBoundary(Notifications),
+      },
+    ],
+  },
 ];
 
 // Add route change logging in development
