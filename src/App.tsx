@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
@@ -27,13 +26,11 @@ const queryClient = new QueryClient({
   },
 });
 
-// Enhanced RootRedirect component with proper authentication handling
 const RootRedirect = () => {
   const { user, userProfile, isLoading } = useAuth();
   const location = useLocation();
   const { toast } = useToast();
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -42,13 +39,10 @@ const RootRedirect = () => {
     );
   }
 
-  // Handle unauthenticated users
   if (!user) {
-    // Save the attempted URL for redirect after login
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
-  // Handle authenticated users without a profile
   if (!userProfile) {
     toast({
       title: "Profile Error",
@@ -58,7 +52,18 @@ const RootRedirect = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // Role-based redirects with proper error handling
+  if (userProfile.role === 'special_admin') {
+    const path = location.pathname;
+    if (path.startsWith('/admin') || 
+        path.startsWith('/owner') || 
+        path.startsWith('/tenant') || 
+        path.startsWith('/vendor') || 
+        path.startsWith('/property-manager')) {
+      return null; // Allow them to access the requested portal
+    }
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
   switch (userProfile.role) {
     case 'admin':
       return <Navigate to="/admin/dashboard" replace />;
@@ -87,13 +92,10 @@ const App: React.FC = () => {
         <Router>
           <AuthProvider>
             <Routes>
-              {/* Root redirect with enhanced auth check */}
               <Route path="/" element={<RootRedirect />} />
 
-              {/* Auth routes */}
               <Route path="/login" element={<Login />} />
 
-              {/* Owner routes with Layout and role protection */}
               <Route 
                 path="/owner/*" 
                 element={
@@ -113,7 +115,6 @@ const App: React.FC = () => {
                 }
               />
 
-              {/* Admin routes */}
               <Route path="/admin/*" element={
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <Layout>
@@ -130,7 +131,6 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               } />
 
-              {/* Property Manager routes */}
               <Route path="/property-manager/*" element={
                 <ProtectedRoute allowedRoles={["property_manager"]}>
                   <Layout>
@@ -147,7 +147,6 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               } />
 
-              {/* Tenant routes */}
               <Route path="/tenant/*" element={
                 <ProtectedRoute allowedRoles={["tenant"]}>
                   <Layout>
@@ -164,7 +163,6 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               } />
 
-              {/* Vendor routes */}
               <Route path="/vendor/*" element={
                 <ProtectedRoute allowedRoles={["vendor"]}>
                   <Layout>
@@ -181,7 +179,6 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               } />
 
-              {/* Common routes */}
               {commonRoutes.map((route) => (
                 <Route 
                   key={`common-${route.path}`}
@@ -190,7 +187,6 @@ const App: React.FC = () => {
                 />
               ))}
 
-              {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />

@@ -21,7 +21,6 @@ export const ProtectedRoute = ({
   const location = useLocation();
   const { toast } = useToast();
 
-  // Show loading state with a spinner
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -30,9 +29,7 @@ export const ProtectedRoute = ({
     );
   }
 
-  // Check authentication and preserve the attempted URL
   if (requireAuth && !user) {
-    // Save the full attempted URL path for redirect after login
     return <Navigate 
       to={redirectTo} 
       state={{ from: location.pathname + location.search + location.hash }} 
@@ -40,9 +37,7 @@ export const ProtectedRoute = ({
     />;
   }
 
-  // Check role-based access if roles are specified and user profile exists
   if (allowedRoles.length > 0) {
-    // Ensure user profile exists before checking role
     if (!userProfile) {
       toast({
         title: "Profile Error",
@@ -50,6 +45,11 @@ export const ProtectedRoute = ({
         variant: "destructive",
       });
       return <Navigate to={redirectTo} state={{ from: location.pathname }} replace />;
+    }
+
+    // Special admins can access any route
+    if (userProfile.role === 'special_admin') {
+      return <>{children}</>;
     }
 
     // Check if user has required role
@@ -72,6 +72,5 @@ export const ProtectedRoute = ({
     }
   }
 
-  // Allow access if all checks pass
   return <>{children}</>;
 };
