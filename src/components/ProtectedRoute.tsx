@@ -36,11 +36,7 @@ export const ProtectedRoute = ({
   // Handle authentication check
   if (requireAuth && !user) {
     logger.info('Protected route accessed without authentication:', currentPath);
-    return <Navigate 
-      to={redirectTo} 
-      state={{ from: currentPath }} 
-      replace 
-    />;
+    return <Navigate to={redirectTo} state={{ from: currentPath }} replace />;
   }
 
   // Role-based access control
