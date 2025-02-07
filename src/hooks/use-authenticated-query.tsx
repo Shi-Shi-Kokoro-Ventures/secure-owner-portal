@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
-export interface AuthenticatedQueryOptions<TData> extends Omit<UseQueryOptions<TData>, 'queryFn'> {
+export interface AuthenticatedQueryOptions<TData> extends Omit<Omit<UseQueryOptions<TData>, 'queryFn'>, 'queryKey'> {
   requireAuth?: boolean;
   onAuthError?: () => void;
 }

@@ -51,6 +51,7 @@ const TenantCommunicationDetail = () => {
     },
     {
       onAuthError: () => navigate("/auth"),
+      enabled: !!id
     }
   );
 
