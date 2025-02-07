@@ -13,7 +13,7 @@ export const WhatWeOfferSection = () => {
     {
       title: "Long Term Rentals",
       description: "Secure, long-term housing solutions with professional property management. Find your perfect home with our extensive portfolio of quality properties.",
-      image: "https://images.unsplash.com/photo-1524230572899-a752b3835840",
+      image: "/lovable-uploads/827fcd71-4f61-45be-9958-b406fdb49719.png",
       icon: Home
     },
     {
@@ -59,3 +59,4 @@ export const WhatWeOfferSection = () => {
     </section>
   );
 };
+
