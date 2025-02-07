@@ -6,7 +6,7 @@ import {
   Home,
   MessageSquare,
   Shield,
-  Tool,
+  Wrench,
   Users
 } from "lucide-react";
 import { ServiceCard } from "./ServiceCard";
@@ -24,7 +24,7 @@ export const ServiceGrid = () => {
       description: "Thorough background and credit checks for quality tenants"
     },
     {
-      icon: Tool,
+      icon: Wrench,
       title: "Maintenance",
       description: "24/7 maintenance support and preventive care"
     },
