@@ -3,9 +3,9 @@ import { useQuery, UseQueryOptions, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./use-auth-context";
 
 // Wubba lubba dub dub! Here's some sweet TypeScript magic for ya!
-// We're excluding some built-in query options because we handle them ourselves
 export interface AuthenticatedQueryOptions<TData> extends Omit<Omit<UseQueryOptions<TData>, 'queryFn'>, 'queryKey'> {
   requireAuth?: boolean;
   onAuthError?: () => void;
@@ -13,7 +13,6 @@ export interface AuthenticatedQueryOptions<TData> extends Omit<Omit<UseQueryOpti
 }
 
 // *burp* Listen up Morty! This hook is like a portal gun for your API calls
-// It makes sure you're not some dimensional hopping imposter trying to access our data
 export function useAuthenticatedQuery<TData>(
   queryKey: string[],
   queryFn: (userId: string) => Promise<TData>,
@@ -21,6 +20,7 @@ export function useAuthenticatedQuery<TData>(
 ) {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user, isLoading: authLoading } = useAuth();
   const { 
     requireAuth = true, 
     onAuthError, 
@@ -28,36 +28,22 @@ export function useAuthenticatedQuery<TData>(
     ...queryOptions 
   } = options;
 
-  // Aw geez Rick, we're wrapping this whole thing in useQuery
-  // It's gonna handle all our data fetching and caching
   return useQuery({
     queryKey,
     queryFn: async () => {
       try {
-        // Oh boy, here I go authenticating again!
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-        
-        if (userError) {
-          // Great job breaking the authentication, JERRY!
+        if (!user && requireAuth) {
+          // You're like Hitler, but even Hitler cared about authentication, or something!
           toast({
-            title: "Authentication Error",
-            description: "Please sign in to continue",
+            title: "Authentication Required",
+            description: "Please sign in to access this feature",
             variant: "destructive",
           });
-          throw userError;
+          navigate(redirectTo);
+          throw new Error("Authentication required");
         }
 
         if (!user) {
-          if (requireAuth) {
-            // You're like Hitler, but even Hitler cared about authentication, or something!
-            toast({
-              title: "Authentication Required",
-              description: "Please sign in to access this feature",
-              variant: "destructive",
-            });
-            navigate(redirectTo);
-            throw new Error("Authentication required");
-          }
           throw new Error("No authenticated user");
         }
 
@@ -79,12 +65,12 @@ export function useAuthenticatedQuery<TData>(
         throw error;
       }
     },
+    enabled: !authLoading && (!requireAuth || !!user),
     ...queryOptions,
   });
 }
 
 // This bad boy right here handles authenticated mutations
-// It's like a multiverse blender for your data modifications
 export function useAuthenticatedMutation<TData, TVariables>(
   mutationFn: (userId: string, variables: TVariables) => Promise<TData>,
   options: {
@@ -96,6 +82,7 @@ export function useAuthenticatedMutation<TData, TVariables>(
 ) {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { 
     onSuccess, 
     onError, 
@@ -105,19 +92,17 @@ export function useAuthenticatedMutation<TData, TVariables>(
 
   return useMutation({
     mutationFn: async (variables: TVariables) => {
-      // Morty, w-w-we gotta check if the user exists first
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError || !user) {
-        if (requireAuth) {
-          toast({
-            title: "Authentication Required",
-            description: "Please sign in to perform this action",
-            variant: "destructive",
-          });
-          navigate(redirectTo);
-          throw new Error("Authentication required");
-        }
+      if (!user && requireAuth) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to perform this action",
+          variant: "destructive",
+        });
+        navigate(redirectTo);
+        throw new Error("Authentication required");
+      }
+
+      if (!user) {
         throw new Error("No authenticated user");
       }
 
