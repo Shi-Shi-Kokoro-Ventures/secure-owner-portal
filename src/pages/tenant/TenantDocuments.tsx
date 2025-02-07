@@ -1,12 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Download, FileText, Upload } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { uploadTenantDocument } from "@/integrations/supabase/storage";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
 
 const TenantDocuments = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [documentType, setDocumentType] = useState("");
 
   const { data: documents, isLoading } = useQuery({
     queryKey: ['tenant-documents'],
@@ -28,11 +37,41 @@ const TenantDocuments = () => {
     },
   });
 
-  const handleUpload = () => {
-    toast({
-      title: "Coming Soon",
-      description: "Document upload feature will be available soon",
-    });
+  const uploadMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedFile || !documentType) {
+        throw new Error("Please select a file and enter a document type");
+      }
+      return await uploadTenantDocument(selectedFile, documentType);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tenant-documents'] });
+      setUploadDialogOpen(false);
+      setSelectedFile(null);
+      setDocumentType("");
+      toast({
+        title: "Success",
+        description: "Document uploaded successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to upload document",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    uploadMutation.mutate();
   };
 
   const handleDownload = (fileUrl: string) => {
@@ -61,10 +100,50 @@ const TenantDocuments = () => {
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button onClick={handleUpload}>
-          <Upload className="h-4 w-4 mr-2" />
-          Upload Document
-        </Button>
+        <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Upload className="h-4 w-4 mr-2" />
+              Upload Document
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Upload Document</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="documentType" className="block text-sm font-medium mb-1">
+                  Document Type
+                </label>
+                <Input
+                  id="documentType"
+                  placeholder="e.g., Lease Agreement, ID, Insurance"
+                  value={documentType}
+                  onChange={(e) => setDocumentType(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="file" className="block text-sm font-medium mb-1">
+                  Select File
+                </label>
+                <Input
+                  id="file"
+                  type="file"
+                  onChange={handleFileChange}
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                />
+              </div>
+              <Button 
+                onClick={handleUpload} 
+                disabled={!selectedFile || !documentType || uploadMutation.isPending}
+                className="w-full"
+              >
+                {uploadMutation.isPending ? "Uploading..." : "Upload"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="rounded-lg border">
