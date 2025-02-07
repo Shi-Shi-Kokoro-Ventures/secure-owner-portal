@@ -1,12 +1,13 @@
 
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MessageHeader } from "@/components/communications/MessageHeader";
 import { MessageActions } from "@/components/communications/MessageActions";
 import { MessageContent } from "@/components/communications/MessageContent";
+import { useAuthenticatedQuery } from "@/hooks/use-authenticated-query";
 
 interface MessageSender {
   id: string;
@@ -32,9 +33,9 @@ const TenantCommunicationDetail = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: messageData, isLoading } = useQuery({
-    queryKey: ["message", id],
-    queryFn: async () => {
+  const { data: messageData, isLoading } = useAuthenticatedQuery<Message>(
+    ["message", id],
+    async (userId) => {
       const { data: message, error } = await supabase
         .from("messages")
         .select(`
@@ -48,7 +49,10 @@ const TenantCommunicationDetail = () => {
       if (!message) throw new Error("Message not found");
       return message;
     },
-  });
+    {
+      onAuthError: () => navigate("/auth"),
+    }
+  );
 
   const markAsReadMutation = useMutation({
     mutationFn: async () => {
@@ -91,16 +95,16 @@ const TenantCommunicationDetail = () => {
 
   const replyMutation = useMutation({
     mutationFn: async (content: string) => {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+      if (!user) throw new Error("Not authenticated");
       if (!messageData) throw new Error("No message data");
-
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) throw new Error("Not authenticated");
 
       const { error } = await supabase
         .from("messages")
         .insert({
           conversation_id: messageData.conversation_id,
-          sender_id: userData.user.id,
+          sender_id: user.id,
           receiver_id: messageData.sender_id,
           message_content: content,
           status: "sent",
