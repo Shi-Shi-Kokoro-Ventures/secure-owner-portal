@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MessageHeader } from "@/components/communications/MessageHeader";
 import { MessageActions } from "@/components/communications/MessageActions";
 import { MessageContent } from "@/components/communications/MessageContent";
-import { useAuthenticatedQuery } from "@/hooks/use-authenticated-query";
+import { useAuthenticatedQuery, useAuthenticatedMutation } from "@/hooks/use-authenticated-query";
 
 // Listen up M-Morty, these interfaces are like the DNA of our data
 // They tell us what shape our weird message creatures should take
@@ -55,15 +55,13 @@ const TenantCommunicationDetail = () => {
       return message;
     },
     {
-      onAuthError: () => navigate("/auth"),
       enabled: !!id
     }
   );
 
   // Time to get schwifty with some mutations!
-  // This one marks messages as read, like putting a stamp on an interdimensional letter
-  const markAsReadMutation = useMutation({
-    mutationFn: async () => {
+  const markAsReadMutation = useAuthenticatedMutation<void, void>(
+    async (userId) => {
       if (!messageData) return;
       const { error } = await supabase
         .from("messages")
@@ -72,21 +70,22 @@ const TenantCommunicationDetail = () => {
       
       if (error) throw error;
     },
-    onSuccess: () => {
-      // Boom! Big reveal! The message is now read!
-      queryClient.invalidateQueries({ queryKey: ["messages"] });
-      queryClient.invalidateQueries({ queryKey: ["message", id] });
-      toast({
-        title: "Message marked as read",
-        description: "The message has been marked as read.",
-      });
-    },
-  });
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["messages"] });
+        queryClient.invalidateQueries({ queryKey: ["message", id] });
+        toast({
+          title: "Message marked as read",
+          description: "The message has been marked as read.",
+        });
+      }
+    }
+  );
 
   // This mutation is like a black hole, Morty!
   // It makes messages disappear, but in a controlled way
-  const deleteMutation = useMutation({
-    mutationFn: async () => {
+  const deleteMutation = useAuthenticatedMutation<void, void>(
+    async () => {
       if (!messageData) return;
       const { error } = await supabase
         .from("messages")
@@ -95,28 +94,27 @@ const TenantCommunicationDetail = () => {
       
       if (error) throw error;
     },
-    onSuccess: () => {
-      toast({
-        title: "Message deleted",
-        description: "The message has been deleted successfully.",
-      });
-      navigate("/tenant/communications");
-    },
-  });
+    {
+      onSuccess: () => {
+        toast({
+          title: "Message deleted",
+          description: "The message has been deleted successfully.",
+        });
+        navigate("/tenant/communications");
+      }
+    }
+  );
 
   // Ooh wee! This mutation sends replies faster than a Meeseeks completes a task!
-  const replyMutation = useMutation({
-    mutationFn: async (content: string) => {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError) throw userError;
-      if (!user) throw new Error("Not authenticated");
+  const replyMutation = useAuthenticatedMutation<void, string>(
+    async (userId, content) => {
       if (!messageData) throw new Error("No message data");
 
       const { error } = await supabase
         .from("messages")
         .insert({
           conversation_id: messageData.conversation_id,
-          sender_id: user.id,
+          sender_id: userId,
           receiver_id: messageData.sender_id,
           message_content: content,
           status: "sent",
@@ -125,15 +123,16 @@ const TenantCommunicationDetail = () => {
 
       if (error) throw error;
     },
-    onSuccess: () => {
-      // Grass... tastes bad! But this success message tastes good!
-      toast({
-        title: "Reply sent",
-        description: "Your reply has been sent successfully.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["messages"] });
-    },
-  });
+    {
+      onSuccess: () => {
+        toast({
+          title: "Reply sent",
+          description: "Your reply has been sent successfully.",
+        });
+        queryClient.invalidateQueries({ queryKey: ["messages"] });
+      }
+    }
+  );
 
   // This effect is like a mindreader that knows when to mark messages as read
   // It's automated, Morty! No hands required!
