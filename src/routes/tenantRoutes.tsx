@@ -14,87 +14,86 @@ import TenantSettings from "@/pages/tenant/TenantSettings";
 import Help from "@/pages/Help";
 import Notifications from "@/pages/Notifications";
 import { logger } from "@/utils/logger";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+
+// Wrap component with error boundary
+const withErrorBoundary = (Component: React.ComponentType<any>, name: string) => {
+  return (
+    <ErrorBoundary>
+      <Component />
+    </ErrorBoundary>
+  );
+};
 
 export const tenantRoutes: RouteObject[] = [
   {
     path: "/tenant",
     element: (
       <ProtectedRoute>
-        <TenantLayout />
+        <ErrorBoundary>
+          <TenantLayout />
+        </ErrorBoundary>
       </ProtectedRoute>
     ),
     errorElement: <div>Error loading tenant section</div>,
     children: [
       { 
         index: true, 
-        element: <TenantDashboard />,
-        errorElement: <div>Error loading dashboard</div>
+        element: withErrorBoundary(TenantDashboard, "TenantDashboard"),
       },
       { 
         path: "dashboard", 
-        element: <TenantDashboard />,
-        errorElement: <div>Error loading dashboard</div>
+        element: withErrorBoundary(TenantDashboard, "TenantDashboard"),
       },
       { 
         path: "maintenance", 
-        element: <TenantMaintenance />,
-        errorElement: <div>Error loading maintenance</div>
+        element: withErrorBoundary(TenantMaintenance, "TenantMaintenance"),
       },
       { 
         path: "maintenance/new", 
-        element: <NewMaintenanceRequest />,
-        errorElement: <div>Error loading new maintenance request</div>
+        element: withErrorBoundary(NewMaintenanceRequest, "NewMaintenanceRequest"),
       },
       { 
         path: "maintenance/:id", 
-        element: <MaintenanceRequestDetail />,
-        errorElement: <div>Error loading maintenance details</div>
+        element: withErrorBoundary(MaintenanceRequestDetail, "MaintenanceRequestDetail"),
       },
       { 
         path: "payments", 
-        element: <TenantPayments />,
-        errorElement: <div>Error loading payments</div>
+        element: withErrorBoundary(TenantPayments, "TenantPayments"),
       },
       { 
         path: "payments/new", 
-        element: <NewPayment />,
-        errorElement: <div>Error loading new payment</div>
+        element: withErrorBoundary(NewPayment, "NewPayment"),
       },
       { 
         path: "documents", 
-        element: <TenantDocuments />,
-        errorElement: <div>Error loading documents</div>
+        element: withErrorBoundary(TenantDocuments, "TenantDocuments"),
       },
       { 
         path: "communications", 
-        element: <TenantCommunications />,
-        errorElement: <div>Error loading communications</div>
+        element: withErrorBoundary(TenantCommunications, "TenantCommunications"),
       },
       { 
         path: "communications/:id", 
-        element: <TenantCommunicationDetail />,
-        errorElement: <div>Error loading communication details</div>
+        element: withErrorBoundary(TenantCommunicationDetail, "TenantCommunicationDetail"),
       },
       { 
         path: "settings", 
-        element: <TenantSettings />,
-        errorElement: <div>Error loading settings</div>
+        element: withErrorBoundary(TenantSettings, "TenantSettings"),
       },
       { 
         path: "help", 
-        element: <Help />,
-        errorElement: <div>Error loading help</div>
+        element: withErrorBoundary(Help, "Help"),
       },
       { 
         path: "notifications", 
-        element: <Notifications />,
-        errorElement: <div>Error loading notifications</div>
+        element: withErrorBoundary(Notifications, "Notifications"),
       }
     ]
   }
 ];
 
-// Add route change logging
+// Add route change logging in development
 if (import.meta.env.DEV) {
   window.addEventListener('popstate', () => {
     logger.info('Route changed:', window.location.pathname);
