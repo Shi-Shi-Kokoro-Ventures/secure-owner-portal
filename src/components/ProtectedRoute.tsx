@@ -7,7 +7,6 @@ import { logger } from "@/utils/logger";
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   // During development, bypass all checks
   if (import.meta.env.DEV) {
-    logger.info('Development mode: bypassing auth checks');
     return <>{children}</>;
   }
 
@@ -31,7 +30,6 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   // In production, check for authentication
   if (!session) {
-    logger.warn('No session found, redirecting to login');
     return <Navigate to="/login" replace />;
   }
 
