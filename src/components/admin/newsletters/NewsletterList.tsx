@@ -24,10 +24,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import type { Newsletter, NewsletterSubscriber } from "@/integrations/supabase/types/newsletter";
+import { useState } from "react";
 
 export const NewsletterList = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isAddingSubscriber, setIsAddingSubscriber] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const { data: newsletters, isLoading: isLoadingNewsletters } = useQuery({
     queryKey: ['newsletters'],
@@ -110,6 +113,7 @@ export const NewsletterList = () => {
   };
 
   const handleAddSubscriber = async (email: string) => {
+    setIsAddingSubscriber(true);
     try {
       const { error } = await supabase
         .from('newsletter_subscribers')
@@ -123,12 +127,14 @@ export const NewsletterList = () => {
 
       if (error) throw error;
 
-      queryClient.invalidateQueries({ queryKey: ['newsletter_subscribers'] });
+      await queryClient.invalidateQueries({ queryKey: ['newsletter_subscribers'] });
 
       toast({
         title: "Subscriber added",
         description: "The subscriber has been successfully added.",
       });
+      
+      setDialogOpen(false);
     } catch (error) {
       console.error('Error adding subscriber:', error);
       toast({
@@ -136,6 +142,8 @@ export const NewsletterList = () => {
         description: "Failed to add subscriber. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsAddingSubscriber(false);
     }
   };
 
@@ -152,7 +160,7 @@ export const NewsletterList = () => {
             {subscribers?.length || 0} Active Subscribers
           </span>
         </div>
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
               Add Subscriber
@@ -175,9 +183,10 @@ export const NewsletterList = () => {
                   type="email"
                   placeholder="Enter subscriber email"
                   required
+                  disabled={isAddingSubscriber}
                 />
-                <Button type="submit" className="w-full">
-                  Add Subscriber
+                <Button type="submit" className="w-full" disabled={isAddingSubscriber}>
+                  {isAddingSubscriber ? "Adding..." : "Add Subscriber"}
                 </Button>
               </div>
             </form>
