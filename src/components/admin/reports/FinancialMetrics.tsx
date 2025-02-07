@@ -26,13 +26,15 @@ export const FinancialMetrics = () => {
       if (error) throw error;
       return data;
     },
+    staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) {
     return (
       <Card>
         <CardContent className="pt-6">
-          <div className="flex items-center justify-center h-[300px]">
+          <div className="flex items-center justify-center h-[300px] animate-pulse">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         </CardContent>
@@ -42,7 +44,7 @@ export const FinancialMetrics = () => {
 
   if (error) {
     return (
-      <Card>
+      <Card className="border-destructive">
         <CardContent className="pt-6">
           <div className="flex items-center justify-center h-[300px] text-destructive">
             Error loading financial data
@@ -55,7 +57,7 @@ export const FinancialMetrics = () => {
   const chartData = financialData?.data || mockData;
 
   return (
-    <Card>
+    <Card className="transform transition-all duration-300 hover:shadow-lg">
       <CardHeader>
         <CardTitle>Financial Overview</CardTitle>
       </CardHeader>
@@ -75,17 +77,37 @@ export const FinancialMetrics = () => {
           >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip content={({ active, payload, label }) => (
-                  <ChartTooltip 
-                    active={active} 
-                    payload={payload} 
-                    label={label}
-                  />
-                )} />
-                <Bar dataKey="income" fill="var(--color-income)" />
-                <Bar dataKey="expenses" fill="var(--color-expenses)" />
+                <XAxis 
+                  dataKey="month" 
+                  tick={{ fill: 'currentColor' }}
+                  tickLine={{ stroke: 'currentColor' }}
+                />
+                <YAxis 
+                  tick={{ fill: 'currentColor' }}
+                  tickLine={{ stroke: 'currentColor' }}
+                />
+                <Tooltip 
+                  content={({ active, payload, label }) => (
+                    <ChartTooltip 
+                      active={active} 
+                      payload={payload} 
+                      label={label}
+                    />
+                  )}
+                  wrapperStyle={{ outline: 'none' }}
+                />
+                <Bar 
+                  dataKey="income" 
+                  fill="var(--color-income)"
+                  radius={[4, 4, 0, 0]}
+                  className="animate-fade-in"
+                />
+                <Bar 
+                  dataKey="expenses" 
+                  fill="var(--color-expenses)"
+                  radius={[4, 4, 0, 0]}
+                  className="animate-fade-in"
+                />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
