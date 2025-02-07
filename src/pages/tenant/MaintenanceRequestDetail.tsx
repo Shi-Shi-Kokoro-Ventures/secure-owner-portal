@@ -53,13 +53,15 @@ const MaintenanceRequestDetail = () => {
     queryFn: () => fetchRequestDetails(id || ''),
     enabled: !!id,
     retry: 2,
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to load maintenance request details. Please try again later.",
-        variant: "destructive",
-      });
-    },
+    meta: {
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Failed to load maintenance request details. Please try again later.",
+          variant: "destructive",
+        });
+      }
+    }
   });
 
   const handleAddComment = () => {
