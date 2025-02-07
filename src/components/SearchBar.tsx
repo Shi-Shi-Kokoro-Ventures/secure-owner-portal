@@ -9,8 +9,8 @@ export const SearchBar = ({ onSearch }: { onSearch: (term: string) => void }) =>
       </div>
       <Input
         type="search"
-        placeholder="Search owners..."
-        className="pl-10 w-full"
+        placeholder="Search properties..."
+        className="pl-10 w-full bg-white"
         onChange={(e) => onSearch(e.target.value)}
       />
     </div>
