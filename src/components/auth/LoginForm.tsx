@@ -37,16 +37,25 @@ export const LoginForm = () => {
       
       logger.info("Login successful, session refreshed");
       toast({
-        title: "Welcome back",
-        description: "You have successfully logged in.",
+        title: "Welcome back!",
+        description: "Successfully logged in to your account.",
+        variant: "default",
       });
       
       // Let the Login component handle the redirect based on user role
     } catch (error: any) {
       logger.error("Login error:", error);
+      
+      let errorMessage = "An unexpected error occurred. Please try again.";
+      if (error.message?.toLowerCase().includes("invalid login credentials")) {
+        errorMessage = "Invalid email or password. Please check your credentials and try again.";
+      } else if (error.message?.toLowerCase().includes("network")) {
+        errorMessage = "Network error. Please check your internet connection and try again.";
+      }
+
       toast({
-        title: "Error",
-        description: error.message || "An unexpected error occurred. Please try again.",
+        title: "Login failed",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -55,23 +64,33 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+    <form 
+      onSubmit={handleSubmit} 
+      className="mt-8 space-y-6"
+      aria-labelledby="login-title"
+      aria-live="polite"
+    >
       <div className="space-y-4">
         <div>
           <Label htmlFor="email" className="sr-only">
             Email address
           </Label>
           <div className="relative">
-            <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" 
+                   aria-hidden="true" />
             <Input
               id="email"
+              name="email"
               type="email"
+              autoComplete="email"
               placeholder="Enter Your Email"
               className="pl-10 bg-transparent border-gray-700 text-white focus:ring-purple-500 focus:border-purple-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
+              aria-label="Email address"
+              aria-required="true"
             />
           </div>
         </div>
@@ -81,16 +100,21 @@ export const LoginForm = () => {
             Password
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" 
+                 aria-hidden="true" />
             <Input
               id="password"
+              name="password"
               type="password"
+              autoComplete="current-password"
               placeholder="Password"
               className="pl-10 bg-transparent border-gray-700 text-white focus:ring-purple-500 focus:border-purple-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={isLoading}
+              aria-label="Password"
+              aria-required="true"
             />
           </div>
         </div>
@@ -100,11 +124,12 @@ export const LoginForm = () => {
         type="submit"
         className="w-full bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg transition-all duration-300"
         disabled={isLoading}
+        aria-disabled={isLoading}
       >
         {isLoading ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Signing in...
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+            <span>Signing in...</span>
           </>
         ) : (
           'Sign In'

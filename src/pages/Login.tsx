@@ -27,7 +27,6 @@ const Login = () => {
         redirectPath: from
       });
 
-      // Only redirect if we have both user and profile
       const roleDashboards: Record<string, string> = {
         admin: "/admin/dashboard",
         property_manager: "/property-manager/dashboard",
@@ -41,21 +40,27 @@ const Login = () => {
     }
   }, [user, userProfile, navigate, from]);
 
-  // If loading, show loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-purple-500">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+        <div 
+          className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"
+          role="progressbar"
+          aria-label="Loading"
+        />
       </div>
     );
   }
 
-  // If error occurred during authentication
   if (error) {
     return (
       <AuthLayout>
         <AuthLogo />
-        <div className="text-center" role="alert" aria-live="polite">
+        <div 
+          className="text-center" 
+          role="alert" 
+          aria-live="polite"
+        >
           <h2 className="text-3xl font-bold text-red-500 mb-2">Authentication Error</h2>
           <p className="text-gray-400 text-sm mb-4">
             {error.message || "An unexpected error occurred"}
@@ -71,11 +76,14 @@ const Login = () => {
     );
   }
 
-  // If already authenticated, show loading state
   if (user?.id) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-purple-500">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+        <div 
+          className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"
+          role="progressbar"
+          aria-label="Redirecting"
+        />
       </div>
     );
   }
@@ -84,7 +92,7 @@ const Login = () => {
     <AuthLayout>
       <AuthLogo />
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+        <h1 id="login-title" className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
         <p className="text-gray-400 text-sm">
           To sign in please enter your email and password
         </p>
