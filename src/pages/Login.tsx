@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { AtSign, Lock, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth-context";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,27 +16,33 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { user, refreshSession } = useAuth();
 
   const from = (location.state as { from?: string })?.from || "/";
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, from]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
-        return;
+        throw error;
       }
+
+      // Refresh the session to ensure we have the latest user data
+      await refreshSession();
 
       toast({
         title: "Welcome back",
@@ -43,10 +50,10 @@ const Login = () => {
       });
 
       navigate(from, { replace: true });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        description: error.message || "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -86,7 +93,7 @@ const Login = () => {
             <div className="text-center">
               <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
               <p className="text-gray-400 text-sm">
-                To signin please enter your name and password
+                To signin please enter your email and password
               </p>
             </div>
 
@@ -106,6 +113,7 @@ const Login = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -124,6 +132,7 @@ const Login = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -147,8 +156,10 @@ const Login = () => {
               <p className="text-center text-gray-400 text-sm">
                 New here?{" "}
                 <button
+                  type="button"
                   onClick={() => navigate("/signup")}
                   className="text-purple-400 hover:text-purple-300 font-medium"
+                  disabled={isLoading}
                 >
                   Register now
                 </button>
@@ -162,4 +173,3 @@ const Login = () => {
 };
 
 export default Login;
-
