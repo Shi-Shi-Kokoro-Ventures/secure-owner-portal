@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Filter, Plus, DollarSign, Download, Printer } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { AddOwnerDialog } from "@/components/AddOwnerDialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
