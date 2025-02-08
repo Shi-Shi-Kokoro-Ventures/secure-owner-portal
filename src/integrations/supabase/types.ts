@@ -1394,13 +1394,19 @@ export type Database = {
         }
         Returns: undefined
       }
+      get_user_role: {
+        Args: {
+          user_id: string
+        }
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
       is_admin_or_self: {
         Args: {
-          user_id: string
+          target_user_id: string
         }
         Returns: boolean
       }
