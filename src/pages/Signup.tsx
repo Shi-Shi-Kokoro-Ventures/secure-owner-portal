@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { AtSign, Key, User, Phone, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { UserRole } from "@/types/user";
 
 const Signup = () => {
@@ -17,7 +16,6 @@ const Signup = () => {
     firstName: "",
     lastName: "",
     phone: "",
-    role: "tenant" as UserRole,
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -36,7 +34,7 @@ const Signup = () => {
             first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
-            role: formData.role,
+            role: "tenant" as UserRole, // Default role is always tenant
           },
         },
       });
@@ -51,8 +49,8 @@ const Signup = () => {
       }
 
       toast({
-        title: "Success",
-        description: "Please check your email to confirm your account.",
+        title: "Account Created",
+        description: "Your account has been created and is pending admin approval. Please check your email to confirm your account.",
       });
 
       // Navigate to login after successful signup
@@ -74,13 +72,6 @@ const Signup = () => {
     setFormData((prev) => ({
       ...prev,
       [field]: e.target.value,
-    }));
-  };
-
-  const handleRoleChange = (value: UserRole) => {
-    setFormData((prev) => ({
-      ...prev,
-      role: value,
     }));
   };
 
@@ -194,24 +185,6 @@ const Signup = () => {
                       required
                     />
                   </div>
-                </div>
-
-                {/* Role Selection */}
-                <div>
-                  <Label htmlFor="role" className="sr-only">
-                    Role
-                  </Label>
-                  <Select value={formData.role} onValueChange={handleRoleChange}>
-                    <SelectTrigger className="w-full bg-transparent border-gray-700 text-white focus:ring-purple-500 focus:border-purple-500">
-                      <SelectValue placeholder="Select your role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="tenant">Tenant</SelectItem>
-                      <SelectItem value="property_manager">Property Manager</SelectItem>
-                      <SelectItem value="owner">Owner</SelectItem>
-                      <SelectItem value="vendor">Vendor</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
 
                 {/* Password */}
