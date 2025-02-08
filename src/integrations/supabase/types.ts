@@ -859,6 +859,8 @@ export type Database = {
         Row: {
           address: string
           amenities: string[] | null
+          bathrooms: number | null
+          bedrooms: number | null
           created_at: string
           description: string | null
           expenses_ytd: number | null
@@ -877,11 +879,14 @@ export type Database = {
           status: string | null
           total_revenue: number | null
           unit_count: number
+          virtual_tour_url: string | null
           year_built: number | null
         }
         Insert: {
           address: string
           amenities?: string[] | null
+          bathrooms?: number | null
+          bedrooms?: number | null
           created_at?: string
           description?: string | null
           expenses_ytd?: number | null
@@ -900,11 +905,14 @@ export type Database = {
           status?: string | null
           total_revenue?: number | null
           unit_count: number
+          virtual_tour_url?: string | null
           year_built?: number | null
         }
         Update: {
           address?: string
           amenities?: string[] | null
+          bathrooms?: number | null
+          bedrooms?: number | null
           created_at?: string
           description?: string | null
           expenses_ytd?: number | null
@@ -923,6 +931,7 @@ export type Database = {
           status?: string | null
           total_revenue?: number | null
           unit_count?: number
+          virtual_tour_url?: string | null
           year_built?: number | null
         }
         Relationships: [
