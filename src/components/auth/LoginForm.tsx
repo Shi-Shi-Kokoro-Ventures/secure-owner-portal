@@ -1,6 +1,5 @@
 
 import { useState, useCallback } from "react";
-import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,12 +13,13 @@ export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const location = useLocation();
   const { toast } = useToast();
   const { refreshSession } = useAuth();
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
+
     setIsLoading(true);
     logger.info("Login attempt started");
 
@@ -37,12 +37,11 @@ export const LoginForm = () => {
     } catch (error: any) {
       logger.error("Login error:", error);
       
-      let errorMessage = "An unexpected error occurred. Please try again.";
-      if (error.message?.toLowerCase().includes("invalid login credentials")) {
-        errorMessage = "Invalid email or password. Please check your credentials and try again.";
-      } else if (error.message?.toLowerCase().includes("network")) {
-        errorMessage = "Network error. Please check your internet connection and try again.";
-      }
+      const errorMessage = error.message?.toLowerCase().includes("invalid login credentials")
+        ? "Invalid email or password. Please check your credentials and try again."
+        : error.message?.toLowerCase().includes("network")
+        ? "Network error. Please check your internet connection and try again."
+        : "An unexpected error occurred. Please try again.";
 
       toast({
         title: "Login failed",
@@ -52,7 +51,7 @@ export const LoginForm = () => {
       
       setIsLoading(false);
     }
-  }, [email, password, toast, refreshSession]);
+  }, [email, password, isLoading, toast, refreshSession]);
 
   return (
     <form 

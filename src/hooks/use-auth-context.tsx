@@ -1,19 +1,13 @@
 
-import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { logger } from '@/utils/logger';
-import { UserStatus } from '@/types/user';
-
-interface UserProfile {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  role: string;
-  status: UserStatus;
-}
+import type { UserProfile } from '@/types/user';
+import { useFetchProfile } from './auth/use-fetch-profile';
+import { useSessionHandler } from './auth/use-session-handler';
 
 interface AuthContextType {
   user: User | null;
@@ -33,40 +27,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<Error | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const authStateChangeTimeout = useRef<NodeJS.Timeout>();
 
-  // Memoize fetchUserProfile to prevent unnecessary recreations
-  const fetchUserProfile = useCallback(async (userId: string) => {
-    logger.info('Fetching user profile for ID:', userId);
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('id, first_name, last_name, role, status')
-        .eq('id', userId)
-        .maybeSingle();
+  const fetchUserProfile = useFetchProfile();
+  const { setupAuthListener, authStateChangeTimeout } = useSessionHandler({
+    setUser,
+    setUserProfile,
+    setIsLoading,
+    fetchUserProfile
+  });
 
-      if (error) {
-        if (!error.message?.includes('Row level security')) {
-          logger.error('Error fetching user profile:', error);
-          throw error;
-        }
-        return null;
-      }
-      
-      if (data) {
-        logger.info('User profile fetched successfully');
-        return data;
-      } else {
-        logger.warn('No user profile found for ID:', userId);
-        return null;
-      }
-    } catch (error: any) {
-      logger.error('Error in fetchUserProfile:', error);
-      return null;
-    }
-  }, []);
-
-  const refreshSession = useCallback(async () => {
+  const refreshSession = async () => {
     logger.info('Refreshing session...');
     setIsLoading(true);
     setError(null);
@@ -102,67 +72,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [toast, fetchUserProfile]);
+  };
 
-  useEffect(() => {
-    logger.info('AuthProvider mounted');
-    let isSubscribed = true;
-    
-    const handleAuthStateChange = async (event: string, session: any) => {
-      if (!isSubscribed) return;
-      
-      // Clear any pending timeouts
-      if (authStateChangeTimeout.current) {
-        clearTimeout(authStateChangeTimeout.current);
-      }
-
-      // Set a timeout to debounce multiple rapid auth state changes
-      authStateChangeTimeout.current = setTimeout(async () => {
-        logger.info('Auth state changed:', event);
-        setIsLoading(true);
-        
-        try {
-          if (session?.user) {
-            logger.info('Session user found');
-            setUser(session.user);
-            const profile = await fetchUserProfile(session.user.id);
-            if (isSubscribed) {
-              setUserProfile(profile);
-            }
-          } else {
-            logger.info('No session user found');
-            setUser(null);
-            setUserProfile(null);
-          }
-        } catch (error: any) {
-          logger.error('Error handling auth state change:', error);
-          if (!error.message?.includes('Row level security')) {
-            setError(error);
-          }
-        } finally {
-          if (isSubscribed) {
-            setIsLoading(false);
-          }
-        }
-      }, 100); // Debounce for 100ms
-    };
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthStateChange);
-
-    // Initial session check
-    refreshSession();
-
-    return () => {
-      logger.info('AuthProvider unmounting');
-      isSubscribed = false;
-      if (authStateChangeTimeout.current) {
-        clearTimeout(authStateChangeTimeout.current);
-      }
-      subscription.unsubscribe();
-    };
-  }, [fetchUserProfile, refreshSession]);
-
-  const signOut = useCallback(async () => {
+  const signOut = async () => {
     logger.info('Signing out...');
     try {
       setIsLoading(true);
@@ -182,7 +94,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [navigate, toast]);
+  };
+
+  useEffect(() => {
+    logger.info('AuthProvider mounted');
+    const subscription = setupAuthListener();
+    refreshSession();
+
+    return () => {
+      logger.info('AuthProvider unmounting');
+      if (authStateChangeTimeout.current) {
+        clearTimeout(authStateChangeTimeout.current);
+      }
+      subscription.unsubscribe();
+    };
+  }, [setupAuthListener]);
 
   const value = {
     user,

@@ -6,6 +6,7 @@ import { logger } from "@/utils/logger";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { AuthLogo } from "@/components/auth/AuthLogo";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,22 +18,23 @@ const Login = () => {
   const handleRedirect = useCallback(() => {
     if (!user?.id) return;
 
-    const defaultPath = userProfile?.role ? {
+    const roleBasedPath = userProfile?.role ? {
       admin: "/admin/dashboard",
       property_manager: "/property-manager/dashboard",
       tenant: "/tenant/dashboard",
       owner: "/owner/dashboard",
-      vendor: "/vendor/dashboard"
-    }[userProfile.role] : from;
+      vendor: "/vendor/dashboard",
+      special_admin: "/admin/dashboard"
+    }[userProfile.role] : null;
 
-    const redirectPath = defaultPath || from;
+    const redirectPath = roleBasedPath || from;
 
     logger.info("Redirecting authenticated user:", {
       role: userProfile?.role,
-      redirectPath
+      redirectPath,
+      from
     });
     
-    // Use replace: true to prevent back button from returning to login
     navigate(redirectPath, { replace: true });
   }, [user, userProfile, navigate, from]);
 
@@ -41,20 +43,21 @@ const Login = () => {
     handleRedirect();
   }, [isLoading, handleRedirect]);
 
-  // Show loading state while checking authentication
+  const LoadingSpinner = () => (
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-purple-500 space-y-4"
+      role="progressbar"
+      aria-label="Loading"
+    >
+      <Loader2 className="h-8 w-8 animate-spin text-white" />
+      <p className="text-white text-sm">Loading...</p>
+    </div>
+  );
+
   if (isLoading) {
-    return (
-      <div 
-        className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-purple-500"
-        role="progressbar"
-        aria-label="Loading authentication status"
-      >
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white" />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
-  // Show login form for unauthenticated users
   if (!user?.id) {
     return (
       <AuthLayout>
@@ -72,16 +75,7 @@ const Login = () => {
     );
   }
 
-  // Show loading state while redirecting authenticated users
-  return (
-    <div 
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-purple-500"
-      role="progressbar"
-      aria-label="Redirecting"
-    >
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white" />
-    </div>
-  );
+  return <LoadingSpinner />;
 };
 
 export default Login;
