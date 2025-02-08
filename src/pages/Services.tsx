@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -86,12 +87,16 @@ const Services = () => {
         }}
       >
         {/* Logo */}
-        <div className="absolute top-4 left-4 z-20">
+        <div className="absolute top-4 left-4 z-20 flex items-center space-x-4">
           <img 
             src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png" 
             alt="Shi Shi Kokoro Property Management" 
-            className="h-16 w-auto"
+            className="h-16 w-auto object-contain transition-transform hover:scale-105"
           />
+          <div className="flex flex-col">
+            <span className="text-2xl font-bold text-white">Shi Shi Kokoro</span>
+            <span className="text-sm text-white/80">Property Management</span>
+          </div>
         </div>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
