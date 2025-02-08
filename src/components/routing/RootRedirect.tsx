@@ -12,6 +12,11 @@ export const RootRedirect = () => {
   // Save full attempted URL for post-login redirect
   const currentPath = `${location.pathname}${location.search}${location.hash}`;
 
+  // Allow access to login page even when authenticated
+  if (currentPath === '/login') {
+    return null; // Don't redirect, let the Login component handle its own logic
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -70,3 +75,4 @@ export const RootRedirect = () => {
   logger.info('Redirecting user to default route:', defaultRoute);
   return <Navigate to={defaultRoute} replace />;
 };
+

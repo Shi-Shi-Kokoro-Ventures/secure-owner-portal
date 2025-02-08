@@ -17,17 +17,18 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const { user, refreshSession } = useAuth();
+  const { user, userProfile, refreshSession } = useAuth();
 
   const from = (location.state as { from?: string })?.from || "/";
 
   useEffect(() => {
-    logger.info("Login component mounted, checking user state:", { user });
-    if (user?.id) { // Only redirect if we have a confirmed user ID
-      logger.info("User already logged in, redirecting to:", from);
+    logger.info("Login component mounted, checking user state:", { user, userProfile });
+    // Only redirect if we have both a user and their profile
+    if (user?.id && userProfile) {
+      logger.info("User already logged in and has profile, redirecting to:", from);
       navigate(from, { replace: true });
     }
-  }, [user, navigate, from]);
+  }, [user, userProfile, navigate, from]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,3 +187,4 @@ const Login = () => {
 };
 
 export default Login;
+
