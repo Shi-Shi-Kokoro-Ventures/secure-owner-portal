@@ -21,24 +21,27 @@ const Login = () => {
       redirectPath: from
     });
 
-    if (user?.id && userProfile) {
-      logger.info("User authenticated, redirecting to proper dashboard based on role:", {
-        role: userProfile.role,
-        redirectPath: from
+    if (user?.id && !isLoading) {
+      // If we have a user but no profile, just redirect to the default path
+      // This handles cases where RLS policies might prevent profile access
+      const redirectPath = userProfile?.role ? 
+        {
+          admin: "/admin/dashboard",
+          property_manager: "/property-manager/dashboard",
+          tenant: "/tenant/dashboard",
+          owner: "/owner/dashboard",
+          vendor: "/vendor/dashboard"
+        }[userProfile.role] || from : 
+        from;
+
+      logger.info("User authenticated, redirecting to:", {
+        role: userProfile?.role,
+        redirectPath
       });
-
-      const roleDashboards: Record<string, string> = {
-        admin: "/admin/dashboard",
-        property_manager: "/property-manager/dashboard",
-        tenant: "/tenant/dashboard",
-        owner: "/owner/dashboard",
-        vendor: "/vendor/dashboard"
-      };
-
-      const redirectPath = userProfile.role ? roleDashboards[userProfile.role] || from : from;
+      
       navigate(redirectPath, { replace: true });
     }
-  }, [user, userProfile, navigate, from]);
+  }, [user, userProfile, navigate, from, isLoading]);
 
   if (isLoading) {
     return (

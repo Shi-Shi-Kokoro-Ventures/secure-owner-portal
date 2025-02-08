@@ -41,17 +41,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .from('users')
         .select('id, first_name, last_name, role, status')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       
-      logger.info('User profile fetched successfully:', data);
-      setUserProfile(data);
+      if (data) {
+        logger.info('User profile fetched successfully:', data);
+        setUserProfile(data);
+      } else {
+        logger.info('No user profile found');
+        setUserProfile(null);
+      }
       setError(null);
     } catch (error: any) {
       logger.error('Error in fetchUserProfile:', error);
       setUserProfile(null);
-      setError(error);
+      // Don't set error here as it might prevent login
+      // Just log it and continue
     }
   };
 
@@ -104,7 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setError(null);
       } catch (error: any) {
         logger.error('Error handling auth state change:', error);
-        setError(error);
+        // Don't set error here to prevent login issues
       } finally {
         setIsLoading(false);
       }
