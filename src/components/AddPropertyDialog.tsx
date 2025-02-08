@@ -1,3 +1,4 @@
+
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,7 @@ interface AddPropertyDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
-  onError?: (error: any) => void;
+  onError?: (error: Error) => void;
 }
 
 export const AddPropertyDialog = ({ 

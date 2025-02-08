@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,37 +21,39 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface OwnerData {
+  name: string;
+  email: string;
+  properties: number;
+  balance: number;
+  lastPayment: string;
+  status: string;
+  username?: string;
+  dateOfBirth?: string;
+  phone?: string;
+  address?: string;
+  mailingAddress?: string;
+  governmentId?: string;
+  taxId?: string;
+  ownershipType?: string;
+  bankAccount?: string;
+  billingAddress?: string;
+  communicationPreference?: string;
+  timezone?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  emergencyContactRelation?: string;
+  notes?: string;
+}
+
 interface AddOwnerDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddOwner: (owner: {
-    name: string;
-    email: string;
-    properties: number;
-    balance: number;
-    lastPayment: string;
-    status: string;
-    username?: string;
-    dateOfBirth?: string;
-    phone?: string;
-    address?: string;
-    mailingAddress?: string;
-    governmentId?: string;
-    taxId?: string;
-    ownershipType?: string;
-    bankAccount?: string;
-    billingAddress?: string;
-    communicationPreference?: string;
-    timezone?: string;
-    emergencyContactName?: string;
-    emergencyContactPhone?: string;
-    emergencyContactRelation?: string;
-    notes?: string;
-  }) => void;
+  onAddOwner: (owner: OwnerData) => void;
 }
 
 export function AddOwnerDialog({ open, onOpenChange, onAddOwner }: AddOwnerDialogProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<OwnerData>({
     name: "",
     email: "",
     username: "",
@@ -69,17 +72,21 @@ export function AddOwnerDialog({ open, onOpenChange, onAddOwner }: AddOwnerDialo
     emergencyContactPhone: "",
     emergencyContactRelation: "",
     notes: "",
+    properties: 0,
+    balance: 0,
+    lastPayment: new Date().toISOString().split("T")[0],
+    status: "Pending"
   });
 
   const { toast } = useToast();
 
-  const handleChange = (field: string) => (
+  const handleChange = (field: keyof OwnerData) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  const handleSelectChange = (field: string) => (value: string) => {
+  const handleSelectChange = (field: keyof OwnerData) => (value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -95,15 +102,7 @@ export function AddOwnerDialog({ open, onOpenChange, onAddOwner }: AddOwnerDialo
       return;
     }
 
-    const newOwner = {
-      ...formData,
-      properties: 0,
-      balance: 0,
-      lastPayment: new Date().toISOString().split("T")[0],
-      status: "Pending",
-    };
-
-    onAddOwner(newOwner);
+    onAddOwner(formData);
     setFormData({
       name: "",
       email: "",
@@ -123,6 +122,10 @@ export function AddOwnerDialog({ open, onOpenChange, onAddOwner }: AddOwnerDialo
       emergencyContactPhone: "",
       emergencyContactRelation: "",
       notes: "",
+      properties: 0,
+      balance: 0,
+      lastPayment: new Date().toISOString().split("T")[0],
+      status: "Pending"
     });
     onOpenChange(false);
     

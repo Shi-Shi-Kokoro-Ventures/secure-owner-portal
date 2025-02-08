@@ -1,3 +1,4 @@
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,15 +17,19 @@ const MAINTENANCE_CATEGORIES = [
   { value: 'structural', label: 'Structural' },
   { value: 'pest', label: 'Pest Control' },
   { value: 'other', label: 'Other' }
-];
+] as const;
+
+type MaintenanceCategory = typeof MAINTENANCE_CATEGORIES[number]['value'];
+
+interface MaintenanceFormData {
+  title: string;
+  category: MaintenanceCategory;
+  description: string;
+}
 
 interface MaintenanceRequestDetailsProps {
-  formData: {
-    title: string;
-    category: string;
-    description: string;
-  };
-  setFormData: (data: any) => void;
+  formData: MaintenanceFormData;
+  setFormData: (data: MaintenanceFormData) => void;
   error: string | null;
 }
 
@@ -48,10 +53,10 @@ export const MaintenanceRequestDetails = ({
           id="title"
           placeholder="Brief description of the issue"
           value={formData.title}
-          onChange={(e) => setFormData(prev => ({
-            ...prev,
+          onChange={(e) => setFormData({
+            ...formData,
             title: e.target.value.slice(0, MAX_TITLE_LENGTH)
-          }))}
+          })}
           required
           maxLength={MAX_TITLE_LENGTH}
         />
@@ -64,7 +69,7 @@ export const MaintenanceRequestDetails = ({
         <Label htmlFor="category">Category</Label>
         <Select
           value={formData.category}
-          onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+          onValueChange={(value: MaintenanceCategory) => setFormData({ ...formData, category: value })}
           required
         >
           <SelectTrigger>
@@ -86,10 +91,10 @@ export const MaintenanceRequestDetails = ({
           id="description"
           placeholder="Please provide detailed information about the issue"
           value={formData.description}
-          onChange={(e) => setFormData(prev => ({
-            ...prev,
+          onChange={(e) => setFormData({
+            ...formData,
             description: e.target.value.slice(0, MAX_DESCRIPTION_LENGTH)
-          }))}
+          })}
           required
           className="min-h-[150px]"
           maxLength={MAX_DESCRIPTION_LENGTH}
