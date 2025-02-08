@@ -26,17 +26,23 @@ const Login = () => {
       userId: user?.id,
       userEmail: user?.email,
       userRole: userProfile?.role,
-      userStatus: userProfile?.status,
       redirectPath: from
     });
 
     if (user?.id && userProfile) {
-      logger.info("User authenticated and has profile", {
-        path: from,
-        userRole: userProfile.role,
-        userStatus: userProfile.status
-      });
-      navigate(from, { replace: true });
+      if (userProfile.status === 'active') {
+        logger.info("User authenticated and active", {
+          path: from,
+          userRole: userProfile.role
+        });
+        navigate(from, { replace: true });
+      } else {
+        toast({
+          title: "Account not active",
+          description: "Your account is pending approval. Please contact support.",
+          variant: "destructive",
+        });
+      }
     }
   }, [user, userProfile, navigate, from]);
 
@@ -75,11 +81,6 @@ const Login = () => {
         userEmail: session.user.email
       });
 
-      toast({
-        title: "Welcome back",
-        description: "You have successfully logged in.",
-      });
-
       // Double check user profile before redirect
       const { data: profileData, error: profileError } = await supabase
         .from('users')
@@ -92,7 +93,16 @@ const Login = () => {
         throw new Error("Could not verify user profile");
       }
 
+      if (profileData.status !== 'active') {
+        throw new Error("Account is not active");
+      }
+
       logger.info("User profile retrieved:", profileData);
+      toast({
+        title: "Welcome back",
+        description: "You have successfully logged in.",
+      });
+      
       logger.info("Redirecting to:", from);
       navigate(from, { replace: true });
     } catch (error: any) {

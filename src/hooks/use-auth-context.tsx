@@ -1,16 +1,18 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { logger } from '@/utils/logger';
+import { UserStatus } from '@/types/user';
 
 interface UserProfile {
   id: string;
   first_name: string | null;
   last_name: string | null;
   role: string;
-  status: string;
+  status: UserStatus;
 }
 
 interface AuthContextType {
