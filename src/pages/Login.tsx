@@ -60,7 +60,7 @@ const Login = () => {
         {/* Left side - 3D illustration */}
         <div className="relative hidden lg:block w-1/2">
           <img 
-            src="/lovable-uploads/485e0d9e-1cb2-4042-b819-923856b9940b.png"
+            src="/lovable-uploads/d793c034-9fa4-46a8-a72a-1f53f7440e0c.png"
             alt="Background decoration"
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -162,3 +162,4 @@ const Login = () => {
 };
 
 export default Login;
+
