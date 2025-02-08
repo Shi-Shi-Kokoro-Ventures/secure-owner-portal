@@ -3,10 +3,11 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bed, Bath, Home, Calendar, MapPin, Star } from "lucide-react";
+import { Bed, Bath, Home, Calendar, MapPin, Star, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { FilterBar } from "@/components/filter/FilterBar";
+import { useNavigate } from "react-router-dom";
 
 interface Filters {
   search?: string;
@@ -69,6 +70,7 @@ const fetchProperties = async (filters: Filters) => {
 
 const AvailableProperties = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [filters, setFilters] = React.useState<Filters>({});
 
   const { data: properties, isLoading, error } = useQuery({
@@ -91,7 +93,17 @@ const AvailableProperties = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-4xl font-bold text-[#1a4f7c] mb-8">Available Properties</h1>
+        <div className="flex items-center gap-4 mb-8">
+          <Button
+            variant="ghost"
+            className="hover:bg-gray-100"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Back
+          </Button>
+          <h1 className="text-4xl font-bold text-[#1a4f7c]">Available Properties</h1>
+        </div>
         
         <FilterBar onFilterChange={handleFilterChange} />
         
@@ -203,3 +215,4 @@ const AvailableProperties = () => {
 };
 
 export default AvailableProperties;
+
