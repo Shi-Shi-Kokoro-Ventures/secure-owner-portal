@@ -43,21 +43,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', userId)
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        logger.error('Error fetching user profile:', error);
+        throw error;
+      }
       
       if (data) {
         logger.info('User profile fetched successfully:', data);
         setUserProfile(data);
       } else {
-        logger.info('No user profile found');
+        logger.warn('No user profile found for ID:', userId);
         setUserProfile(null);
       }
-      setError(null);
     } catch (error: any) {
       logger.error('Error in fetchUserProfile:', error);
       setUserProfile(null);
-      // Don't set error here as it might prevent login
-      // Just log it and continue
+      // Only set error for non-RLS related issues
+      if (!error.message?.includes('Row level security')) {
+        setError(error);
+      }
     }
   };
 
@@ -69,7 +73,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data: { session }, error } = await supabase.auth.getSession();
       
-      if (error) throw error;
+      if (error) {
+        logger.error('Session refresh error:', error);
+        throw error;
+      }
       
       if (session?.user) {
         logger.info('Session refresh successful, user found:', session.user.id);
@@ -85,6 +92,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       setUserProfile(null);
       setError(error);
+      toast({
+        title: "Session Error",
+        description: "There was a problem with your session. Please try logging in again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -92,9 +104,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     logger.info('AuthProvider mounted');
+    let isSubscribed = true;
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       logger.info('Auth state changed:', event);
+      if (!isSubscribed) return;
+      
       setIsLoading(true);
       
       try {
@@ -107,12 +122,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(null);
           setUserProfile(null);
         }
-        setError(null);
       } catch (error: any) {
         logger.error('Error handling auth state change:', error);
-        // Don't set error here to prevent login issues
+        // Only set error for critical auth issues
+        if (!error.message?.includes('Row level security')) {
+          setError(error);
+        }
       } finally {
-        setIsLoading(false);
+        if (isSubscribed) {
+          setIsLoading(false);
+        }
       }
     });
 
@@ -121,6 +140,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       logger.info('AuthProvider unmounting');
+      isSubscribed = false;
       subscription.unsubscribe();
     };
   }, []);
@@ -130,7 +150,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setIsLoading(true);
       await supabase.auth.signOut();
-      navigate('/login');
+      setUser(null);
+      setUserProfile(null);
+      navigate('/login', { replace: true });
       logger.info('Sign out successful');
     } catch (error: any) {
       logger.error('Error signing out:', error);
@@ -145,15 +167,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const value = {
+    user,
+    userProfile,
+    isLoading,
+    error,
+    signOut,
+    refreshSession
+  };
+
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      userProfile, 
-      isLoading, 
-      error,
-      signOut, 
-      refreshSession 
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

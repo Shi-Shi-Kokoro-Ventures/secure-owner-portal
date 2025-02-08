@@ -15,34 +15,36 @@ const Login = () => {
   const from = (location.state as { from?: string })?.from || "/";
 
   useEffect(() => {
-    logger.info("Login component mounted, checking auth state:", { 
+    if (isLoading) return;
+
+    logger.info("Login component checking auth state:", { 
       userId: user?.id,
       userProfile,
       redirectPath: from
     });
 
-    if (user?.id && !isLoading) {
-      // If we have a user but no profile, just redirect to the default path
-      // This handles cases where RLS policies might prevent profile access
-      const redirectPath = userProfile?.role ? 
-        {
-          admin: "/admin/dashboard",
-          property_manager: "/property-manager/dashboard",
-          tenant: "/tenant/dashboard",
-          owner: "/owner/dashboard",
-          vendor: "/vendor/dashboard"
-        }[userProfile.role] || from : 
-        from;
+    if (user?.id) {
+      const defaultPath = userProfile?.role ? {
+        admin: "/admin/dashboard",
+        property_manager: "/property-manager/dashboard",
+        tenant: "/tenant/dashboard",
+        owner: "/owner/dashboard",
+        vendor: "/vendor/dashboard"
+      }[userProfile.role] : from;
+
+      const redirectPath = defaultPath || from;
 
       logger.info("User authenticated, redirecting to:", {
         role: userProfile?.role,
         redirectPath
       });
       
+      // Use replace: true to prevent back button from returning to login
       navigate(redirectPath, { replace: true });
     }
   }, [user, userProfile, navigate, from, isLoading]);
 
+  // Show loading state while checking authentication
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-purple-500">
@@ -55,6 +57,7 @@ const Login = () => {
     );
   }
 
+  // Show error state if there's an authentication error
   if (error) {
     return (
       <AuthLayout>
@@ -79,6 +82,7 @@ const Login = () => {
     );
   }
 
+  // Show loading state while redirecting authenticated users
   if (user?.id) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-purple-500">
@@ -91,6 +95,7 @@ const Login = () => {
     );
   }
 
+  // Show login form for unauthenticated users
   return (
     <AuthLayout>
       <AuthLogo />

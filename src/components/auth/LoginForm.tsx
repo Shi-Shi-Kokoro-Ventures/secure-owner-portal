@@ -34,7 +34,6 @@ export const LoginForm = () => {
       if (signInError) throw signInError;
 
       await refreshSession();
-      
       logger.info("Login successful, session refreshed");
       
       // Let the Login component handle the redirect based on user role
@@ -53,7 +52,8 @@ export const LoginForm = () => {
         description: errorMessage,
         variant: "destructive",
       });
-    } finally {
+      
+      // Reset loading state to allow retry
       setIsLoading(false);
     }
   };
