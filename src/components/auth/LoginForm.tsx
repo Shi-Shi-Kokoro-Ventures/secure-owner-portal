@@ -36,13 +36,13 @@ export const LoginForm = () => {
 
       await refreshSession();
       
-      logger.info("Redirecting to:", from);
+      logger.info("Login successful, session refreshed");
       toast({
         title: "Welcome back",
         description: "You have successfully logged in.",
       });
       
-      navigate(from, { replace: true });
+      // Let the Login component handle the redirect based on user role
     } catch (error: any) {
       logger.error("Login error:", error);
       toast({
