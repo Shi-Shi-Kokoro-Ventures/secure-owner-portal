@@ -8,6 +8,7 @@ import { AtSign, Lock, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth-context";
+import { logger } from "@/utils/logger";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -21,7 +22,9 @@ const Login = () => {
   const from = (location.state as { from?: string })?.from || "/";
 
   useEffect(() => {
+    logger.info("Login component mounted, checking user state:", { user });
     if (user) {
+      logger.info("User already logged in, redirecting to:", from);
       navigate(from, { replace: true });
     }
   }, [user, navigate, from]);
@@ -29,6 +32,7 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    logger.info("Login attempt started for email:", email);
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -37,18 +41,23 @@ const Login = () => {
       });
 
       if (error) {
+        logger.error("Login error:", error);
         throw error;
       }
 
+      logger.info("Supabase login successful, refreshing session");
       await refreshSession();
+      logger.info("Session refreshed successfully");
 
       toast({
         title: "Welcome back",
         description: "You have successfully logged in.",
       });
 
+      logger.info("Redirecting to:", from);
       navigate(from, { replace: true });
     } catch (error: any) {
+      logger.error("Login error caught:", error);
       toast({
         title: "Error",
         description: error.message || "An unexpected error occurred. Please try again.",

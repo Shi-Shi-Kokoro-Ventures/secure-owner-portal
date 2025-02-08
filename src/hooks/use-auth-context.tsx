@@ -31,6 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   const fetchUserProfile = async (userId: string) => {
+    logger.info('Fetching user profile for ID:', userId);
     try {
       const { data, error } = await supabase
         .from('users')
@@ -43,14 +44,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error;
       }
       
+      logger.info('User profile fetched successfully:', data);
       setUserProfile(data);
     } catch (error: any) {
-      logger.error('Error fetching user profile:', error);
+      logger.error('Error in fetchUserProfile:', error);
       setUserProfile(null);
     }
   };
 
   const refreshSession = async () => {
+    logger.info('Refreshing session...');
     try {
       const { data: { session }, error } = await supabase.auth.getSession();
       
@@ -60,9 +63,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       if (session?.user) {
+        logger.info('Session refresh successful, user found:', session.user.id);
         setUser(session.user);
         await fetchUserProfile(session.user.id);
       } else {
+        logger.info('No session found during refresh');
         setUser(null);
         setUserProfile(null);
       }
@@ -76,17 +81,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    logger.info('AuthProvider mounted');
     let mounted = true;
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       logger.info('Auth state changed:', event);
       
-      if (!mounted) return;
+      if (!mounted) {
+        logger.info('Component unmounted, skipping state update');
+        return;
+      }
 
       if (session?.user) {
+        logger.info('Session user found:', session.user.id);
         setUser(session.user);
         await fetchUserProfile(session.user.id);
       } else {
+        logger.info('No session user found');
         setUser(null);
         setUserProfile(null);
       }
@@ -97,16 +108,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     refreshSession();
 
     return () => {
+      logger.info('AuthProvider unmounting, cleaning up');
       mounted = false;
       subscription.unsubscribe();
     };
   }, []);
 
   const signOut = async () => {
+    logger.info('Signing out...');
     try {
       setIsLoading(true);
       await supabase.auth.signOut();
       navigate('/login');
+      logger.info('Sign out successful');
     } catch (error: any) {
       logger.error('Error signing out:', error);
       toast({
