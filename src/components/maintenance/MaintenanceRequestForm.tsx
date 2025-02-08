@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -5,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { MaintenanceRequestFiles } from "./MaintenanceRequestFiles";
 import { MaintenanceRequestDetails } from "./MaintenanceRequestDetails";
+import { MaintenanceCategory } from "./MaintenanceRequestDetails";
 
 interface MaintenanceRequest {
   title: string;
-  category: string;
+  category: MaintenanceCategory;
   description: string;
   files: File[];
 }
@@ -20,10 +22,24 @@ export const MaintenanceRequestForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<MaintenanceRequest>({
     title: '',
-    category: '',
+    category: 'plumbing',
     description: '',
     files: []
   });
+
+  const handleMaintenanceDetailsChange = (data: Omit<MaintenanceRequest, 'files'>) => {
+    setFormData(prev => ({
+      ...prev,
+      ...data
+    }));
+  };
+
+  const handleFilesChange = (data: { files: File[] }) => {
+    setFormData(prev => ({
+      ...prev,
+      files: data.files
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -78,13 +94,13 @@ export const MaintenanceRequestForm = () => {
     <form onSubmit={handleSubmit} className="space-y-6">
       <MaintenanceRequestDetails
         formData={formData}
-        setFormData={setFormData}
+        setFormData={handleMaintenanceDetailsChange}
         error={error}
       />
       
       <MaintenanceRequestFiles
         formData={formData}
-        setFormData={setFormData}
+        setFormData={handleFilesChange}
         setError={setError}
       />
 

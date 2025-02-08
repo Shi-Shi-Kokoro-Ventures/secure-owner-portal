@@ -1,13 +1,15 @@
+
 import { useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MaintenanceRequestDetails } from "@/components/maintenance/MaintenanceRequestDetails";
+import type { MaintenanceCategory } from "@/components/maintenance/MaintenanceRequestDetails";
 
 export default function AdminMaintenance() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    category: 'general'
+    category: 'plumbing' as MaintenanceCategory
   });
 
   const [error, setError] = useState<string>("");
