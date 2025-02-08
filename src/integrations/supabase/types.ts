@@ -1398,6 +1398,12 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      is_admin_or_self: {
+        Args: {
+          user_id: string
+        }
+        Returns: boolean
+      }
       is_property_manager: {
         Args: {
           user_id: string
