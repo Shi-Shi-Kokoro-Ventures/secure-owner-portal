@@ -1,7 +1,14 @@
-
 export type UserRole = 'admin' | 'property_manager' | 'owner' | 'tenant' | 'vendor' | 'special_admin';
 export type UserStatus = 'active' | 'pending_approval' | 'suspended' | 'archived';
 export type VendorType = 'plumbing' | 'electrical' | 'cleaning' | 'general_maintenance' | 'hvac' | 'landscaping' | 'pest_control' | 'security';
+
+export interface UserProfile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  role: UserRole;
+  status: UserStatus;
+}
 
 export interface User {
   id: string;
