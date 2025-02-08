@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -11,6 +10,7 @@ interface UserProfile {
   first_name: string | null;
   last_name: string | null;
   role: string;
+  status: string;
 }
 
 interface AuthContextType {
@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('id, first_name, last_name, role')
+        .select('id, first_name, last_name, role, status')
         .eq('id', userId)
         .single();
 

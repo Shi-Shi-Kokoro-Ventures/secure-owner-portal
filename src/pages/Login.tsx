@@ -31,7 +31,8 @@ const Login = () => {
     });
 
     if (user?.id && userProfile) {
-      logger.info("User authenticated and has profile, redirecting to:", from, {
+      logger.info("User authenticated and has profile", {
+        path: from,
         userRole: userProfile.role,
         userStatus: userProfile.status
       });
@@ -218,4 +219,3 @@ const Login = () => {
 };
 
 export default Login;
-
