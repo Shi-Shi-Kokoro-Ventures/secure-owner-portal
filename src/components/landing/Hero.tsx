@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -14,7 +13,7 @@ export const Hero = () => {
   };
 
   const handleLearnMoreClick = () => {
-    navigate("/services");
+    navigate("/available-properties");
   };
 
   return (
@@ -47,7 +46,7 @@ export const Hero = () => {
                 size="lg" 
                 variant="outline"
                 onClick={handleLearnMoreClick}
-                className="bg-white/20 border-white text-white hover:bg-white/30 font-semibold text-lg"
+                className="bg-white/20 hover:bg-white/30 text-white border-white font-semibold text-lg"
               >
                 View Available Properties
               </Button>
@@ -76,4 +75,3 @@ export const Hero = () => {
     </div>
   );
 };
-
