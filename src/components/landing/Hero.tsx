@@ -47,7 +47,7 @@ export const Hero = () => {
                 size="lg" 
                 variant="outline"
                 onClick={handleLearnMoreClick}
-                className="border-white text-white hover:bg-white/10 font-semibold text-lg"
+                className="bg-white/20 border-white text-white hover:bg-white/30 font-semibold text-lg"
               >
                 View Available Properties
               </Button>
