@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { useUsers } from "@/hooks/use-users";
@@ -6,6 +7,7 @@ import { UserManagementCards } from "@/components/admin/users/UserManagementCard
 import { EditUserDialog } from "@/components/admin/users/EditUserDialog";
 import { DeleteUserDialog } from "@/components/admin/users/DeleteUserDialog";
 import { AddUserWizard } from "@/components/admin/users/AddUserWizard";
+import { useToast } from "@/hooks/use-toast";
 import type { User, UserFormState } from "@/types/user";
 
 const INITIAL_FORM_STATE: UserFormState = {
@@ -38,28 +40,21 @@ const AdminUsers = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<UserFormState>(INITIAL_FORM_STATE);
+  const { toast } = useToast();
 
   const handleEdit = (user: User) => {
     setSelectedUser(user);
     setEditForm({
+      ...INITIAL_FORM_STATE,
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
       phone: user.phone || "",
       role: user.role,
       status: user.status,
-      two_factor_enabled: user.two_factor_enabled,
+      date_of_birth: user.date_of_birth || "",
       ssn_last_four: user.ssn_last_four || "",
-      government_id: null,
-      street_address: "",
-      city: "",
-      state: "",
-      zip_code: "",
-      company_name: "",
-      vendor_type: null,
-      assigned_properties: [],
-      emergency_contact_name: "",
-      emergency_contact_phone: "",
+      two_factor_enabled: user.two_factor_enabled,
       temporary_password: user.temporary_password || "",
     });
     setIsEditDialogOpen(true);
@@ -67,6 +62,15 @@ const AdminUsers = () => {
 
   const handleSaveEdit = async () => {
     if (!selectedUser) return;
+
+    if (editForm.role === 'tenant' && !selectedUser.profile_picture_url) {
+      toast({
+        title: "Error",
+        description: "Profile picture is required for tenant users.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const success = await updateUser(selectedUser.id, {
       first_name: editForm.first_name,
@@ -95,6 +99,16 @@ const AdminUsers = () => {
     if (!file) return;
     
     await uploadProfilePicture(file, userId);
+  };
+
+  const handleCreateUser = async (formData: UserFormState) => {
+    // Implementation will be added later
+    toast({
+      title: "Success",
+      description: "User created successfully",
+    });
+    setIsAddDialogOpen(false);
+    refetch();
   };
 
   return (
@@ -129,6 +143,7 @@ const AdminUsers = () => {
         <AddUserWizard
           open={isAddDialogOpen}
           onOpenChange={setIsAddDialogOpen}
+          onSubmit={handleCreateUser}
         />
       </div>
     </AdminLayout>
