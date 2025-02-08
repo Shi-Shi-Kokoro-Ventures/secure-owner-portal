@@ -43,7 +43,7 @@ const fetchDashboardData = async (userId: string) => {
     `)
     .eq('tenant_id', userId)
     .eq('status', 'active')
-    .single();
+    .maybeSingle(); // Changed from .single() to .maybeSingle()
 
   if (leaseError) throw leaseError;
 
@@ -66,7 +66,7 @@ const fetchDashboardData = async (userId: string) => {
 
   if (maintenanceError) throw maintenanceError;
 
-  // Fetch unread notifications count (you might need to adjust this based on your notifications implementation)
+  // Fetch unread notifications count
   const { count: unreadNotifications, error: notificationsError } = await supabase
     .from('messages')
     .select('*', { count: 'exact', head: true })
@@ -76,8 +76,8 @@ const fetchDashboardData = async (userId: string) => {
   if (notificationsError) throw notificationsError;
 
   return {
-    lease: leaseData,
-    payments,
+    lease: leaseData || null,
+    payments: payments || [],
     openRequests: openRequests || 0,
     unreadNotifications: unreadNotifications || 0
   };
@@ -113,6 +113,19 @@ const TenantDashboard = () => {
 
   const { lease, payments, openRequests, unreadNotifications } = data || {};
 
+  // Show a different message if no lease is found
+  if (!lease) {
+    return (
+      <Alert>
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>No Active Lease Found</AlertTitle>
+        <AlertDescription>
+          You currently don't have any active leases in the system. Please contact your property manager for assistance.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Welcome Alert */}
@@ -120,7 +133,7 @@ const TenantDashboard = () => {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Welcome back!</AlertTitle>
         <AlertDescription>
-          Your next rent payment of ${lease?.monthly_rent} is due on{" "}
+          Your next rent payment of {formatCurrency(lease?.monthly_rent || 0)} is due on{" "}
           {new Date(lease?.rent_due_day || Date.now()).toLocaleDateString()}.
         </AlertDescription>
       </Alert>
