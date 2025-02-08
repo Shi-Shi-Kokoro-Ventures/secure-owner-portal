@@ -16,30 +16,47 @@ const Login = () => {
   const from = (location.state as { from?: string })?.from || "/";
 
   const handleRedirect = useCallback(() => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      logger.info('No user ID found, skipping redirect');
+      return;
+    }
 
-    const roleBasedPath = userProfile?.role ? {
+    if (!userProfile?.role) {
+      logger.warn('User profile or role missing:', { userId: user.id });
+      return;
+    }
+
+    const roleBasedPath = {
       admin: "/admin/dashboard",
       property_manager: "/property-manager/dashboard",
       tenant: "/tenant/dashboard",
       owner: "/owner/dashboard",
       vendor: "/vendor/dashboard",
       special_admin: "/admin/dashboard"
-    }[userProfile.role] : null;
+    }[userProfile.role];
 
-    const redirectPath = roleBasedPath || from;
+    if (!roleBasedPath) {
+      logger.error('Invalid role for redirect:', { role: userProfile.role });
+      return;
+    }
+
+    const redirectPath = from === '/' ? roleBasedPath : from;
 
     logger.info("Redirecting authenticated user:", {
-      role: userProfile?.role,
+      userId: user.id,
+      role: userProfile.role,
       redirectPath,
-      from
+      originalPath: from
     });
     
     navigate(redirectPath, { replace: true });
   }, [user, userProfile, navigate, from]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading) {
+      logger.info('Auth state is loading, waiting...');
+      return;
+    }
     handleRedirect();
   }, [isLoading, handleRedirect]);
 
@@ -54,11 +71,15 @@ const Login = () => {
     </div>
   );
 
+  // Early return for loading state
   if (isLoading) {
+    logger.info('Showing loading spinner');
     return <LoadingSpinner />;
   }
 
+  // Show login form for unauthenticated users
   if (!user?.id) {
+    logger.info('Showing login form for unauthenticated user');
     return (
       <AuthLayout>
         <AuthLogo />
@@ -75,6 +96,8 @@ const Login = () => {
     );
   }
 
+  // Show loading spinner while checking authentication
+  logger.info('User authenticated, showing loading spinner during redirect');
   return <LoadingSpinner />;
 };
 

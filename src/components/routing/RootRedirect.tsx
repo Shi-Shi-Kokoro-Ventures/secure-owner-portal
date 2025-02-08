@@ -9,17 +9,28 @@ export const RootRedirect = () => {
   const location = useLocation();
   const { toast } = useToast();
 
+  // Enhanced logging of the current state
+  logger.info('RootRedirect state:', {
+    hasUser: !!user,
+    hasProfile: !!userProfile,
+    isLoading,
+    currentPath: location.pathname,
+    role: userProfile?.role
+  });
+
   // Save full attempted URL for post-login redirect
   const currentPath = `${location.pathname}${location.search}${location.hash}`;
 
   // Allow access to login page even when authenticated
   if (currentPath === '/login') {
+    logger.info('Login page accessed, skipping redirect');
     return null; // Don't redirect, let the Login component handle its own logic
   }
 
   if (isLoading) {
+    logger.info('Auth state loading, showing spinner');
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
@@ -31,7 +42,7 @@ export const RootRedirect = () => {
   }
 
   if (!userProfile) {
-    logger.error('User profile not found for authenticated user');
+    logger.error('User profile not found for authenticated user:', user.id);
     toast({
       title: "Profile Error",
       description: "Unable to load user profile. Please try logging in again.",
@@ -40,14 +51,13 @@ export const RootRedirect = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // Handle special_admin access
+  // Handle special_admin access with enhanced logging
   if (userProfile.role === 'special_admin') {
-    // Allow special_admin to access any portal route directly
     if (currentPath.match(/^\/(admin|owner|tenant|vendor|property-manager)/)) {
       logger.info('Special admin accessing portal route:', currentPath);
       return null; // Allow access to the attempted path
     }
-    // Default to admin dashboard if no specific route attempted
+    logger.info('Special admin redirecting to default dashboard');
     return <Navigate to="/admin/dashboard" replace />;
   }
 
@@ -63,7 +73,11 @@ export const RootRedirect = () => {
   const defaultRoute = roleDashboards[userProfile.role];
 
   if (!defaultRoute) {
-    logger.error('Invalid role detected:', userProfile.role);
+    logger.error('Invalid role detected:', {
+      role: userProfile.role,
+      userId: user.id,
+      attemptedPath: currentPath
+    });
     toast({
       title: "Invalid Role",
       description: "Your user account has an invalid role. Please contact support.",
@@ -72,7 +86,11 @@ export const RootRedirect = () => {
     return <Navigate to="/login" replace />;
   }
 
-  logger.info('Redirecting user to default route:', defaultRoute);
+  logger.info('Redirecting user to default route:', {
+    role: userProfile.role,
+    defaultRoute,
+    attemptedPath: currentPath
+  });
   return <Navigate to={defaultRoute} replace />;
 };
 
