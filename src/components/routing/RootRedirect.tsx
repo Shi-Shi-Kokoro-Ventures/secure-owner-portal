@@ -18,28 +18,7 @@ export const RootRedirect = () => {
     role: userProfile?.role
   });
 
-  // Allow access to login page even when authenticated
-  if (location.pathname === '/login') {
-    logger.info('Login page accessed');
-    // If already authenticated, redirect to appropriate dashboard
-    if (user && userProfile) {
-      const defaultRoute = {
-        admin: "/admin/dashboard",
-        property_manager: "/property-manager/dashboard",
-        tenant: "/tenant/dashboard",
-        owner: "/owner/dashboard",
-        vendor: "/vendor/dashboard",
-        special_admin: "/admin/dashboard"
-      }[userProfile.role];
-
-      if (defaultRoute) {
-        logger.info('Authenticated user accessing login, redirecting to:', defaultRoute);
-        return <Navigate to={defaultRoute} replace />;
-      }
-    }
-    return null; // Let unauthenticated users access login
-  }
-
+  // Handle loading state
   if (isLoading) {
     logger.info('Auth state loading, showing spinner');
     return (
@@ -49,59 +28,48 @@ export const RootRedirect = () => {
     );
   }
 
-  // For all other routes, redirect to login if not authenticated
-  if (!user) {
-    logger.info('No user found, redirecting to login with return URL:', location.pathname);
-    return <Navigate to="/login" state={{ from: location.pathname !== '/' ? location.pathname : undefined }} replace />;
-  }
-
-  if (!userProfile) {
-    logger.error('User profile not found for authenticated user:', user.id);
-    toast({
-      title: "Profile Error",
-      description: "Unable to load user profile. Please try logging in again.",
-      variant: "destructive",
-    });
-    return <Navigate to="/login" replace />;
-  }
-
-  // Handle special_admin access
-  if (userProfile.role === 'special_admin') {
-    if (location.pathname.match(/^\/(admin|owner|tenant|vendor|property-manager)/)) {
-      logger.info('Special admin accessing portal route:', location.pathname);
-      return null;
-    }
-    logger.info('Special admin redirecting to default dashboard');
-    return <Navigate to="/admin/dashboard" replace />;
-  }
-
   // Map roles to their default dashboard routes
   const roleDashboards: Record<string, string> = {
     admin: "/admin/dashboard",
     property_manager: "/property-manager/dashboard",
     tenant: "/tenant/dashboard",
     owner: "/owner/dashboard",
-    vendor: "/vendor/dashboard"
+    vendor: "/vendor/dashboard",
+    special_admin: "/admin/dashboard"
   };
 
-  const defaultRoute = roleDashboards[userProfile.role];
-
-  if (!defaultRoute) {
-    logger.error('Invalid role detected:', userProfile.role);
-    toast({
-      title: "Invalid Role",
-      description: "Your user account has an invalid role. Please contact support.",
-      variant: "destructive",
-    });
+  // For root path, redirect to appropriate dashboard
+  if (location.pathname === '/') {
+    if (user && userProfile) {
+      const defaultRoute = roleDashboards[userProfile.role];
+      if (defaultRoute) {
+        logger.info('Redirecting to default dashboard:', defaultRoute);
+        return <Navigate to={defaultRoute} replace />;
+      }
+    }
+    // If no user or no valid role, redirect to login
+    logger.info('No valid user/role, redirecting to login');
     return <Navigate to="/login" replace />;
   }
 
-  // Only redirect to default route if at root path
-  if (location.pathname === '/') {
-    logger.info('Root path accessed, redirecting to:', defaultRoute);
-    return <Navigate to={defaultRoute} replace />;
+  // For login page
+  if (location.pathname === '/login') {
+    if (user && userProfile) {
+      const defaultRoute = roleDashboards[userProfile.role];
+      if (defaultRoute) {
+        logger.info('Logged in user accessing login, redirecting to:', defaultRoute);
+        return <Navigate to={defaultRoute} replace />;
+      }
+    }
+    return null; // Allow access to login page
   }
 
-  // Let ProtectedRoute handle specific route access
+  // For all other routes
+  if (!user || !userProfile) {
+    logger.info('Protected route accessed without auth, redirecting to login');
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  // Let route components handle specific access control
   return null;
 };

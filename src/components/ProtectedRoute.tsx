@@ -36,22 +36,11 @@ export const ProtectedRoute = ({
   // Handle authentication check
   if (requireAuth && !user) {
     logger.info('Protected route accessed without authentication, redirecting to:', redirectTo);
-    // Pass the attempted URL in location state for post-login redirect
     return <Navigate to={redirectTo} state={{ from: currentPath }} replace />;
   }
 
   // Role-based access control
-  if (allowedRoles.length > 0) {
-    if (!userProfile) {
-      logger.error('No user profile found for role check');
-      toast({
-        title: "Profile Error",
-        description: "Unable to load user profile. Please try logging in again.",
-        variant: "destructive",
-      });
-      return <Navigate to={redirectTo} state={{ from: currentPath }} replace />;
-    }
-
+  if (allowedRoles.length > 0 && userProfile) {
     // Special admins can access any route
     if (userProfile.role === 'special_admin') {
       logger.info('Special admin accessing protected route');

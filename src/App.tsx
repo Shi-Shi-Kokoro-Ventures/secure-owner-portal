@@ -1,6 +1,6 @@
 
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/use-auth-context";
@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import Index from "./pages/Index";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Layout } from "./components/Layout";
+import { RootRedirect } from "./components/routing/RootRedirect";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,8 +35,10 @@ const App: React.FC = () => {
         <Router>
           <AuthProvider>
             <Routes>
+              {/* Root redirect handler */}
+              <Route path="/" element={<RootRedirect />} />
+              
               {/* Public routes */}
-              <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               
               {/* Portal routes */}
