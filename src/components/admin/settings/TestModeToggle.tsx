@@ -14,7 +14,7 @@ export const TestModeToggle = () => {
   const queryClient = useQueryClient();
   const { userProfile } = useAuth();
 
-  const { data: testMode, isLoading } = useQuery({
+  const { data: settingData, isLoading } = useQuery({
     queryKey: ['test-mode'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -73,12 +73,12 @@ export const TestModeToggle = () => {
           </Label>
           <Switch
             id="test-mode"
-            checked={testMode?.enabled || false}
+            checked={settingData?.enabled || false}
             onCheckedChange={(checked) => toggleTestMode(checked)}
             disabled={isLoading}
           />
         </div>
-        {testMode?.enabled && (
+        {settingData?.enabled && (
           <p className="mt-4 text-sm text-yellow-600 dark:text-yellow-500">
             Test mode is currently enabled. Mock data is being used for demonstration purposes.
           </p>

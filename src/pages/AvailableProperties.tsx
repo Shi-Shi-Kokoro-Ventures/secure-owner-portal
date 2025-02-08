@@ -22,13 +22,19 @@ interface Filters {
 
 const fetchProperties = async (filters: Filters) => {
   // First check if test mode is enabled
-  const { data: testModeSetting } = await supabase
+  const { data: settingData, error: settingError } = await supabase
     .from('admin_settings')
     .select('setting_value')
     .eq('setting_key', 'test_mode')
     .single();
 
-  const settingValue = testModeSetting?.setting_value as TestModeSetting;
+  if (settingError) {
+    console.error('Error fetching test mode setting:', settingError);
+    return [];
+  }
+
+  // Safely type cast the setting value
+  const settingValue = settingData?.setting_value as TestModeSetting | null;
   const testModeEnabled = settingValue?.enabled || false;
 
   let query = supabase
@@ -49,6 +55,8 @@ const fetchProperties = async (filters: Filters) => {
   // Only show test data if test mode is enabled
   if (!testModeEnabled) {
     query = query.not('property_name', 'ilike', '%Test%');
+  } else {
+    query = query.ilike('property_name', '%Test%');
   }
 
   // Base property status filter
