@@ -23,7 +23,7 @@ const Login = () => {
 
   useEffect(() => {
     logger.info("Login component mounted, checking user state:", { user });
-    if (user) {
+    if (user?.id) { // Only redirect if we have a confirmed user ID
       logger.info("User already logged in, redirecting to:", from);
       navigate(from, { replace: true });
     }
@@ -48,6 +48,12 @@ const Login = () => {
       logger.info("Supabase login successful, refreshing session");
       await refreshSession();
       logger.info("Session refreshed successfully");
+
+      // After successful login and session refresh, double check user state
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        throw new Error("Session not established after login");
+      }
 
       toast({
         title: "Welcome back",
