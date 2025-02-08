@@ -6,7 +6,7 @@ import { Bed, Bath, Home, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { FilterBar } from "@/components/filter/FilterBar";
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 interface Filters {
   search?: string;
@@ -15,6 +15,7 @@ interface Filters {
   featured?: boolean;
   sortBy?: string;
   propertyType?: string;
+  propertyStatus?: string;
   priceRange?: number[];
 }
 
@@ -29,11 +30,22 @@ const fetchProperties = async (filters: Filters) => {
         rent_amount,
         status
       )
-    `)
-    .eq('status', 'active');
+    `);
+
+  // Base property status filter
+  if (filters.propertyStatus && filters.propertyStatus !== 'all') {
+    query = query.eq('status', filters.propertyStatus);
+  } else {
+    // Default to active properties if no status specified
+    query = query.eq('status', 'active');
+  }
 
   if (filters.search) {
     query = query.or(`property_name.ilike.%${filters.search}%,address.ilike.%${filters.search}%`);
+  }
+
+  if (filters.propertyType && filters.propertyType !== 'all') {
+    query = query.eq('property_type', filters.propertyType);
   }
 
   if (filters.bedrooms && filters.bedrooms !== 'any') {
@@ -50,22 +62,22 @@ const fetchProperties = async (filters: Filters) => {
     query = query.eq('is_featured', true);
   }
 
-  if (filters.sortBy) {
-    switch (filters.sortBy) {
-      case 'price_asc':
-        query = query.order('rent_amount', { ascending: true });
-        break;
-      case 'price_desc':
-        query = query.order('rent_amount', { ascending: false });
-        break;
-      case 'newest':
-        query = query.order('created_at', { ascending: false });
-        break;
-    }
+  const { data, error } = await query;
+  
+  if (error) throw error;
+
+  // Filter by price range after fetching because we need to check unit prices
+  if (data && filters.priceRange) {
+    const [minPrice, maxPrice] = filters.priceRange;
+    return data.filter(property => {
+      const availableUnits = property.units?.filter(unit => unit.status === 'vacant') || [];
+      if (availableUnits.length === 0) return false;
+      
+      const lowestRent = Math.min(...availableUnits.map(unit => unit.rent_amount));
+      return lowestRent >= minPrice && lowestRent <= maxPrice;
+    });
   }
 
-  const { data, error } = await query;
-  if (error) throw error;
   return data;
 };
 

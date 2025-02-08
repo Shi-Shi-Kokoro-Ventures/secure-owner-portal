@@ -14,6 +14,7 @@ interface FilterBarProps {
     featured?: boolean;
     sortBy?: string;
     propertyType?: string;
+    propertyStatus?: string;
     priceRange?: number[];
   }) => void;
 }
@@ -30,6 +31,7 @@ export const FilterBar = ({ onFilterChange }: FilterBarProps) => {
               <SelectValue placeholder="Type of Property" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
               <SelectItem value="apartment">Apartment</SelectItem>
               <SelectItem value="house">House</SelectItem>
               <SelectItem value="condo">Condo</SelectItem>
@@ -43,13 +45,14 @@ export const FilterBar = ({ onFilterChange }: FilterBarProps) => {
             onChange={(e) => onFilterChange({ search: e.target.value })}
           />
 
-          <Select onValueChange={(value) => onFilterChange({ sortBy: value })}>
+          <Select onValueChange={(value) => onFilterChange({ propertyStatus: value })}>
             <SelectTrigger>
               <SelectValue placeholder="Property Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="available">Available Now</SelectItem>
-              <SelectItem value="upcoming">Coming Soon</SelectItem>
+              <SelectItem value="all">All Properties</SelectItem>
+              <SelectItem value="active">Available Now</SelectItem>
+              <SelectItem value="pending">Coming Soon</SelectItem>
               <SelectItem value="rented">Rented</SelectItem>
             </SelectContent>
           </Select>
@@ -81,8 +84,9 @@ export const FilterBar = ({ onFilterChange }: FilterBarProps) => {
         <div className="flex justify-end">
           <Button 
             className="bg-emerald-500 hover:bg-emerald-600 text-white px-8"
+            onClick={() => onFilterChange({})} // Reset filters
           >
-            Search
+            Reset Filters
           </Button>
         </div>
       </div>
