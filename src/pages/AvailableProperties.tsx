@@ -94,7 +94,7 @@ const AvailableProperties = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Button
               variant="ghost"
               className="hover:bg-gray-100/80 transition-colors"
@@ -103,15 +103,16 @@ const AvailableProperties = () => {
               <ArrowLeft className="h-5 w-5 mr-2" />
               Back
             </Button>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <img
                 src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png"
-                alt="Shi Shi Kokoro"
-                className="h-12 w-auto"
+                alt="Shi Shi Kokoro Property Management"
+                className="h-16 w-auto"
               />
-              <div>
-                <h1 className="text-3xl font-bold text-[#1a4f7c]">Available Properties</h1>
-                <p className="text-gray-600 mt-1">Find your perfect home</p>
+              <div className="flex flex-col">
+                <h1 className="text-3xl font-bold text-[#1a4f7c]">Shi Shi Kokoro</h1>
+                <span className="text-lg font-semibold text-[#1a4f7c]/80">Property Management</span>
+                <p className="text-gray-600 mt-2">Available Properties - Find your perfect home</p>
               </div>
             </div>
           </div>
