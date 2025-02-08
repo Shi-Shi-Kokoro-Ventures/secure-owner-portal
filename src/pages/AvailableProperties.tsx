@@ -1,13 +1,11 @@
-
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bed, Bath, Home, MapPin, ArrowLeft } from "lucide-react";
+import { Bed, Bath, Home, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { FilterBar } from "@/components/filter/FilterBar";
-import { useNavigate } from "react-router-dom";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 interface Filters {
@@ -73,7 +71,6 @@ const fetchProperties = async (filters: Filters) => {
 
 const AvailableProperties = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [filters, setFilters] = React.useState<Filters>({});
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 6;
@@ -95,7 +92,6 @@ const AvailableProperties = () => {
     setFilters(prev => ({ ...prev, ...newFilters }));
   };
 
-  // Calculate pagination
   const totalPages = properties ? Math.ceil(properties.length / itemsPerPage) : 0;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -103,12 +99,11 @@ const AvailableProperties = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
       <div className="relative h-[400px] bg-gradient-to-r from-gray-900 to-gray-600 bg-gradient-to-r">
         <div className="absolute inset-0 bg-black/40" />
         <img
-          src="/lovable-uploads/472479b1-526e-4e85-93df-35b2efcf593c.png"
-          alt="Hero background"
+          src="/lovable-uploads/0c444ea3-9b98-43c4-9d34-0d162072adf2.png"
+          alt="Luxury interior"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
