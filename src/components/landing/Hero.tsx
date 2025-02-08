@@ -49,7 +49,7 @@ export const Hero = () => {
                 onClick={handleLearnMoreClick}
                 className="border-white text-white hover:bg-white/10 font-semibold text-lg"
               >
-                Explore Our Services
+                View Available Properties
               </Button>
             </div>
           </div>
@@ -76,3 +76,4 @@ export const Hero = () => {
     </div>
   );
 };
+
