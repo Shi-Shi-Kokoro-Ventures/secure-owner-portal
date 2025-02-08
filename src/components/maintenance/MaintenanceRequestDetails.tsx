@@ -19,7 +19,7 @@ const MAINTENANCE_CATEGORIES = [
   { value: 'other', label: 'Other' }
 ] as const;
 
-type MaintenanceCategory = typeof MAINTENANCE_CATEGORIES[number]['value'];
+export type MaintenanceCategory = typeof MAINTENANCE_CATEGORIES[number]['value'];
 
 interface MaintenanceFormData {
   title: string;

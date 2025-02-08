@@ -41,7 +41,7 @@ export function PaymentForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: "1200.00", // Default rent amount
+      amount: "1200.00",
       paymentMethod: "",
       cardNumber: "",
       expiryDate: "",
@@ -65,7 +65,7 @@ export function PaymentForm() {
           amount_paid: parseFloat(values.amount),
           payment_date: new Date().toISOString(),
           status: 'pending',
-          method: values.paymentMethod,
+          method: values.paymentMethod === 'credit' ? 'credit_card' : 'ACH',
         });
 
       if (paymentError) throw paymentError;
