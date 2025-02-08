@@ -1,10 +1,10 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { UserFormState } from "@/types/user";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import type { User, UserFormState } from "@/types/user";
 
 interface EditUserDialogProps {
   open: boolean;
@@ -74,11 +74,27 @@ export const EditUserDialog = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="special_admin">Special Admin</SelectItem>
                 <SelectItem value="property_manager">Property Manager</SelectItem>
                 <SelectItem value="owner">Owner</SelectItem>
                 <SelectItem value="tenant">Tenant</SelectItem>
                 <SelectItem value="vendor">Vendor</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="status">Account Status</Label>
+            <Select
+              value={formData.status}
+              onValueChange={(value: any) => onFormChange({ ...formData, status: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                <SelectItem value="suspended">Suspended</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
               </SelectContent>
             </Select>
           </div>
