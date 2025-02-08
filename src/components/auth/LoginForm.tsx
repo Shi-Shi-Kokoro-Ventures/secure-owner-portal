@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,6 @@ export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
   const { refreshSession } = useAuth();
@@ -114,14 +113,12 @@ export const LoginForm = () => {
 
       <p className="text-center text-gray-400 text-sm">
         New here?{" "}
-        <button
-          type="button"
-          onClick={() => navigate("/signup")}
+        <a
+          href="/signup"
           className="text-purple-400 hover:text-purple-300 font-medium"
-          disabled={isLoading}
         >
           Register now
-        </button>
+        </a>
       </p>
     </form>
   );

@@ -19,6 +19,7 @@ interface AuthContextType {
   user: User | null;
   userProfile: UserProfile | null;
   isLoading: boolean;
+  error: Error | null;
   signOut: () => Promise<void>;
   refreshSession: () => Promise<void>;
 }
@@ -29,6 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -45,14 +47,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       logger.info('User profile fetched successfully:', data);
       setUserProfile(data);
+      setError(null);
     } catch (error: any) {
       logger.error('Error in fetchUserProfile:', error);
       setUserProfile(null);
+      setError(error);
     }
   };
 
   const refreshSession = async () => {
     logger.info('Refreshing session...');
+    setIsLoading(true);
+    setError(null);
+    
     try {
       const { data: { session }, error } = await supabase.auth.getSession();
       
@@ -71,6 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       logger.error('Failed to refresh session:', error);
       setUser(null);
       setUserProfile(null);
+      setError(error);
     } finally {
       setIsLoading(false);
     }
@@ -81,18 +89,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       logger.info('Auth state changed:', event);
+      setIsLoading(true);
       
-      if (session?.user) {
-        logger.info('Session user found:', session.user.id);
-        setUser(session.user);
-        await fetchUserProfile(session.user.id);
-      } else {
-        logger.info('No session user found');
-        setUser(null);
-        setUserProfile(null);
+      try {
+        if (session?.user) {
+          logger.info('Session user found:', session.user.id);
+          setUser(session.user);
+          await fetchUserProfile(session.user.id);
+        } else {
+          logger.info('No session user found');
+          setUser(null);
+          setUserProfile(null);
+        }
+        setError(null);
+      } catch (error: any) {
+        logger.error('Error handling auth state change:', error);
+        setError(error);
+      } finally {
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
     });
 
     // Initial session check
@@ -113,6 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       logger.info('Sign out successful');
     } catch (error: any) {
       logger.error('Error signing out:', error);
+      setError(error);
       toast({
         title: "Error",
         description: "There was a problem signing out. Please try again.",
@@ -124,7 +140,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, userProfile, isLoading, signOut, refreshSession }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      userProfile, 
+      isLoading, 
+      error,
+      signOut, 
+      refreshSession 
+    }}>
       {children}
     </AuthContext.Provider>
   );

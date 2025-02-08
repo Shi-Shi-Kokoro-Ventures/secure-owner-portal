@@ -10,7 +10,7 @@ import { LoginForm } from "@/components/auth/LoginForm";
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, isLoading, error } = useAuth();
 
   const from = (location.state as { from?: string })?.from || "/";
 
@@ -40,6 +40,36 @@ const Login = () => {
       navigate(redirectPath, { replace: true });
     }
   }, [user, userProfile, navigate, from]);
+
+  // If loading, show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-purple-500">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      </div>
+    );
+  }
+
+  // If error occurred during authentication
+  if (error) {
+    return (
+      <AuthLayout>
+        <AuthLogo />
+        <div className="text-center" role="alert" aria-live="polite">
+          <h2 className="text-3xl font-bold text-red-500 mb-2">Authentication Error</h2>
+          <p className="text-gray-400 text-sm mb-4">
+            {error.message || "An unexpected error occurred"}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="text-purple-400 hover:text-purple-300 font-medium"
+          >
+            Try Again
+          </button>
+        </div>
+      </AuthLayout>
+    );
+  }
 
   // If already authenticated, show loading state
   if (user?.id) {
