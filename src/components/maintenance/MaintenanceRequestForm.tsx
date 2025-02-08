@@ -88,22 +88,51 @@ export const MaintenanceRequestForm = () => {
 
       if (requestError) throw requestError;
 
-      // Upload files if any
+      // Upload files if any using Promise.allSettled for better error handling
       if (formData.files.length > 0) {
-        for (const file of formData.files) {
-          const fileExt = file.name.split('.').pop();
+        const uploadPromises = formData.files.map(async (file) => {
+          const parts = file.name.split('.');
+          const fileExt = parts.length > 1 ? parts.pop() : null;
+          
+          if (!fileExt) {
+            throw new Error(`File ${file.name} does not have a valid extension.`);
+          }
+          
           const fileName = `${crypto.randomUUID()}.${fileExt}`;
           const filePath = `maintenance/${request.id}/${fileName}`;
-
+          
           const { error: uploadError } = await supabase.storage
             .from('maintenance-files')
             .upload(filePath, file);
-
+          
           if (uploadError) {
-            logger.error('Error uploading file:', uploadError);
-            // Continue with other files if one fails
-            continue;
+            throw new Error(`Upload failed for ${file.name}: ${uploadError.message}`);
           }
+          
+          return { filePath, fileName: file.name };
+        });
+
+        const results = await Promise.allSettled(uploadPromises);
+
+        const successfulUploads = results.filter(
+          (result): result is PromiseFulfilledResult<{ filePath: string; fileName: string }> => 
+          result.status === 'fulfilled'
+        );
+        const failedUploads = results.filter(result => result.status === 'rejected');
+
+        if (failedUploads.length > 0) {
+          logger.error('Some files failed to upload:', failedUploads);
+          toast({
+            title: "Warning",
+            description: `${successfulUploads.length} files uploaded successfully, ${failedUploads.length} files failed.`,
+            variant: "destructive",
+          });
+        }
+
+        if (successfulUploads.length > 0) {
+          logger.info('Successfully uploaded files:', 
+            successfulUploads.map(result => result.value.fileName)
+          );
         }
       }
       
