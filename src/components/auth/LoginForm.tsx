@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,12 +18,10 @@ export const LoginForm = () => {
   const { toast } = useToast();
   const { refreshSession } = useAuth();
 
-  const from = (location.state as { from?: string })?.from || "/";
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    logger.info("Login attempt started for email:", email);
+    logger.info("Login attempt started");
 
     try {
       const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -34,9 +32,8 @@ export const LoginForm = () => {
       if (signInError) throw signInError;
 
       await refreshSession();
-      logger.info("Login successful, session refreshed");
+      logger.info("Login successful");
       
-      // Let the Login component handle the redirect based on user role
     } catch (error: any) {
       logger.error("Login error:", error);
       
@@ -53,17 +50,15 @@ export const LoginForm = () => {
         variant: "destructive",
       });
       
-      // Reset loading state to allow retry
       setIsLoading(false);
     }
-  };
+  }, [email, password, toast, refreshSession]);
 
   return (
     <form 
       onSubmit={handleSubmit} 
       className="mt-8 space-y-6"
       aria-labelledby="login-title"
-      aria-live="polite"
     >
       <div className="space-y-4">
         <div>
@@ -71,8 +66,10 @@ export const LoginForm = () => {
             Email address
           </Label>
           <div className="relative">
-            <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" 
-                   aria-hidden="true" />
+            <AtSign 
+              className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" 
+              aria-hidden="true"
+            />
             <Input
               id="email"
               name="email"
@@ -84,7 +81,6 @@ export const LoginForm = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
-              aria-label="Email address"
               aria-required="true"
             />
           </div>
@@ -95,8 +91,10 @@ export const LoginForm = () => {
             Password
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" 
-                 aria-hidden="true" />
+            <Lock 
+              className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" 
+              aria-hidden="true"
+            />
             <Input
               id="password"
               name="password"
@@ -108,7 +106,6 @@ export const LoginForm = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={isLoading}
-              aria-label="Password"
               aria-required="true"
             />
           </div>

@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -33,8 +33,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<Error | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const authStateChangeTimeout = useRef<NodeJS.Timeout>();
 
-  const fetchUserProfile = async (userId: string) => {
+  // Memoize fetchUserProfile to prevent unnecessary recreations
+  const fetchUserProfile = useCallback(async (userId: string) => {
     logger.info('Fetching user profile for ID:', userId);
     try {
       const { data, error } = await supabase
@@ -44,28 +46,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .maybeSingle();
 
       if (error) {
-        logger.error('Error fetching user profile:', error);
-        throw error;
+        if (!error.message?.includes('Row level security')) {
+          logger.error('Error fetching user profile:', error);
+          throw error;
+        }
+        return null;
       }
       
       if (data) {
-        logger.info('User profile fetched successfully:', data);
-        setUserProfile(data);
+        logger.info('User profile fetched successfully');
+        return data;
       } else {
         logger.warn('No user profile found for ID:', userId);
-        setUserProfile(null);
+        return null;
       }
     } catch (error: any) {
       logger.error('Error in fetchUserProfile:', error);
-      setUserProfile(null);
-      // Only set error for non-RLS related issues
-      if (!error.message?.includes('Row level security')) {
-        setError(error);
-      }
+      return null;
     }
-  };
+  }, []);
 
-  const refreshSession = async () => {
+  const refreshSession = useCallback(async () => {
     logger.info('Refreshing session...');
     setIsLoading(true);
     setError(null);
@@ -79,9 +80,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       if (session?.user) {
-        logger.info('Session refresh successful, user found:', session.user.id);
+        logger.info('Session refresh successful');
         setUser(session.user);
-        await fetchUserProfile(session.user.id);
+        const profile = await fetchUserProfile(session.user.id);
+        setUserProfile(profile);
       } else {
         logger.info('No session found during refresh');
         setUser(null);
@@ -100,40 +102,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast, fetchUserProfile]);
 
   useEffect(() => {
     logger.info('AuthProvider mounted');
     let isSubscribed = true;
     
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      logger.info('Auth state changed:', event);
+    const handleAuthStateChange = async (event: string, session: any) => {
       if (!isSubscribed) return;
       
-      setIsLoading(true);
-      
-      try {
-        if (session?.user) {
-          logger.info('Session user found:', session.user.id);
-          setUser(session.user);
-          await fetchUserProfile(session.user.id);
-        } else {
-          logger.info('No session user found');
-          setUser(null);
-          setUserProfile(null);
-        }
-      } catch (error: any) {
-        logger.error('Error handling auth state change:', error);
-        // Only set error for critical auth issues
-        if (!error.message?.includes('Row level security')) {
-          setError(error);
-        }
-      } finally {
-        if (isSubscribed) {
-          setIsLoading(false);
-        }
+      // Clear any pending timeouts
+      if (authStateChangeTimeout.current) {
+        clearTimeout(authStateChangeTimeout.current);
       }
-    });
+
+      // Set a timeout to debounce multiple rapid auth state changes
+      authStateChangeTimeout.current = setTimeout(async () => {
+        logger.info('Auth state changed:', event);
+        setIsLoading(true);
+        
+        try {
+          if (session?.user) {
+            logger.info('Session user found');
+            setUser(session.user);
+            const profile = await fetchUserProfile(session.user.id);
+            if (isSubscribed) {
+              setUserProfile(profile);
+            }
+          } else {
+            logger.info('No session user found');
+            setUser(null);
+            setUserProfile(null);
+          }
+        } catch (error: any) {
+          logger.error('Error handling auth state change:', error);
+          if (!error.message?.includes('Row level security')) {
+            setError(error);
+          }
+        } finally {
+          if (isSubscribed) {
+            setIsLoading(false);
+          }
+        }
+      }, 100); // Debounce for 100ms
+    };
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthStateChange);
 
     // Initial session check
     refreshSession();
@@ -141,11 +155,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       logger.info('AuthProvider unmounting');
       isSubscribed = false;
+      if (authStateChangeTimeout.current) {
+        clearTimeout(authStateChangeTimeout.current);
+      }
       subscription.unsubscribe();
     };
-  }, []);
+  }, [fetchUserProfile, refreshSession]);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     logger.info('Signing out...');
     try {
       setIsLoading(true);
@@ -165,7 +182,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [navigate, toast]);
 
   const value = {
     user,
