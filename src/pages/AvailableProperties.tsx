@@ -7,6 +7,7 @@ import { FilterBar } from "@/components/filter/FilterBar";
 import { HeroSection } from "@/components/properties/HeroSection";
 import { PropertyList } from "@/components/properties/PropertyList";
 import { TestModeSetting } from "@/integrations/supabase/types/settings";
+import { Property, Unit } from "@/types/property.types";
 
 interface Filters {
   search?: string;
@@ -38,7 +39,10 @@ const fetchProperties = async (filters: Filters) => {
         id,
         unit_number,
         rent_amount,
-        status
+        status,
+        created_at,
+        property_id,
+        tenant_id
       )
     `);
 
@@ -81,10 +85,19 @@ const fetchProperties = async (filters: Filters) => {
   
   if (error) throw error;
 
+  // Transform the data to match the Property & Unit types
+  const propertiesWithUnits = data?.map((property: any) => ({
+    ...property,
+    units: property.units?.map((unit: any) => ({
+      ...unit,
+      created_at: unit.created_at || new Date().toISOString()
+    }))
+  })) as (Property & { units?: Unit[] })[];
+
   // Filter by price range after fetching because we need to check unit prices
-  if (data && filters.priceRange) {
+  if (propertiesWithUnits && filters.priceRange) {
     const [minPrice, maxPrice] = filters.priceRange;
-    return data.filter(property => {
+    return propertiesWithUnits.filter(property => {
       const availableUnits = property.units?.filter(unit => unit.status === 'vacant') || [];
       if (availableUnits.length === 0) return false;
       
@@ -93,7 +106,7 @@ const fetchProperties = async (filters: Filters) => {
     });
   }
 
-  return data;
+  return propertiesWithUnits;
 };
 
 const AvailableProperties = () => {
