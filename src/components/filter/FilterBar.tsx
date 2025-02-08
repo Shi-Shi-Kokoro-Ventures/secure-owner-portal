@@ -16,7 +16,7 @@ interface FilterBarProps {
 
 export const FilterBar = ({ onFilterChange }: FilterBarProps) => {
   return (
-    <div className="space-y-4 md:space-y-0 md:flex md:items-center md:gap-4 p-4 bg-gray-50 rounded-lg">
+    <div className="space-y-4 md:space-y-0 md:flex md:items-center md:gap-4">
       <div className="relative flex-1">
         <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
