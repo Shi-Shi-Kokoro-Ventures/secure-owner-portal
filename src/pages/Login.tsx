@@ -22,10 +22,19 @@ const Login = () => {
   const from = (location.state as { from?: string })?.from || "/";
 
   useEffect(() => {
-    logger.info("Login component mounted, checking user state:", { user, userProfile });
-    // Only redirect if we have both a user and their profile
+    logger.info("Login component mounted, checking auth state:", { 
+      userId: user?.id,
+      userEmail: user?.email,
+      userRole: userProfile?.role,
+      userStatus: userProfile?.status,
+      redirectPath: from
+    });
+
     if (user?.id && userProfile) {
-      logger.info("User already logged in and has profile, redirecting to:", from);
+      logger.info("User authenticated and has profile, redirecting to:", from, {
+        userRole: userProfile.role,
+        userStatus: userProfile.status
+      });
       navigate(from, { replace: true });
     }
   }, [user, userProfile, navigate, from]);
@@ -36,31 +45,53 @@ const Login = () => {
     logger.info("Login attempt started for email:", email);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        logger.error("Login error:", error);
-        throw error;
+      if (signInError) {
+        logger.error("Supabase login error:", signInError);
+        throw signInError;
       }
 
       logger.info("Supabase login successful, refreshing session");
       await refreshSession();
       logger.info("Session refreshed successfully");
 
-      // After successful login and session refresh, double check user state
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        logger.error("Session retrieval error:", sessionError);
+        throw sessionError;
+      }
+
       if (!session?.user) {
         throw new Error("Session not established after login");
       }
+
+      logger.info("Session established successfully:", {
+        userId: session.user.id,
+        userEmail: session.user.email
+      });
 
       toast({
         title: "Welcome back",
         description: "You have successfully logged in.",
       });
 
+      // Double check user profile before redirect
+      const { data: profileData, error: profileError } = await supabase
+        .from('users')
+        .select('role, status')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profileError) {
+        logger.error("Error fetching user profile:", profileError);
+        throw new Error("Could not verify user profile");
+      }
+
+      logger.info("User profile retrieved:", profileData);
       logger.info("Redirecting to:", from);
       navigate(from, { replace: true });
     } catch (error: any) {
