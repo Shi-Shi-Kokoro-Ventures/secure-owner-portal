@@ -3,11 +3,12 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bed, Bath, Home, Calendar, MapPin, Star, ArrowLeft } from "lucide-react";
+import { Bed, Bath, Home, MapPin, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { FilterBar } from "@/components/filter/FilterBar";
 import { useNavigate } from "react-router-dom";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 interface Filters {
   search?: string;
@@ -15,6 +16,8 @@ interface Filters {
   bathrooms?: string;
   featured?: boolean;
   sortBy?: string;
+  propertyType?: string;
+  priceRange?: number[];
 }
 
 const fetchProperties = async (filters: Filters) => {
@@ -72,6 +75,8 @@ const AvailableProperties = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [filters, setFilters] = React.useState<Filters>({});
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 6;
 
   const { data: properties, isLoading, error } = useQuery({
     queryKey: ['available-properties', filters],
@@ -90,120 +95,109 @@ const AvailableProperties = () => {
     setFilters(prev => ({ ...prev, ...newFilters }));
   };
 
+  // Calculate pagination
+  const totalPages = properties ? Math.ceil(properties.length / itemsPerPage) : 0;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentProperties = properties?.slice(startIndex, endIndex);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <Button
-              variant="ghost"
-              className="hover:bg-gray-100/80 transition-colors"
-              onClick={() => navigate(-1)}
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Back
-            </Button>
-            <div className="flex items-center gap-4">
-              <img
-                src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png"
-                alt="Shi Shi Kokoro Property Management"
-                className="h-16 w-auto"
-              />
-              <div className="flex flex-col">
-                <h1 className="text-3xl font-bold text-[#1a4f7c]">Shi Shi Kokoro</h1>
-                <span className="text-lg font-semibold text-[#1a4f7c]/80">Property Management</span>
-                <p className="text-gray-600 mt-2">Available Properties - Find your perfect home</p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <div className="relative h-[400px] bg-gradient-to-r from-gray-900 to-gray-600 bg-gradient-to-r">
+        <div className="absolute inset-0 bg-black/40" />
+        <img
+          src="/lovable-uploads/472479b1-526e-4e85-93df-35b2efcf593c.png"
+          alt="Hero background"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+          <h1 className="text-5xl font-bold mb-4">Find Your Perfect Home</h1>
+          <p className="text-xl text-gray-200 max-w-2xl text-center">
+            Explore our curated selection of premium properties available for rent
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-10 mb-12">
+        <FilterBar onFilterChange={handleFilterChange} />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="animate-pulse">
+                <div className="h-48 bg-gray-200 rounded-t-lg" />
+                <CardContent className="p-6">
+                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-4" />
+                  <div className="h-4 bg-gray-200 rounded w-1/2" />
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </div>
-        
-        <div className="glass p-4 rounded-lg mb-8">
-          <FilterBar onFilterChange={handleFilterChange} />
-        </div>
-        
-        <div className="mt-8">
-          {isLoading ? (
+        ) : currentProperties && currentProperties.length > 0 ? (
+          <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3].map((i) => (
-                <Card key={i} className="animate-pulse glass">
-                  <div className="h-48 bg-gray-200 rounded-t-lg" />
-                  <CardContent className="p-6">
-                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-4" />
-                    <div className="h-4 bg-gray-200 rounded w-1/2" />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : properties && properties.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {properties.map((property) => {
+              {currentProperties.map((property) => {
                 const availableUnits = property.units?.filter(unit => unit.status === 'vacant') || [];
                 const lowestRent = availableUnits.length > 0 
                   ? Math.min(...availableUnits.map(unit => unit.rent_amount))
                   : null;
 
                 return (
-                  <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 glass transform hover:-translate-y-1">
-                    <div className="relative aspect-w-16 aspect-h-9">
+                  <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-white">
+                    <div className="relative">
                       <img
                         src={property.property_image_url || '/placeholder.svg'}
                         alt={property.property_name}
                         className="w-full h-48 object-cover"
                       />
-                      {property.is_featured && (
-                        <div className="absolute top-2 right-2">
-                          <span className="bg-yellow-400/90 backdrop-blur-sm text-yellow-900 px-3 py-1.5 rounded-full text-sm font-semibold flex items-center shadow-sm">
-                            <Star className="w-4 h-4 mr-1" />
-                            Featured
+                      <div className="absolute top-4 left-4">
+                        <span className="bg-emerald-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                          For Rent
+                        </span>
+                      </div>
+                      {lowestRent && (
+                        <div className="absolute top-4 right-4">
+                          <span className="bg-white/90 backdrop-blur-sm text-emerald-700 px-3 py-1 rounded-full text-sm font-semibold">
+                            ${lowestRent.toLocaleString()}/month
                           </span>
                         </div>
                       )}
                     </div>
                     <CardContent className="p-6">
-                      <h3 className="text-xl font-semibold text-[#1a4f7c] mb-2 line-clamp-2">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
                         {property.property_name}
                       </h3>
                       <div className="flex items-center text-gray-600 mb-4">
                         <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-                        <span className="line-clamp-1">{property.address}</span>
+                        <span className="text-sm">{property.address}</span>
                       </div>
                       
-                      <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="grid grid-cols-3 gap-4 mb-4">
                         {property.bedrooms && (
                           <div className="flex items-center text-gray-600">
-                            <Bed className="h-4 w-4 mr-2 text-[#1a4f7c]" />
-                            <span>{property.bedrooms} Beds</span>
+                            <Bed className="h-4 w-4 mr-2" />
+                            <span className="text-sm">{property.bedrooms} Beds</span>
                           </div>
                         )}
                         {property.bathrooms && (
                           <div className="flex items-center text-gray-600">
-                            <Bath className="h-4 w-4 mr-2 text-[#1a4f7c]" />
-                            <span>{property.bathrooms} Baths</span>
+                            <Bath className="h-4 w-4 mr-2" />
+                            <span className="text-sm">{property.bathrooms} Baths</span>
                           </div>
                         )}
                         {property.square_footage && (
                           <div className="flex items-center text-gray-600">
-                            <Home className="h-4 w-4 mr-2 text-[#1a4f7c]" />
-                            <span>{property.square_footage} sq ft</span>
-                          </div>
-                        )}
-                        {property.availability_date && (
-                          <div className="flex items-center text-gray-600">
-                            <Calendar className="h-4 w-4 mr-2 text-[#1a4f7c]" />
-                            <span>Available {new Date(property.availability_date).toLocaleDateString()}</span>
+                            <Home className="h-4 w-4 mr-2" />
+                            <span className="text-sm">{property.square_footage} sq ft</span>
                           </div>
                         )}
                       </div>
 
-                      {lowestRent && (
-                        <p className="text-lg font-semibold text-[#1a4f7c] mb-4">
-                          Starting at ${lowestRent.toLocaleString()}/month
-                        </p>
-                      )}
-
                       <Button 
-                        className="w-full bg-[#1a4f7c] hover:bg-[#153f63] transition-colors shadow-sm"
+                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
                         onClick={() => {
                           toast({
                             title: "Coming Soon",
@@ -218,12 +212,43 @@ const AvailableProperties = () => {
                 );
               })}
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <h3 className="text-xl text-gray-600">No properties available at the moment.</h3>
-            </div>
-          )}
-        </div>
+
+            {totalPages > 1 && (
+              <div className="mt-8">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                      />
+                    </PaginationItem>
+                    {[...Array(totalPages)].map((_, i) => (
+                      <PaginationItem key={i + 1}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(i + 1)}
+                          isActive={currentPage === i + 1}
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <h3 className="text-xl text-gray-600">No properties available at the moment.</h3>
+          </div>
+        )}
       </div>
     </div>
   );
