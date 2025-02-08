@@ -16,11 +16,10 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, refreshSession } = useAuth();
 
   const from = (location.state as { from?: string })?.from || "/";
 
-  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       navigate(from, { replace: true });
@@ -40,6 +39,8 @@ const Login = () => {
       if (error) {
         throw error;
       }
+
+      await refreshSession();
 
       toast({
         title: "Welcome back",

@@ -53,6 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshSession = async () => {
     try {
       const { data: { session }, error } = await supabase.auth.getSession();
+      
       if (error) {
         logger.error('Error refreshing session:', error);
         throw error;
@@ -77,10 +78,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    const initAuth = async () => {
-      await refreshSession();
-    };
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       logger.info('Auth state changed:', event);
       
@@ -97,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     });
 
-    initAuth();
+    refreshSession();
 
     return () => {
       mounted = false;
