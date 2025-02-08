@@ -5,6 +5,7 @@ import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import Services from "@/pages/Services";
 import TenantServices from "@/pages/TenantServices";
+import AvailableProperties from "@/pages/AvailableProperties";
 
 export const commonRoutes = [
   {
@@ -26,5 +27,9 @@ export const commonRoutes = [
   {
     path: "/tenant-services",
     element: <TenantServices />,
+  },
+  {
+    path: "/available-properties",
+    element: <AvailableProperties />,
   },
 ];
