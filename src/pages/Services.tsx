@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -86,6 +85,15 @@ const Services = () => {
           backgroundColor: "rgba(0,0,0,0.5)"
         }}
       >
+        {/* Logo */}
+        <div className="absolute top-4 left-4 z-20">
+          <img 
+            src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png" 
+            alt="Shi Shi Kokoro Property Management" 
+            className="h-16 w-auto"
+          />
+        </div>
+
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
           <h1 className="text-5xl font-bold mb-6 animate-fade-in">
             Property Management That Works for You
@@ -93,19 +101,12 @@ const Services = () => {
           <p className="text-xl mb-8 max-w-2xl animate-fade-in">
             Maximizing Property Value | Elevating Tenant Experience | Hassle-Free Management
           </p>
-          <div className="flex gap-4 animate-fade-in">
+          <div className="animate-fade-in">
             <Button 
               onClick={() => window.location.href = "/?scrollTo=contact"}
               className="bg-[#ff9500] hover:bg-[#ff8500] text-white px-8 py-6 text-lg rounded-full"
             >
               Contact Now
-            </Button>
-            <Button 
-              variant="outline"
-              onClick={() => window.location.href = "/services"}
-              className="bg-white/10 hover:bg-white/20 text-white px-8 py-6 text-lg rounded-full backdrop-blur-sm"
-            >
-              Learn More
             </Button>
           </div>
         </div>
