@@ -14,8 +14,6 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Index from "./pages/Index";
-import { RootRedirect } from "./components/routing/RootRedirect";
-import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Layout } from "./components/Layout";
 
 const queryClient = new QueryClient({
@@ -63,15 +61,17 @@ const App: React.FC = () => {
                 path="/admin/*"
                 element={
                   <ProtectedRoute allowedRoles={["admin"]}>
-                    <Routes>
-                      {adminRoutes.map((route) => (
-                        <Route
-                          key={route.path}
-                          path={route.path}
-                          element={route.element}
-                        />
-                      ))}
-                    </Routes>
+                    <Layout>
+                      <Routes>
+                        {adminRoutes.map((route) => (
+                          <Route
+                            key={route.path}
+                            path={route.path}
+                            element={route.element}
+                          />
+                        ))}
+                      </Routes>
+                    </Layout>
                   </ProtectedRoute>
                 }
               />
@@ -133,12 +133,12 @@ const App: React.FC = () => {
                 }
               />
 
-              {/* Common routes accessible to all users */}
+              {/* Common routes accessible to all authenticated users */}
               {commonRoutes.map((route) => (
                 <Route 
                   key={`common-${route.path}`}
                   path={route.path} 
-                  element={route.element} 
+                  element={<ProtectedRoute>{route.element}</ProtectedRoute>} 
                 />
               ))}
 
