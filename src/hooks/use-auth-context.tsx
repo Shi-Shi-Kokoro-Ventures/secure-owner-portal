@@ -41,10 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', userId)
         .single();
 
-      if (error) {
-        logger.error('Error fetching user profile:', error);
-        throw error;
-      }
+      if (error) throw error;
       
       logger.info('User profile fetched successfully:', data);
       setUserProfile(data);
@@ -59,10 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data: { session }, error } = await supabase.auth.getSession();
       
-      if (error) {
-        logger.error('Error refreshing session:', error);
-        throw error;
-      }
+      if (error) throw error;
       
       if (session?.user) {
         logger.info('Session refresh successful, user found:', session.user.id);
@@ -84,16 +78,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     logger.info('AuthProvider mounted');
-    let mounted = true;
-
+    
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       logger.info('Auth state changed:', event);
       
-      if (!mounted) {
-        logger.info('Component unmounted, skipping state update');
-        return;
-      }
-
       if (session?.user) {
         logger.info('Session user found:', session.user.id);
         setUser(session.user);
@@ -111,8 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     refreshSession();
 
     return () => {
-      logger.info('AuthProvider unmounting, cleaning up');
-      mounted = false;
+      logger.info('AuthProvider unmounting');
       subscription.unsubscribe();
     };
   }, []);

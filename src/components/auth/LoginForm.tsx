@@ -32,58 +32,19 @@ export const LoginForm = () => {
         password,
       });
 
-      if (signInError) {
-        logger.error("Supabase login error:", signInError);
-        throw signInError;
-      }
+      if (signInError) throw signInError;
 
-      logger.info("Supabase login successful, refreshing session");
       await refreshSession();
-
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) {
-        logger.error("Session retrieval error:", sessionError);
-        throw sessionError;
-      }
-
-      if (!session?.user) {
-        throw new Error("Session not established after login");
-      }
-
-      logger.info("Session established successfully:", {
-        userId: session.user.id,
-        userEmail: session.user.email
-      });
-
-      const { data: profileData, error: profileError } = await supabase
-        .from('users')
-        .select('role, status')
-        .eq('id', session.user.id)
-        .single();
-
-      if (profileError) {
-        logger.error("Error fetching user profile:", profileError);
-        throw new Error("Could not verify user profile");
-      }
-
-      if (profileData.status === 'pending_approval') {
-        throw new Error("Your account is pending admin approval");
-      }
-
-      if (profileData.status !== 'active') {
-        throw new Error("Account is not active");
-      }
-
-      logger.info("User profile retrieved:", profileData);
+      
+      logger.info("Redirecting to:", from);
       toast({
         title: "Welcome back",
         description: "You have successfully logged in.",
       });
       
-      logger.info("Redirecting to:", from);
       navigate(from, { replace: true });
     } catch (error: any) {
-      logger.error("Login error caught:", error);
+      logger.error("Login error:", error);
       toast({
         title: "Error",
         description: error.message || "An unexpected error occurred. Please try again.",
@@ -165,4 +126,3 @@ export const LoginForm = () => {
     </form>
   );
 };
-
