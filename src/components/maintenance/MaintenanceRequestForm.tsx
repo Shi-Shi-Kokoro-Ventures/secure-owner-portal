@@ -7,6 +7,8 @@ import { Loader2 } from "lucide-react";
 import { MaintenanceRequestFiles } from "./MaintenanceRequestFiles";
 import { MaintenanceRequestDetails } from "./MaintenanceRequestDetails";
 import { MaintenanceCategory } from "./MaintenanceRequestDetails";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/utils/logger";
 
 interface MaintenanceRequest {
   title: string;
@@ -65,8 +67,45 @@ export const MaintenanceRequestForm = () => {
     }
 
     try {
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError) throw userError;
+      if (!user) throw new Error("No authenticated user found");
+
+      // Create the maintenance request
+      const { data: request, error: requestError } = await supabase
+        .from('maintenance_requests')
+        .insert({
+          tenant_id: user.id,
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          status: 'pending',
+          priority: 'medium'
+        })
+        .select()
+        .single();
+
+      if (requestError) throw requestError;
+
+      // Upload files if any
+      if (formData.files.length > 0) {
+        for (const file of formData.files) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${crypto.randomUUID()}.${fileExt}`;
+          const filePath = `maintenance/${request.id}/${fileName}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('maintenance-files')
+            .upload(filePath, file);
+
+          if (uploadError) {
+            logger.error('Error uploading file:', uploadError);
+            // Continue with other files if one fails
+            continue;
+          }
+        }
+      }
       
       toast({
         title: "Request Submitted",
@@ -75,6 +114,7 @@ export const MaintenanceRequestForm = () => {
       
       navigate("/tenant/maintenance");
     } catch (err) {
+      logger.error('Error submitting maintenance request:', err);
       setError("Failed to submit maintenance request. Please try again.");
       toast({
         title: "Error",
