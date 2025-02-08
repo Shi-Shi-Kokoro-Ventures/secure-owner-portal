@@ -24,7 +24,10 @@ export const TestModeToggle = () => {
         .single();
 
       if (error) throw error;
-      return data?.setting_value as TestModeSetting;
+      
+      // Type guard to ensure setting_value matches TestModeSetting structure
+      const settingValue = data?.setting_value as { enabled: boolean; last_updated_by: string | null; last_updated_at: string | null };
+      return settingValue as TestModeSetting;
     },
   });
 

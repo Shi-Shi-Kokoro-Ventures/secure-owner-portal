@@ -33,9 +33,9 @@ const fetchProperties = async (filters: Filters) => {
     return [];
   }
 
-  // Safely type cast the setting value
-  const settingValue = settingData?.setting_value as TestModeSetting | null;
-  const testModeEnabled = settingValue?.enabled || false;
+  // Type guard to ensure setting_value matches TestModeSetting structure
+  const settingValue = settingData?.setting_value as { enabled: boolean; last_updated_by: string | null; last_updated_at: string | null };
+  const testModeEnabled = (settingValue as TestModeSetting)?.enabled || false;
 
   let query = supabase
     .from('properties')
