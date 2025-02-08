@@ -32,7 +32,7 @@ const Login = () => {
       <div className="text-center">
         <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
         <p className="text-gray-400 text-sm">
-          To signin please enter your email and password
+          To sign in please enter your email and password
         </p>
       </div>
       <LoginForm />
