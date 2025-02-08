@@ -5,24 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Filter, Plus, DollarSign, Download, Printer } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { AddOwnerDialog } from "@/components/AddOwnerDialog";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
 
 const Owners = () => {
   const [showAddOwner, setShowAddOwner] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const { toast } = useToast();
-  const navigate = useNavigate();
-
-  // Redirect to the correct route if accessed via /owners
-  useEffect(() => {
-    if (window.location.pathname === '/owners') {
-      navigate('/owner', { replace: true });
-    }
-  }, [navigate]);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -46,7 +37,6 @@ const Owners = () => {
         description: "Owner added successfully",
       });
       
-      // Trigger a refresh of the owners table
       setRefreshTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Error adding owner:', error);

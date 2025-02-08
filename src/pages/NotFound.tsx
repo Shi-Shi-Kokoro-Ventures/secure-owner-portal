@@ -13,13 +13,7 @@ const NotFound = () => {
       "404 Error: User attempted to access non-existent route:",
       location.pathname
     );
-
-    // Check if the current path is /owners and redirect to /owner
-    if (location.pathname === '/owners') {
-      navigate('/owner', { replace: true });
-      return;
-    }
-  }, [location.pathname, navigate]);
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50 p-4">
