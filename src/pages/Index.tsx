@@ -54,7 +54,7 @@ const Index = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               <a href="#about" className="text-gray-600 hover:text-[#1a4f7c] transition-colors duration-200">About Us</a>
-              <a href="#services" className="text-gray-600 hover:text-[#1a4f7c] transition-colors duration-200">Services</a>
+              <a href="/services" className="text-gray-600 hover:text-[#1a4f7c] transition-colors duration-200">Services</a>
               <a href="#locations" className="text-gray-600 hover:text-[#1a4f7c] transition-colors duration-200">Locations</a>
               <a href="#contact" className="text-gray-600 hover:text-[#1a4f7c] transition-colors duration-200">Contact</a>
               <Button 
@@ -82,7 +82,7 @@ const Index = () => {
           {mobileMenuOpen && (
             <div className="md:hidden absolute top-20 left-0 right-0 bg-white shadow-lg py-4 px-4 space-y-4">
               <a href="#about" className="block text-gray-600 hover:text-[#1a4f7c] py-2">About Us</a>
-              <a href="#services" className="block text-gray-600 hover:text-[#1a4f7c] py-2">Services</a>
+              <a href="/services" className="block text-gray-600 hover:text-[#1a4f7c] py-2">Services</a>
               <a href="#locations" className="block text-gray-600 hover:text-[#1a4f7c] py-2">Locations</a>
               <a href="#contact" className="block text-gray-600 hover:text-[#1a4f7c] py-2">Contact</a>
               <Button 
