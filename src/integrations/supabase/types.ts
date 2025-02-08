@@ -859,6 +859,7 @@ export type Database = {
         Row: {
           address: string
           amenities: string[] | null
+          availability_date: string | null
           bathrooms: number | null
           bedrooms: number | null
           created_at: string
@@ -866,6 +867,7 @@ export type Database = {
           expenses_ytd: number | null
           id: string
           insurance_info: Json | null
+          is_featured: boolean | null
           last_inspection_date: string | null
           last_modified_at: string | null
           last_modified_by: string | null
@@ -885,6 +887,7 @@ export type Database = {
         Insert: {
           address: string
           amenities?: string[] | null
+          availability_date?: string | null
           bathrooms?: number | null
           bedrooms?: number | null
           created_at?: string
@@ -892,6 +895,7 @@ export type Database = {
           expenses_ytd?: number | null
           id?: string
           insurance_info?: Json | null
+          is_featured?: boolean | null
           last_inspection_date?: string | null
           last_modified_at?: string | null
           last_modified_by?: string | null
@@ -911,6 +915,7 @@ export type Database = {
         Update: {
           address?: string
           amenities?: string[] | null
+          availability_date?: string | null
           bathrooms?: number | null
           bedrooms?: number | null
           created_at?: string
@@ -918,6 +923,7 @@ export type Database = {
           expenses_ytd?: number | null
           id?: string
           insurance_info?: Json | null
+          is_featured?: boolean | null
           last_inspection_date?: string | null
           last_modified_at?: string | null
           last_modified_by?: string | null
