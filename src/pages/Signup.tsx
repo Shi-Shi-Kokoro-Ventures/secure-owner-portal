@@ -4,13 +4,21 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AtSign, Key, Loader2 } from "lucide-react";
+import { AtSign, Key, User, Phone, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { UserRole } from "@/types/user";
 
 const Signup = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    role: "tenant" as UserRole,
+  });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -21,8 +29,16 @@ const Signup = () => {
 
     try {
       const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            role: formData.role,
+          },
+        },
       });
 
       if (error) {
@@ -52,9 +68,25 @@ const Signup = () => {
     }
   };
 
+  const handleInputChange = (field: string) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
+  };
+
+  const handleRoleChange = (value: UserRole) => {
+    setFormData((prev) => ({
+      ...prev,
+      role: value,
+    }));
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-purple-500 p-4">
-      <div className="w-full max-w-4xl h-[600px] bg-gradient-to-r from-purple-300/20 to-pink-300/20 backdrop-blur-xl rounded-3xl shadow-2xl flex overflow-hidden">
+      <div className="w-full max-w-4xl h-[800px] bg-gradient-to-r from-purple-300/20 to-pink-300/20 backdrop-blur-xl rounded-3xl shadow-2xl flex overflow-hidden">
         {/* Left side - 3D illustration */}
         <div className="relative hidden lg:block w-1/2">
           <img 
@@ -90,6 +122,43 @@ const Signup = () => {
 
             <form onSubmit={handleSubmit} className="mt-8 space-y-6">
               <div className="space-y-4">
+                {/* First Name */}
+                <div>
+                  <Label htmlFor="firstName" className="sr-only">
+                    First Name
+                  </Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input
+                      id="firstName"
+                      placeholder="First Name"
+                      className="pl-10 bg-transparent border-gray-700 text-white focus:ring-purple-500 focus:border-purple-500"
+                      value={formData.firstName}
+                      onChange={handleInputChange("firstName")}
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Last Name */}
+                <div>
+                  <Label htmlFor="lastName" className="sr-only">
+                    Last Name
+                  </Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input
+                      id="lastName"
+                      placeholder="Last Name"
+                      className="pl-10 bg-transparent border-gray-700 text-white focus:ring-purple-500 focus:border-purple-500"
+                      value={formData.lastName}
+                      onChange={handleInputChange("lastName")}
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Email */}
                 <div>
                   <Label htmlFor="email" className="sr-only">
                     Email address
@@ -99,15 +168,53 @@ const Signup = () => {
                     <Input
                       id="email"
                       type="email"
-                      placeholder="Enter Your Email"
+                      placeholder="Email Address"
                       className="pl-10 bg-transparent border-gray-700 text-white focus:ring-purple-500 focus:border-purple-500"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={formData.email}
+                      onChange={handleInputChange("email")}
                       required
                     />
                   </div>
                 </div>
 
+                {/* Phone */}
+                <div>
+                  <Label htmlFor="phone" className="sr-only">
+                    Phone Number
+                  </Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="Phone Number"
+                      className="pl-10 bg-transparent border-gray-700 text-white focus:ring-purple-500 focus:border-purple-500"
+                      value={formData.phone}
+                      onChange={handleInputChange("phone")}
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Role Selection */}
+                <div>
+                  <Label htmlFor="role" className="sr-only">
+                    Role
+                  </Label>
+                  <Select value={formData.role} onValueChange={handleRoleChange}>
+                    <SelectTrigger className="w-full bg-transparent border-gray-700 text-white focus:ring-purple-500 focus:border-purple-500">
+                      <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="tenant">Tenant</SelectItem>
+                      <SelectItem value="property_manager">Property Manager</SelectItem>
+                      <SelectItem value="owner">Owner</SelectItem>
+                      <SelectItem value="vendor">Vendor</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Password */}
                 <div>
                   <Label htmlFor="password" className="sr-only">
                     Password
@@ -119,8 +226,8 @@ const Signup = () => {
                       type="password"
                       placeholder="Password"
                       className="pl-10 bg-transparent border-gray-700 text-white focus:ring-purple-500 focus:border-purple-500"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      value={formData.password}
+                      onChange={handleInputChange("password")}
                       required
                     />
                   </div>
