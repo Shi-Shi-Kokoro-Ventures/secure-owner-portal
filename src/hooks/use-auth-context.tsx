@@ -38,7 +38,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', userId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        logger.error('Error fetching user profile:', error);
+        throw error;
+      }
+      
       setUserProfile(data);
     } catch (error: any) {
       logger.error('Error fetching user profile:', error);
@@ -71,17 +75,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         variant: "destructive",
       });
       navigate('/auth');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    // Initialize auth state
+    let mounted = true;
+
+    const initAuth = async () => {
+      try {
+        await refreshSession();
+      } catch (error) {
+        logger.error('Error initializing auth:', error);
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       logger.info('Auth state changed:', event);
-      setUser(session?.user ?? null);
       
+      if (!mounted) return;
+
       if (session?.user) {
+        setUser(session.user);
         await fetchUserProfile(session.user.id);
       } else {
+        setUser(null);
         setUserProfile(null);
       }
       
@@ -112,15 +137,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    refreshSession().finally(() => setIsLoading(false));
+    initAuth();
 
+    // Cleanup
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, [navigate, toast]);
 
   const signOut = async () => {
     try {
+      setIsLoading(true);
       await supabase.auth.signOut();
       navigate('/auth');
     } catch (error: any) {
@@ -130,6 +158,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: "There was a problem signing out. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
