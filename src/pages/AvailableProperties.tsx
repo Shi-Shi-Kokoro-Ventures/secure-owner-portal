@@ -91,27 +91,41 @@ const AvailableProperties = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="ghost"
-            className="hover:bg-gray-100"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Back
-          </Button>
-          <h1 className="text-4xl font-bold text-[#1a4f7c]">Available Properties</h1>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              className="hover:bg-gray-100/80 transition-colors"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="h-5 w-5 mr-2" />
+              Back
+            </Button>
+            <div className="flex items-center gap-3">
+              <img
+                src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png"
+                alt="Shi Shi Kokoro"
+                className="h-12 w-auto"
+              />
+              <div>
+                <h1 className="text-3xl font-bold text-[#1a4f7c]">Available Properties</h1>
+                <p className="text-gray-600 mt-1">Find your perfect home</p>
+              </div>
+            </div>
+          </div>
         </div>
         
-        <FilterBar onFilterChange={handleFilterChange} />
+        <div className="glass p-4 rounded-lg mb-8">
+          <FilterBar onFilterChange={handleFilterChange} />
+        </div>
         
         <div className="mt-8">
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3].map((i) => (
-                <Card key={i} className="animate-pulse">
+                <Card key={i} className="animate-pulse glass">
                   <div className="h-48 bg-gray-200 rounded-t-lg" />
                   <CardContent className="p-6">
                     <div className="h-6 bg-gray-200 rounded w-3/4 mb-4" />
@@ -129,7 +143,7 @@ const AvailableProperties = () => {
                   : null;
 
                 return (
-                  <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                  <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 glass transform hover:-translate-y-1">
                     <div className="relative aspect-w-16 aspect-h-9">
                       <img
                         src={property.property_image_url || '/placeholder.svg'}
@@ -138,7 +152,7 @@ const AvailableProperties = () => {
                       />
                       {property.is_featured && (
                         <div className="absolute top-2 right-2">
-                          <span className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-sm font-semibold flex items-center">
+                          <span className="bg-yellow-400/90 backdrop-blur-sm text-yellow-900 px-3 py-1.5 rounded-full text-sm font-semibold flex items-center shadow-sm">
                             <Star className="w-4 h-4 mr-1" />
                             Featured
                           </span>
@@ -146,36 +160,36 @@ const AvailableProperties = () => {
                       )}
                     </div>
                     <CardContent className="p-6">
-                      <h3 className="text-xl font-semibold text-[#1a4f7c] mb-2">
+                      <h3 className="text-xl font-semibold text-[#1a4f7c] mb-2 line-clamp-2">
                         {property.property_name}
                       </h3>
                       <div className="flex items-center text-gray-600 mb-4">
-                        <MapPin className="h-4 w-4 mr-2" />
-                        <span>{property.address}</span>
+                        <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="line-clamp-1">{property.address}</span>
                       </div>
                       
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         {property.bedrooms && (
                           <div className="flex items-center text-gray-600">
-                            <Bed className="h-4 w-4 mr-2" />
+                            <Bed className="h-4 w-4 mr-2 text-[#1a4f7c]" />
                             <span>{property.bedrooms} Beds</span>
                           </div>
                         )}
                         {property.bathrooms && (
                           <div className="flex items-center text-gray-600">
-                            <Bath className="h-4 w-4 mr-2" />
+                            <Bath className="h-4 w-4 mr-2 text-[#1a4f7c]" />
                             <span>{property.bathrooms} Baths</span>
                           </div>
                         )}
                         {property.square_footage && (
                           <div className="flex items-center text-gray-600">
-                            <Home className="h-4 w-4 mr-2" />
+                            <Home className="h-4 w-4 mr-2 text-[#1a4f7c]" />
                             <span>{property.square_footage} sq ft</span>
                           </div>
                         )}
                         {property.availability_date && (
                           <div className="flex items-center text-gray-600">
-                            <Calendar className="h-4 w-4 mr-2" />
+                            <Calendar className="h-4 w-4 mr-2 text-[#1a4f7c]" />
                             <span>Available {new Date(property.availability_date).toLocaleDateString()}</span>
                           </div>
                         )}
@@ -188,7 +202,7 @@ const AvailableProperties = () => {
                       )}
 
                       <Button 
-                        className="w-full bg-[#1a4f7c] hover:bg-[#153f63]"
+                        className="w-full bg-[#1a4f7c] hover:bg-[#153f63] transition-colors shadow-sm"
                         onClick={() => {
                           toast({
                             title: "Coming Soon",
@@ -215,4 +229,3 @@ const AvailableProperties = () => {
 };
 
 export default AvailableProperties;
-
