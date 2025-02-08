@@ -1,9 +1,16 @@
+
 export interface AdminSetting {
   id: string;
   setting_key: string;
   setting_value: any;
   created_at: string;
   updated_at: string;
+}
+
+export interface TestModeSetting {
+  enabled: boolean;
+  last_updated_by: string | null;
+  last_updated_at: string | null;
 }
 
 export interface ThemeSetting {

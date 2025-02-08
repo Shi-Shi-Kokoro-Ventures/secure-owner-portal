@@ -1416,6 +1416,12 @@ export type Database = {
         }
         Returns: undefined
       }
+      toggle_test_mode: {
+        Args: {
+          new_state: boolean
+        }
+        Returns: undefined
+      }
       update_tenant_rewards: {
         Args: {
           p_tenant_id: string

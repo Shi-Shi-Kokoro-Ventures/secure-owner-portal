@@ -20,6 +20,15 @@ interface Filters {
 }
 
 const fetchProperties = async (filters: Filters) => {
+  // First check if test mode is enabled
+  const { data: testModeSetting } = await supabase
+    .from('admin_settings')
+    .select('setting_value')
+    .eq('setting_key', 'test_mode')
+    .single();
+
+  const testModeEnabled = testModeSetting?.setting_value?.enabled;
+
   let query = supabase
     .from('properties')
     .select(`
@@ -31,6 +40,11 @@ const fetchProperties = async (filters: Filters) => {
         status
       )
     `);
+
+  // Only show test data if test mode is enabled
+  if (!testModeEnabled) {
+    query = query.not('property_name', 'ilike', '%Test%');
+  }
 
   // Base property status filter
   if (filters.propertyStatus && filters.propertyStatus !== 'all') {

@@ -1,8 +1,13 @@
+
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ThemeCustomizer } from "@/components/admin/settings/ThemeCustomizer";
+import { TestModeToggle } from "@/components/admin/settings/TestModeToggle";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "@/hooks/use-auth-context";
 
 export default function AdminSettings() {
+  const { userProfile } = useAuth();
+
   return (
     <AdminLayout>
       <div className="container mx-auto px-4 py-6">
@@ -16,6 +21,10 @@ export default function AdminSettings() {
               <ThemeCustomizer />
             </CardContent>
           </Card>
+
+          {userProfile?.role === 'special_admin' && (
+            <TestModeToggle />
+          )}
         </div>
       </div>
     </AdminLayout>
