@@ -70,7 +70,7 @@ const Login = () => {
               <div className="w-32 h-32 relative">
                 <div className="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 rounded flex items-center justify-center overflow-hidden">
                   <img 
-                    src="/lovable-uploads/7d01b4b7-901a-4b06-9b32-c67cf3c255c4.png" 
+                    src="/lovable-uploads/40334d61-cc63-4970-bdb9-d08d169244d0.png" 
                     alt="Property Management Logo" 
                     className="w-full h-full object-contain p-2"
                   />
