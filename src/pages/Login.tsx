@@ -16,7 +16,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const { user, refreshSession } = useAuth();
+  const { user } = useAuth();
 
   const from = (location.state as { from?: string })?.from || "/";
 
@@ -40,9 +40,6 @@ const Login = () => {
       if (error) {
         throw error;
       }
-
-      // Refresh the session to ensure we have the latest user data
-      await refreshSession();
 
       toast({
         title: "Welcome back",
