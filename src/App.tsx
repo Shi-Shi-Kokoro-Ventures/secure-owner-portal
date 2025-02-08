@@ -63,17 +63,15 @@ const App: React.FC = () => {
                 path="/admin/*"
                 element={
                   <ProtectedRoute allowedRoles={["admin"]}>
-                    <Layout>
-                      <Routes>
-                        {adminRoutes.map((route) => (
-                          <Route
-                            key={route.path}
-                            path={route.path}
-                            element={route.element}
-                          />
-                        ))}
-                      </Routes>
-                    </Layout>
+                    <Routes>
+                      {adminRoutes.map((route) => (
+                        <Route
+                          key={route.path}
+                          path={route.path}
+                          element={route.element}
+                        />
+                      ))}
+                    </Routes>
                   </ProtectedRoute>
                 }
               />

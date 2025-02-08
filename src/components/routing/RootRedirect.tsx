@@ -1,4 +1,3 @@
-
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth-context";
 import { useToast } from "@/hooks/use-toast";
@@ -18,11 +17,11 @@ export const RootRedirect = () => {
     role: userProfile?.role
   });
 
-  // Save full attempted URL for post-login redirect
-  const currentPath = `${location.pathname}${location.search}${location.hash}`;
+  // Only save full attempted URL for post-login redirect if it's not the root path
+  const currentPath = location.pathname === "/" ? null : `${location.pathname}${location.search}${location.hash}`;
 
   // Allow access to login page even when authenticated
-  if (currentPath === '/login') {
+  if (location.pathname === '/login') {
     logger.info('Login page accessed, skipping redirect');
     return null; // Don't redirect, let the Login component handle its own logic
   }
@@ -53,8 +52,8 @@ export const RootRedirect = () => {
 
   // Handle special_admin access with enhanced logging
   if (userProfile.role === 'special_admin') {
-    if (currentPath.match(/^\/(admin|owner|tenant|vendor|property-manager)/)) {
-      logger.info('Special admin accessing portal route:', currentPath);
+    if (location.pathname.match(/^\/(admin|owner|tenant|vendor|property-manager)/)) {
+      logger.info('Special admin accessing portal route:', location.pathname);
       return null; // Allow access to the attempted path
     }
     logger.info('Special admin redirecting to default dashboard');
@@ -76,7 +75,7 @@ export const RootRedirect = () => {
     logger.error('Invalid role detected:', {
       role: userProfile.role,
       userId: user.id,
-      attemptedPath: currentPath
+      attemptedPath: location.pathname
     });
     toast({
       title: "Invalid Role",
@@ -86,11 +85,12 @@ export const RootRedirect = () => {
     return <Navigate to="/login" replace />;
   }
 
-  logger.info('Redirecting user to default route:', {
-    role: userProfile.role,
-    defaultRoute,
-    attemptedPath: currentPath
-  });
-  return <Navigate to={defaultRoute} replace />;
-};
+  // Only redirect to default route if we're at the root path
+  if (location.pathname === '/') {
+    logger.info('Root path accessed, redirecting to default route:', defaultRoute);
+    return <Navigate to={defaultRoute} replace />;
+  }
 
+  // Otherwise, let the ProtectedRoute component handle access control
+  return null;
+};
