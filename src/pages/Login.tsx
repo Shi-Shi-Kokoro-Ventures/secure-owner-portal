@@ -36,10 +36,16 @@ const Login = () => {
           userRole: userProfile.role
         });
         navigate(from, { replace: true });
+      } else if (userProfile.status === 'pending_approval') {
+        toast({
+          title: "Account pending approval",
+          description: "Your account is awaiting admin approval. Please try again later.",
+          variant: "destructive",
+        });
       } else {
         toast({
           title: "Account not active",
-          description: "Your account is pending approval. Please contact support.",
+          description: "Your account is not active. Please contact support.",
           variant: "destructive",
         });
       }
@@ -64,7 +70,6 @@ const Login = () => {
 
       logger.info("Supabase login successful, refreshing session");
       await refreshSession();
-      logger.info("Session refreshed successfully");
 
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) {
@@ -81,7 +86,7 @@ const Login = () => {
         userEmail: session.user.email
       });
 
-      // Double check user profile before redirect
+      // Check user profile and status
       const { data: profileData, error: profileError } = await supabase
         .from('users')
         .select('role, status')
@@ -91,6 +96,10 @@ const Login = () => {
       if (profileError) {
         logger.error("Error fetching user profile:", profileError);
         throw new Error("Could not verify user profile");
+      }
+
+      if (profileData.status === 'pending_approval') {
+        throw new Error("Your account is pending admin approval");
       }
 
       if (profileData.status !== 'active') {
