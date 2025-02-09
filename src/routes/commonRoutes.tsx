@@ -9,6 +9,18 @@ import AvailableProperties from "@/pages/AvailableProperties";
 
 export const commonRoutes = [
   {
+    path: "/",
+    element: <Navigate to="/login" replace />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+  },
+  {
     path: "/services",
     element: <Services />,
   },

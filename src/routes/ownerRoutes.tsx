@@ -14,10 +14,11 @@ import OwnerMaintenanceDetail from "@/pages/owner/OwnerMaintenanceDetail";
 import OwnerPayments from "@/pages/owner/OwnerPayments";
 import LeaseRenewals from "@/pages/owner/LeaseRenewals";
 import Applications from "@/pages/Applications";
+import OwnerSignatures from "@/pages/OwnerSignatures";
 
 export const ownerRoutes: AppRoute[] = [
   {
-    path: "dashboard",
+    path: "owner/dashboard",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <OwnerDashboard />
@@ -25,7 +26,7 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "properties",
+    path: "owner/properties",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <OwnerProperties />
@@ -33,7 +34,7 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "statements",
+    path: "owner/statements",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <OwnerStatements />
@@ -41,7 +42,7 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "documents",
+    path: "owner/documents",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <OwnerDocuments />
@@ -49,7 +50,7 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "reports",
+    path: "owner/reports",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <OwnerReports />
@@ -57,7 +58,7 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "communications",
+    path: "owner/communications",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <OwnerCommunications />
@@ -65,7 +66,7 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "settings",
+    path: "owner/settings",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <OwnerSettings />
@@ -73,7 +74,7 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "maintenance",
+    path: "owner/maintenance",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <OwnerMaintenance />
@@ -81,7 +82,7 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "maintenance/:id",
+    path: "owner/maintenance/:id",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <OwnerMaintenanceDetail />
@@ -89,7 +90,7 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "payments",
+    path: "owner/payments",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <OwnerPayments />
@@ -97,7 +98,7 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "lease-renewals",
+    path: "owner/lease-renewals",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <LeaseRenewals />
@@ -105,10 +106,18 @@ export const ownerRoutes: AppRoute[] = [
     ),
   },
   {
-    path: "applications",
+    path: "owner/applications",
     element: (
       <ProtectedRoute allowedRoles={["owner"]}>
         <Applications />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "owner/signatures",
+    element: (
+      <ProtectedRoute allowedRoles={["owner"]}>
+        <OwnerSignatures />
       </ProtectedRoute>
     ),
   }
