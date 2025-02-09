@@ -16,9 +16,8 @@ export const ProtectedRoute = ({
   children, 
   redirectTo = "/login",
   requireAuth = true,
-  allowedRoles = []
 }: ProtectedRouteProps) => {
-  const { user, userProfile, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   const location = useLocation();
   const { toast } = useToast();
 
@@ -26,9 +25,7 @@ export const ProtectedRoute = ({
   logger.info('ProtectedRoute:', {
     path: location.pathname,
     requireAuth,
-    allowedRoles,
-    hasUser: !!user,
-    userRole: userProfile?.role
+    hasUser: !!user
   });
 
   // Handle loading state
@@ -40,9 +37,9 @@ export const ProtectedRoute = ({
     );
   }
 
-  // DEVELOPMENT MODE: Skip role checks
-  // TODO: Remove this bypass when moving to production
+  // Development mode: Allow all access
   if (process.env.NODE_ENV === 'development') {
+    logger.info('Development mode: bypassing auth checks');
     return <>{children}</>;
   }
 
@@ -50,37 +47,6 @@ export const ProtectedRoute = ({
   if (requireAuth && !user) {
     logger.info('Route requires authentication, redirecting to:', redirectTo);
     return <Navigate to={redirectTo} state={{ from: location.pathname }} replace />;
-  }
-
-  // Handle role-based navigation
-  if (allowedRoles.length > 0 && userProfile?.role) {
-    // Special admin can access all routes
-    if (userProfile.role === 'special_admin') {
-      logger.info('Special admin accessing route');
-      return <>{children}</>;
-    }
-
-    // Check if user's role is allowed for this route
-    if (!allowedRoles.includes(userProfile.role)) {
-      logger.warn('User role not allowed for this route');
-      toast({
-        title: "Access Denied",
-        description: "You don't have permission to access this page.",
-        variant: "destructive",
-      });
-
-      // Navigate to role-specific dashboard
-      const roleDashboards: Record<string, string> = {
-        admin: "/admin/dashboard",
-        property_manager: "/property-manager/dashboard",
-        tenant: "/tenant/dashboard",
-        owner: "/owner/dashboard",
-        vendor: "/vendor/dashboard"
-      };
-
-      const fallbackRoute = roleDashboards[userProfile.role] || "/";
-      return <Navigate to={fallbackRoute} replace />;
-    }
   }
 
   // If all checks pass, render the route content
