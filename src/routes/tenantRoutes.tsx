@@ -1,3 +1,4 @@
+
 import { RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import TenantLayout from "@/components/TenantLayout";
@@ -16,7 +17,7 @@ import Notifications from "@/pages/Notifications";
 
 export const tenantRoutes: RouteObject[] = [
   {
-    element: <ProtectedRoute><TenantLayout /></ProtectedRoute>,
+    element: <ProtectedRoute requiredRole="tenant"><TenantLayout /></ProtectedRoute>,
     children: [
       { path: "/tenant/dashboard", element: <TenantDashboard /> },
       { path: "/tenant/maintenance", element: <TenantMaintenance /> },

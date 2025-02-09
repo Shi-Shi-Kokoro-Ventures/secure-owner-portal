@@ -1,3 +1,4 @@
+
 import { Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -33,7 +34,7 @@ const LoadingComponent = () => (
 
 // Helper function to wrap component with ProtectedRoute and Suspense
 const wrapComponent = (Component: React.ComponentType): React.ReactNode => (
-  <ProtectedRoute>
+  <ProtectedRoute requiredRole="admin">
     <Suspense fallback={<LoadingComponent />}>
       <Component />
     </Suspense>

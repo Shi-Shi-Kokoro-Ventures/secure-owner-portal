@@ -1,10 +1,18 @@
+
 import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/utils/logger";
+import { Loader2 } from "lucide-react";
 
-export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { data: session } = useQuery({
+export const ProtectedRoute = ({ 
+  children,
+  requiredRole 
+}: { 
+  children: React.ReactNode;
+  requiredRole?: string;
+}) => {
+  const { data: session, isLoading } = useQuery({
     queryKey: ['session'],
     queryFn: async () => {
       try {
@@ -22,9 +30,18 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   // During development, bypass all checks
   if (import.meta.env.DEV) {
-    logger.info('Development mode: bypassing all auth checks');
+    logger.info('Development mode: bypassing auth checks');
     return <>{children}</>;
   }
 
