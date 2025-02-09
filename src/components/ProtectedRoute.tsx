@@ -51,7 +51,7 @@ export const ProtectedRoute = ({
 
   // Step 2: Role-based Access Control (separate from authentication)
   if (allowedRoles.length > 0 && userProfile) {
-    // Super admin bypass
+    // Special admin bypass
     if (userProfile.role === 'special_admin') {
       logger.info('Special admin accessing protected route');
       return <>{children}</>;
