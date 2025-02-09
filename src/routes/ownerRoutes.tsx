@@ -1,6 +1,7 @@
 
 import { AppRoute } from "@/types/routes";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Owners from "@/pages/Owners";
 import OwnerDashboard from "@/pages/owner/OwnerDashboard";
 import OwnerProperties from "@/pages/owner/OwnerProperties";
 import OwnerStatements from "@/pages/owner/OwnerStatements";
