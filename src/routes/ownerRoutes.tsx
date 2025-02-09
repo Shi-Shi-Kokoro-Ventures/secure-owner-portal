@@ -16,109 +16,33 @@ import LeaseRenewals from "@/pages/owner/LeaseRenewals";
 import Applications from "@/pages/Applications";
 import OwnerSignatures from "@/pages/OwnerSignatures";
 
+// Separate route configuration from access control
+const createOwnerRoute = (path: string, Component: React.ComponentType): AppRoute => ({
+  path,
+  element: (
+    <ProtectedRoute 
+      allowedRoles={["owner"]}
+      requireAuth={true}
+      redirectTo="/login"
+    >
+      <Component />
+    </ProtectedRoute>
+  ),
+});
+
+// Define routes with consistent pattern
 export const ownerRoutes: AppRoute[] = [
-  {
-    path: "owner/dashboard",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerDashboard />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/properties",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerProperties />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/statements",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerStatements />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/documents",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerDocuments />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/reports",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerReports />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/communications",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerCommunications />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/settings",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerSettings />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/maintenance",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerMaintenance />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/maintenance/:id",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerMaintenanceDetail />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/payments",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerPayments />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/lease-renewals",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <LeaseRenewals />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/applications",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <Applications />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "owner/signatures",
-    element: (
-      <ProtectedRoute allowedRoles={["owner"]}>
-        <OwnerSignatures />
-      </ProtectedRoute>
-    ),
-  }
+  createOwnerRoute("owner/dashboard", OwnerDashboard),
+  createOwnerRoute("owner/properties", OwnerProperties),
+  createOwnerRoute("owner/statements", OwnerStatements),
+  createOwnerRoute("owner/documents", OwnerDocuments),
+  createOwnerRoute("owner/reports", OwnerReports),
+  createOwnerRoute("owner/communications", OwnerCommunications),
+  createOwnerRoute("owner/settings", OwnerSettings),
+  createOwnerRoute("owner/maintenance", OwnerMaintenance),
+  createOwnerRoute("owner/maintenance/:id", OwnerMaintenanceDetail),
+  createOwnerRoute("owner/payments", OwnerPayments),
+  createOwnerRoute("owner/lease-renewals", LeaseRenewals),
+  createOwnerRoute("owner/applications", Applications),
+  createOwnerRoute("owner/signatures", OwnerSignatures),
 ];
