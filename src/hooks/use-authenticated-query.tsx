@@ -6,9 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "./use-auth-context";
 import { logger } from '@/utils/logger';
 
-export interface AuthenticatedQueryOptions<TData> extends Omit<Omit<UseQueryOptions<TData>, 'queryFn'>, 'queryKey'> {
+export interface AuthenticatedQueryOptions<TData> extends Omit<UseQueryOptions<TData, Error>, 'queryKey' | 'queryFn'> {
   requireAuth?: boolean;
-  onAuthError?: () => void;
   redirectTo?: string;
   errorMessage?: string;
 }
@@ -23,7 +22,6 @@ export function useAuthenticatedQuery<TData>(
   const { user, isLoading: authLoading, refreshSession } = useAuth();
   const { 
     requireAuth = true, 
-    onAuthError, 
     redirectTo = "/auth",
     errorMessage = "An error occurred while fetching data",
     ...queryOptions 
@@ -34,7 +32,6 @@ export function useAuthenticatedQuery<TData>(
     queryFn: async () => {
       try {
         if (!user && requireAuth) {
-          // Try to refresh the session before giving up
           await refreshSession();
           if (!user) {
             const error = new Error("Authentication required");
@@ -59,7 +56,6 @@ export function useAuthenticatedQuery<TData>(
             variant: "destructive",
           });
           navigate(redirectTo);
-          onAuthError?.();
         } else {
           toast({
             title: "Error",
@@ -88,8 +84,7 @@ export interface AuthenticatedMutationOptions<TData, TVariables> extends Omit<Us
 
 export function useAuthenticatedMutation<TData, TVariables>(
   mutationFn: (userId: string, variables: TVariables) => Promise<TData>,
-  options: AuthenticatedMutationOptions<TData, TVariables> = {},
-  userId?: string
+  options: AuthenticatedMutationOptions<TData, TVariables> = {}
 ) {
   const { toast } = useToast();
   const navigate = useNavigate();

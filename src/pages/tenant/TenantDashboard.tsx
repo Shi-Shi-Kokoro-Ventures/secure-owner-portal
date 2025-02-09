@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -117,14 +116,7 @@ const TenantDashboard = () => {
     fetchDashboardData,
     {
       enabled: !!user,
-      onError: (error: any) => {
-        logger.error('Query error in TenantDashboard:', error);
-        toast({
-          title: "Error loading dashboard",
-          description: "There was a problem loading your dashboard data. Please try again later.",
-          variant: "destructive",
-        });
-      }
+      errorMessage: "There was a problem loading your dashboard data. Please try again later."
     }
   );
 
