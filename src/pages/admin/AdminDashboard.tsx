@@ -4,6 +4,7 @@ import { QuickActions } from "@/components/admin/dashboard/QuickActions"
 import { StatCard } from "@/components/shared/StatCard"
 import { Building2, Users, Wrench, DollarSign } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { AnnouncementList } from "@/components/admin/announcements/AnnouncementList"
 
 export default function AdminDashboard() {
   return (
@@ -87,3 +88,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
