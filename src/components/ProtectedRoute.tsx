@@ -18,15 +18,18 @@ export const ProtectedRoute = ({
   requireAuth = true,
   allowedRoles = [],
 }: ProtectedRouteProps) => {
-  const { user, isLoading } = useAuth();
+  const { user, userProfile, isLoading } = useAuth();
   const location = useLocation();
   const { toast } = useToast();
 
-  // Log current route state
-  logger.info('ProtectedRoute:', {
+  // Enhanced logging for debugging routing issues
+  logger.info('ProtectedRoute state:', {
     path: location.pathname,
     requireAuth,
-    hasUser: !!user
+    hasUser: !!user,
+    userRole: userProfile?.role,
+    allowedRoles,
+    isDevelopment: process.env.NODE_ENV === 'development'
   });
 
   // Handle loading state
@@ -40,17 +43,34 @@ export const ProtectedRoute = ({
 
   // Development mode: Only check if user is authenticated
   if (process.env.NODE_ENV === 'development') {
-    logger.info('Development mode: minimal auth checks');
+    logger.info('Development mode: bypassing role checks');
     if (requireAuth && !user) {
+      logger.info('Development mode: redirecting unauthenticated user');
       return <Navigate to={redirectTo} state={{ from: location.pathname }} replace />;
     }
+    logger.info('Development mode: allowing access');
     return <>{children}</>;
   }
 
-  // Handle authentication check
+  // Production mode: Full authentication and role checks
   if (requireAuth && !user) {
     logger.info('Route requires authentication, redirecting to:', redirectTo);
     return <Navigate to={redirectTo} state={{ from: location.pathname }} replace />;
+  }
+
+  // Check role access in production
+  if (allowedRoles.length > 0 && userProfile?.role && !allowedRoles.includes(userProfile.role)) {
+    logger.warn('User role not authorized:', {
+      userRole: userProfile.role,
+      allowedRoles,
+      path: location.pathname
+    });
+    toast({
+      title: "Access Denied",
+      description: "You don't have permission to access this page",
+      variant: "destructive",
+    });
+    return <Navigate to="/dashboard" replace />;
   }
 
   // If all checks pass, render the route content
