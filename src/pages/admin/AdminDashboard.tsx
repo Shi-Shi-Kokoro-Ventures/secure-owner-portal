@@ -1,7 +1,7 @@
 
 import { ActivityLog } from "@/components/admin/dashboard/ActivityLog"
 import { QuickActions } from "@/components/admin/dashboard/QuickActions"
-import { StatCard } from "@/components/admin/dashboard/StatCard"
+import { StatCard } from "@/components/shared/StatCard"
 import { Building2, Users, Wrench, DollarSign } from "lucide-react"
 import { AdminLayout } from "@/components/admin/AdminLayout"
 import { AnnouncementList } from "@/components/admin/announcements/AnnouncementList"

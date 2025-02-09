@@ -1,13 +1,13 @@
 
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-interface StatCardProps {
+export interface StatCardProps {
   title: string;
   value: string;
   description: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   trend?: {
     value: string;
     positive: boolean;
@@ -16,7 +16,15 @@ interface StatCardProps {
   onClick?: () => void;
 }
 
-export const StatCard = ({ title, value, description, icon: Icon, trend, className, onClick }: StatCardProps) => (
+export const StatCard = ({ 
+  title, 
+  value, 
+  description, 
+  icon: Icon, 
+  trend, 
+  className, 
+  onClick 
+}: StatCardProps) => (
   <Card 
     className={cn(
       "transition-all duration-200 hover:shadow-md",
