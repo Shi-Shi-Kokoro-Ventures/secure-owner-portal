@@ -26,69 +26,106 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useAuthenticatedQuery } from "@/hooks/use-authenticated-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatCurrency } from "@/utils/formatters";
+import { logger } from "@/utils/logger";
+import { useAuth } from "@/hooks/use-auth-context";
 
 const fetchDashboardData = async (userId: string) => {
-  // Fetch active lease details
-  const { data: leaseData, error: leaseError } = await supabase
-    .from('leases')
-    .select(`
-      *,
-      units:unit_id (
-        unit_number,
-        property:property_id (
-          property_name,
-          address
+  logger.info('Fetching dashboard data for user:', userId);
+
+  try {
+    // Fetch active lease details
+    const { data: leaseData, error: leaseError } = await supabase
+      .from('leases')
+      .select(`
+        *,
+        units:unit_id (
+          unit_number,
+          property:property_id (
+            property_name,
+            address
+          )
         )
-      )
-    `)
-    .eq('tenant_id', userId)
-    .eq('status', 'active')
-    .maybeSingle(); // Changed from .single() to .maybeSingle()
+      `)
+      .eq('tenant_id', userId)
+      .eq('status', 'active')
+      .maybeSingle();
 
-  if (leaseError) throw leaseError;
+    if (leaseError) {
+      logger.error('Error fetching lease:', leaseError);
+      throw leaseError;
+    }
 
-  // Fetch recent payments
-  const { data: payments, error: paymentsError } = await supabase
-    .from('payments')
-    .select('*')
-    .eq('tenant_id', userId)
-    .order('payment_date', { ascending: false })
-    .limit(5);
+    // Fetch recent payments
+    const { data: payments, error: paymentsError } = await supabase
+      .from('payments')
+      .select('*')
+      .eq('tenant_id', userId)
+      .order('payment_date', { ascending: false })
+      .limit(5);
 
-  if (paymentsError) throw paymentsError;
+    if (paymentsError) {
+      logger.error('Error fetching payments:', paymentsError);
+      throw paymentsError;
+    }
 
-  // Fetch maintenance requests count
-  const { count: openRequests, error: maintenanceError } = await supabase
-    .from('maintenance_requests')
-    .select('*', { count: 'exact', head: true })
-    .eq('tenant_id', userId)
-    .in('status', ['pending', 'in_progress']);
+    // Fetch maintenance requests count
+    const { count: openRequests, error: maintenanceError } = await supabase
+      .from('maintenance_requests')
+      .select('*', { count: 'exact', head: true })
+      .eq('tenant_id', userId)
+      .in('status', ['pending', 'in_progress']);
 
-  if (maintenanceError) throw maintenanceError;
+    if (maintenanceError) {
+      logger.error('Error fetching maintenance requests:', maintenanceError);
+      throw maintenanceError;
+    }
 
-  // Fetch unread notifications count
-  const { count: unreadNotifications, error: notificationsError } = await supabase
-    .from('messages')
-    .select('*', { count: 'exact', head: true })
-    .eq('receiver_id', userId)
-    .eq('status', 'sent');
+    // Fetch unread notifications count
+    const { count: unreadNotifications, error: notificationsError } = await supabase
+      .from('messages')
+      .select('*', { count: 'exact', head: true })
+      .eq('receiver_id', userId)
+      .eq('status', 'sent');
 
-  if (notificationsError) throw notificationsError;
+    if (notificationsError) {
+      logger.error('Error fetching notifications:', notificationsError);
+      throw notificationsError;
+    }
 
-  return {
-    lease: leaseData || null,
-    payments: payments || [],
-    openRequests: openRequests || 0,
-    unreadNotifications: unreadNotifications || 0
-  };
+    logger.info('Successfully fetched all dashboard data');
+
+    return {
+      lease: leaseData || null,
+      payments: payments || [],
+      openRequests: openRequests || 0,
+      unreadNotifications: unreadNotifications || 0
+    };
+  } catch (error) {
+    logger.error('Error in fetchDashboardData:', error);
+    throw error;
+  }
 };
 
 const TenantDashboard = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  logger.info('Rendering TenantDashboard, user:', user?.id);
 
   const { data, isLoading, error } = useAuthenticatedQuery(
     ['tenant-dashboard'],
-    fetchDashboardData
+    fetchDashboardData,
+    {
+      enabled: !!user,
+      onError: (error: any) => {
+        logger.error('Query error in TenantDashboard:', error);
+        toast({
+          title: "Error loading dashboard",
+          description: "There was a problem loading your dashboard data. Please try again later.",
+          variant: "destructive",
+        });
+      }
+    }
   );
 
   if (isLoading) {
