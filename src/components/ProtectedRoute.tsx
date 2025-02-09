@@ -25,14 +25,14 @@ export const ProtectedRoute = ({
   // Enhanced logging for debugging routing issues
   logger.info('ProtectedRoute state:', {
     path: location.pathname,
-    requireAuth,
     hasUser: !!user,
     userRole: userProfile?.role,
     allowedRoles,
+    isLoading,
     isDevelopment: process.env.NODE_ENV === 'development'
   });
 
-  // Handle loading state
+  // Handle loading state with a centered spinner
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -52,7 +52,7 @@ export const ProtectedRoute = ({
     return <>{children}</>;
   }
 
-  // Production mode: Full authentication and role checks
+  // Production mode: Full authentication check
   if (requireAuth && !user) {
     logger.info('Route requires authentication, redirecting to:', redirectTo);
     return <Navigate to={redirectTo} state={{ from: location.pathname }} replace />;
@@ -73,6 +73,5 @@ export const ProtectedRoute = ({
     return <Navigate to="/dashboard" replace />;
   }
 
-  // If all checks pass, render the route content
   return <>{children}</>;
 };

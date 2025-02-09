@@ -37,13 +37,13 @@ const App: React.FC = () => {
         <Router>
           <AuthProvider>
             <Routes>
-              {/* Root and Dashboard redirects */}
-              <Route path="/" element={<RootRedirect />} />
-              <Route path="/dashboard" element={<RootRedirect />} />
-              
               {/* Public routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/tenant-services" element={<TenantServices />} />
+              
+              {/* Root redirects */}
+              <Route path="/" element={<RootRedirect />} />
+              <Route path="/dashboard" element={<RootRedirect />} />
               
               {/* Add Tenants route */}
               <Route 
@@ -56,7 +56,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 } 
               />
-              
+
               {/* Common routes accessible to all authenticated users */}
               {commonRoutes.map((route) => (
                 <Route 
@@ -65,12 +65,12 @@ const App: React.FC = () => {
                   element={route.element} 
                 />
               ))}
-              
-              {/* Role-specific routes */}
+
+              {/* Owner routes */}
               <Route
                 path="/owner/*"
                 element={
-                  <ProtectedRoute allowedRoles={["owner"]}>
+                  <ProtectedRoute>
                     <Layout>
                       <Routes>
                         {ownerRoutes.map((route) => (
@@ -85,7 +85,8 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
+              {/* Admin routes */}
               <Route
                 path="/admin/*"
                 element={
@@ -104,7 +105,8 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
+              {/* Property Manager routes */}
               <Route
                 path="/property-manager/*"
                 element={
@@ -123,7 +125,8 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
+              {/* Tenant routes */}
               <Route
                 path="/tenant/*"
                 element={
@@ -142,7 +145,8 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
+              {/* Vendor routes */}
               <Route
                 path="/vendor/*"
                 element={
@@ -162,13 +166,13 @@ const App: React.FC = () => {
                 }
               />
 
-              {/* Default redirect for /reports to admin reports */}
+              {/* Reports redirect */}
               <Route 
                 path="/reports" 
                 element={<Navigate to="/admin/reports" replace />} 
               />
 
-              {/* Catch invalid routes */}
+              {/* Catch all route for 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
