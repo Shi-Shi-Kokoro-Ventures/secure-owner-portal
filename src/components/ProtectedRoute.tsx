@@ -40,6 +40,12 @@ export const ProtectedRoute = ({
     );
   }
 
+  // DEVELOPMENT MODE: Skip role checks
+  // TODO: Remove this bypass when moving to production
+  if (process.env.NODE_ENV === 'development') {
+    return <>{children}</>;
+  }
+
   // Handle authentication check
   if (requireAuth && !user) {
     logger.info('Route requires authentication, redirecting to:', redirectTo);
