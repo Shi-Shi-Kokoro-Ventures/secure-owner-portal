@@ -6,7 +6,7 @@ import { Header } from "./Header";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-export const TenantLayout = () => {
+export const TenantLayout = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
 
@@ -26,7 +26,7 @@ export const TenantLayout = () => {
           <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
           <main className="flex-1 overflow-y-auto">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <Outlet />
+              {children}
             </div>
           </main>
         </div>

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
@@ -14,8 +13,9 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { Layout } from "./components/Layout";
+import { TenantLayout } from "./components/TenantLayout";
 import { RootRedirect } from "./components/routing/RootRedirect";
+import TenantServices from "./pages/TenantServices";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +40,7 @@ const App: React.FC = () => {
               
               {/* Public routes */}
               <Route path="/login" element={<Login />} />
+              <Route path="/tenant-services" element={<TenantServices />} />
               
               {/* Common routes accessible to all authenticated users */}
               {commonRoutes.map((route) => (
@@ -112,7 +113,7 @@ const App: React.FC = () => {
                 path="/tenant/*"
                 element={
                   <ProtectedRoute allowedRoles={["tenant"]}>
-                    <Layout>
+                    <TenantLayout>
                       <Routes>
                         {tenantRoutes.map((route) => (
                           <Route
@@ -122,7 +123,7 @@ const App: React.FC = () => {
                           />
                         ))}
                       </Routes>
-                    </Layout>
+                    </TenantLayout>
                   </ProtectedRoute>
                 }
               />
