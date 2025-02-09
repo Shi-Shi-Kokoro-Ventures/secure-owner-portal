@@ -39,7 +39,7 @@ const PaymentForm = ({ amount = 1200, leaseId = "", onSuccess }: {
               lease_id: leaseId,
               auto_pay_enabled: enableAutoPay ? 'true' : 'false'
             }
-          } as any // Type assertion needed due to Stripe types limitation
+          } as any
         },
       });
 
@@ -101,7 +101,11 @@ const PaymentForm = ({ amount = 1200, leaseId = "", onSuccess }: {
   );
 };
 
-export function StripePaymentForm({ amount = 1200, leaseId = "" }) {
+export function StripePaymentForm({ amount = 1200, leaseId = "", onSuccess }: { 
+  amount?: number; 
+  leaseId?: string;
+  onSuccess?: () => void;
+}) {
   const [clientSecret, setClientSecret] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -167,7 +171,7 @@ export function StripePaymentForm({ amount = 1200, leaseId = "" }) {
       <CardContent>
         {clientSecret && (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
-            <PaymentForm amount={amount} leaseId={leaseId} />
+            <PaymentForm amount={amount} leaseId={leaseId} onSuccess={onSuccess} />
           </Elements>
         )}
       </CardContent>
