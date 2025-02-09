@@ -22,7 +22,7 @@ export const ProtectedRoute = ({
   const location = useLocation();
   const { toast } = useToast();
 
-  // Log current route and auth state for debugging
+  // Log current route state
   logger.info('ProtectedRoute:', {
     path: location.pathname,
     requireAuth,
@@ -30,9 +30,6 @@ export const ProtectedRoute = ({
     hasUser: !!user,
     userRole: userProfile?.role
   });
-  
-  // Save full path including search params and hash
-  const currentPath = `${location.pathname}${location.search}${location.hash}`;
 
   // Handle loading state
   if (isLoading) {
@@ -43,30 +40,30 @@ export const ProtectedRoute = ({
     );
   }
 
-  // Step 1: Authentication Check (independent of role)
+  // Handle authentication check
   if (requireAuth && !user) {
-    logger.info('Protected route accessed without authentication, redirecting to:', redirectTo);
-    return <Navigate to={redirectTo} state={{ from: currentPath }} replace />;
+    logger.info('Route requires authentication, redirecting to:', redirectTo);
+    return <Navigate to={redirectTo} state={{ from: location.pathname }} replace />;
   }
 
-  // Step 2: Role-based Access Control (separate from authentication)
-  if (allowedRoles.length > 0 && userProfile) {
-    // Special admin bypass
+  // Handle role-based navigation (not permissions)
+  if (allowedRoles.length > 0 && userProfile?.role) {
+    // Special admin can access all routes
     if (userProfile.role === 'special_admin') {
-      logger.info('Special admin accessing protected route');
+      logger.info('Special admin accessing route');
       return <>{children}</>;
     }
 
-    // Role check
+    // Check if user's role is allowed for this route
     if (!allowedRoles.includes(userProfile.role)) {
-      logger.warn('Access denied - User role does not match required roles');
+      logger.warn('User role not allowed for this route');
       toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
         variant: "destructive",
       });
 
-      // Map roles to their default dashboards
+      // Navigate to role-specific dashboard
       const roleDashboards: Record<string, string> = {
         admin: "/admin/dashboard",
         property_manager: "/property-manager/dashboard",
@@ -75,13 +72,11 @@ export const ProtectedRoute = ({
         vendor: "/vendor/dashboard"
       };
 
-      // Redirect to role-specific dashboard or fallback
-      const redirectPath = userProfile.role ? roleDashboards[userProfile.role] || "/" : "/";
-      return <Navigate to={redirectPath} replace />;
+      const fallbackRoute = roleDashboards[userProfile.role] || "/";
+      return <Navigate to={fallbackRoute} replace />;
     }
   }
 
-  // If all checks pass, render the protected content
-  logger.info('Access granted to protected route');
+  // If all navigation checks pass, render the route content
   return <>{children}</>;
 };

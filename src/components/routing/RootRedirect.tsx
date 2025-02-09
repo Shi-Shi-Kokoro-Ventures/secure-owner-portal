@@ -28,8 +28,8 @@ export const RootRedirect = () => {
     );
   }
 
-  // Map roles to their default dashboard routes
-  const roleDashboards: Record<string, string> = {
+  // Map roles to their default routes - this is purely for navigation, not permissions
+  const roleDefaultRoutes: Record<string, string> = {
     admin: "/admin/dashboard",
     property_manager: "/property-manager/dashboard",
     tenant: "/tenant/dashboard",
@@ -38,38 +38,40 @@ export const RootRedirect = () => {
     special_admin: "/admin/dashboard"
   };
 
-  // For root path or /dashboard, redirect to appropriate dashboard
+  // For root path or /dashboard, handle navigation routing
   if (location.pathname === '/' || location.pathname === '/dashboard') {
-    if (user && userProfile) {
-      const defaultRoute = roleDashboards[userProfile.role];
+    // If authenticated, navigate to role-specific dashboard
+    if (user && userProfile?.role) {
+      const defaultRoute = roleDefaultRoutes[userProfile.role];
       if (defaultRoute) {
-        logger.info('Redirecting to default dashboard:', defaultRoute);
+        logger.info('Navigating to role-specific dashboard:', defaultRoute);
         return <Navigate to={defaultRoute} replace />;
       }
     }
-    // If no user or no valid role, redirect to login
-    logger.info('No valid user/role, redirecting to login');
+    
+    // If not authenticated or no role, redirect to login
+    logger.info('No authenticated session, redirecting to login');
     return <Navigate to="/login" replace />;
   }
 
-  // For login page
+  // For login page, prevent authenticated users from accessing it
   if (location.pathname === '/login') {
-    if (user && userProfile) {
-      const defaultRoute = roleDashboards[userProfile.role];
+    if (user && userProfile?.role) {
+      const defaultRoute = roleDefaultRoutes[userProfile.role];
       if (defaultRoute) {
-        logger.info('Logged in user accessing login, redirecting to:', defaultRoute);
+        logger.info('Authenticated user accessing login, redirecting to dashboard:', defaultRoute);
         return <Navigate to={defaultRoute} replace />;
       }
     }
-    return null; // Allow access to login page
+    return null; // Allow access to login page for non-authenticated users
   }
 
-  // For all other routes
-  if (!user || !userProfile) {
+  // For all other routes, ensure authentication
+  if (!user) {
     logger.info('Protected route accessed without auth, redirecting to login');
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
-  // Let route components handle specific access control
+  // Let the route components handle their own rendering logic
   return null;
 };
