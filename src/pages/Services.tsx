@@ -1,215 +1,203 @@
-
-import React from "react";
+import React, { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
-  Megaphone, 
-  CreditCard, 
-  Wrench, 
-  FileText, 
-  Home, 
-  TrendingUp,
-  Trophy,
-  Clock,
-  CheckCircle2,
-  Building2,
+  Building2, 
+  Shield, 
+  Star, 
+  Clock, 
+  Heart,
   DollarSign,
-  Laptop,
-  ShieldCheck,
-  Target,
+  Phone,
+  Mail,
+  CheckCircle2,
   ArrowRight
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const Services = () => {
-  const mainServices = [
-    {
-      icon: Building2,
-      title: "Full-Service Management",
-      description: "We do it all, so you don't have to."
-    },
-    {
-      icon: DollarSign,
-      title: "Maximize Cash Flow",
-      description: "Reduce vacancies, cut costs, and increase profit."
-    },
-    {
-      icon: Laptop,
-      title: "Automated Efficiency",
-      description: "State-of-the-art property management technology."
-    }
-  ];
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const detailedServices = [
-    {
-      icon: Megaphone,
-      title: "Property Marketing & Tenant Placement",
-      features: [
-        "Professional HD Photos & Virtual Tours",
-        "Listing syndication across major platforms",
-        "Rigorous Tenant Screening",
-        "Digital lease processing"
-      ],
-      result: "Get high-quality tenants in record time with minimal vacancy loss."
-    },
-    {
-      icon: CreditCard,
-      title: "Rent Collection & Financial Management",
-      features: [
-        "Automated Online Rent Collection",
-        "Real-Time Financial Reporting",
-        "Late Payment Enforcement",
-        "Direct Deposit"
-      ],
-      result: "100% transparency & steady cash flow—without lifting a finger."
-    },
-    {
-      icon: Wrench,
-      title: "Full-Service Maintenance & Repairs",
-      features: [
-        "24/7 Emergency Repairs",
-        "Routine Inspections & Preventative Maintenance",
-        "Vetted Vendors & Cost-Effective Solutions"
-      ],
-      result: "Happier tenants, lower repair costs, & properties that stay in top shape."
+  const handleGetStarted = useCallback(() => {
+    try {
+      // Navigate to home page and scroll to contact section
+      navigate('/?scrollTo=contact', { replace: true });
+      
+      toast({
+        title: "Thank you for your interest!",
+        description: "We'll be in touch with you shortly to discuss our services.",
+      });
+    } catch (error) {
+      console.error('Navigation error:', error);
+      toast({
+        title: "Error",
+        description: "There was an error processing your request. Please try again.",
+        variant: "destructive",
+      });
     }
-  ];
+  }, [navigate, toast]);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section with Background Image */}
-      <div 
-        className="relative h-[600px] bg-cover bg-center bg-no-repeat"
-        style={{ 
-          backgroundImage: "url('/lovable-uploads/f67cd192-d8e7-4a2f-a972-9ecc209615dd.png')",
-          backgroundBlendMode: "overlay",
-          backgroundColor: "rgba(0,0,0,0.5)"
-        }}
-      >
-        {/* Logo */}
-        <div className="absolute top-4 left-4 z-20 flex items-center space-x-4">
-          <img 
-            src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png" 
-            alt="Shi Shi Kokoro Property Management" 
-            className="h-16 w-auto object-contain transition-transform hover:scale-105"
-          />
-          <div className="flex flex-col">
-            <span className="text-2xl font-bold text-white">Shi Shi Kokoro</span>
-            <span className="text-sm text-white/80">Property Management</span>
+    <ErrorBoundary>
+      <div className="min-h-screen bg-white">
+        {/* Hero Section */}
+        <div className="bg-primary/10 py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
+              Discover Shi Shi Kokoro Property Management Services
+            </h1>
+            <p className="text-lg text-center max-w-3xl mx-auto">
+              We specialize in providing high-quality, tenant-focused property management solutions that prioritize efficiency, tenant satisfaction, and long-term property value growth.
+            </p>
           </div>
         </div>
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
-          <h1 className="text-5xl font-bold mb-6 animate-fade-in">
-            Property Management That Works for You
-          </h1>
-          <p className="text-xl mb-8 max-w-2xl animate-fade-in">
-            Maximizing Property Value | Elevating Tenant Experience | Hassle-Free Management
-          </p>
-          <div className="animate-fade-in">
-            <Button 
-              onClick={() => window.location.href = "/?scrollTo=contact"}
-              className="bg-[#ff9500] hover:bg-[#ff8500] text-white px-8 py-6 text-lg rounded-full"
-            >
-              Contact Now
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Services Grid */}
-      <div className="max-w-7xl mx-auto px-4 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-[#1a4f7c] mb-4">Our Services</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            We don't just manage properties—we optimize them for maximum profitability while creating 
-            communities where tenants want to stay long-term.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mainServices.map((service, index) => (
-            <Card key={index} className="group hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-8 text-center">
-                <div className="mb-6">
-                  <div className="w-16 h-16 mx-auto rounded-full bg-[#ff9500]/10 flex items-center justify-center group-hover:bg-[#ff9500] transition-colors duration-300">
-                    <service.icon className="h-8 w-8 text-[#ff9500] group-hover:text-white transition-colors duration-300" />
-                  </div>
-                </div>
-                <h3 className="text-xl font-semibold text-[#1a4f7c] mb-4">{service.title}</h3>
-                <p className="text-gray-600 mb-6">{service.description}</p>
-                <Button 
-                  variant="ghost"
-                  className="group-hover:text-[#ff9500] transition-colors duration-300"
-                >
-                  Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-
-      {/* Detailed Services Section */}
-      <div className="bg-gray-50 py-20">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {detailedServices.map((service, index) => (
-              <Card key={index} className={cn(
-                "group hover:shadow-lg transition-all duration-300",
-                index === 0 && "lg:col-span-3"
-              )}>
-                <CardContent className="p-8">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 rounded-full bg-[#ff9500]/10 flex items-center justify-center group-hover:bg-[#ff9500] transition-colors duration-300">
-                      <service.icon className="h-6 w-6 text-[#ff9500] group-hover:text-white transition-colors duration-300" />
+        {/* Service Packages */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-center mb-12">Our Comprehensive Service Packages</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  title: "Basic Management Package",
+                  price: "10%",
+                  features: [
+                    "Rent Collection & Deposits",
+                    "Tenant Screening & Placement",
+                    "Lease Management & Enforcement",
+                    "Basic Financial Reporting"
+                  ]
+                },
+                {
+                  title: "Standard Management Package",
+                  price: "15%",
+                  features: [
+                    "Everything in Basic Package",
+                    "Routine Maintenance Coordination",
+                    "Tenant Communication",
+                    "Periodic Property Inspections",
+                    "Contractor Coordination"
+                  ]
+                },
+                {
+                  title: "Full-Service Management Package",
+                  price: "20%",
+                  features: [
+                    "Everything in Standard Package",
+                    "24/7 Emergency Response",
+                    "Complete Maintenance Management",
+                    "Legal Support",
+                    "Strategic Property Planning",
+                    "Short-Term Rental Management"
+                  ]
+                }
+              ].map((pkg, index) => (
+                <Card key={index} className="relative hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-semibold mb-2">{pkg.title}</h3>
+                      <p className="text-3xl font-bold text-primary">{pkg.price}</p>
+                      <p className="text-sm text-gray-600">of Monthly Rent</p>
                     </div>
-                    <h3 className="text-2xl font-semibold text-[#1a4f7c]">{service.title}</h3>
-                  </div>
-                  <ul className="space-y-3 mb-6">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                        <span className="text-gray-600">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="flex items-center gap-2 text-[#1a4f7c]">
-                    <Trophy className="h-5 w-5" />
-                    <p className="font-medium">{service.result}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    <ul className="space-y-3">
+                      {pkg.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-center">
+                          <CheckCircle2 className="w-5 h-5 text-primary mr-2 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button 
+                      className="w-full mt-6 gap-2"
+                      onClick={handleGetStarted}
+                    >
+                      Get Started
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Testimonial Section */}
-      <div className="relative py-20 bg-[#1a4f7c] text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="text-5xl font-serif mb-6">"</div>
-          <p className="text-xl mb-6 italic">
-            Shi Shi Kokoro Property Management has transformed how I manage my rental properties. 
-            Their professionalism and efficiency have maximized my returns while minimizing my stress.
-          </p>
-          <p className="font-semibold">- Satisfied Property Owner</p>
-        </div>
-      </div>
+        {/* Additional Services */}
+        <section className="bg-gray-50 py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-center mb-12">Additional Services</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: Building2,
+                  title: "Tenant Placement Services",
+                  description: "Expert tenant screening and placement services, ensuring qualified, responsible tenants."
+                },
+                {
+                  icon: Shield,
+                  title: "Lease Renewal & Compliance",
+                  description: "Complete handling of lease renewals, amendments, and tenant compliance."
+                },
+                {
+                  icon: Star,
+                  title: "Property Maintenance",
+                  description: "Partnerships with vetted contractors for quality maintenance and repairs."
+                },
+                {
+                  icon: Clock,
+                  title: "24/7 Emergency Response",
+                  description: "Swift action for emergencies, from natural disasters to system failures."
+                },
+                {
+                  icon: Heart,
+                  title: "Tenant Rewards Program",
+                  description: "Kokoro Perks program rewarding great tenants with exclusive benefits."
+                },
+                {
+                  icon: DollarSign,
+                  title: "Financial Management",
+                  description: "Detailed financial reporting and legal compliance management."
+                }
+              ].map((service, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <service.icon className="w-12 h-12 text-primary mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
+                    <p className="text-gray-600">{service.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      {/* Call to Action */}
-      <div className="bg-white py-20">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-[#1a4f7c] mb-6">Ready to Elevate Your Property Management?</h2>
-          <Button 
-            onClick={() => window.location.href = "/?scrollTo=contact"}
-            className="bg-[#ff9500] hover:bg-[#ff8500] text-white px-8 py-6 text-lg rounded-full"
-          >
-            Get Started Today
-          </Button>
-        </div>
+        {/* Contact Section */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl font-bold mb-8">Let's Work Together!</h2>
+            <div className="flex flex-col md:flex-row justify-center items-center gap-6">
+              <Button 
+                className="flex items-center gap-2"
+                onClick={handleGetStarted}
+              >
+                <Phone className="w-4 h-4" />
+                Contact Us
+              </Button>
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2"
+                onClick={() => window.location.href = "mailto:info@shishikokoroproperty.com"}
+              >
+                <Mail className="w-4 h-4" />
+                info@shishikokoroproperty.com
+              </Button>
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 };
 

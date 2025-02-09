@@ -22,26 +22,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-interface AddPropertyFormProps {
-  onSuccess?: () => void;
-  onError?: (error: any) => void;
-}
-
-export const AddPropertyForm = ({ onSuccess, onError }: AddPropertyFormProps) => {
+export const AddPropertyForm = () => {
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      // Form submission logic
-      toast({
-        title: "Property Added",
-        description: "Property has been successfully added",
-      });
-      onSuccess?.();
-    } catch (error) {
-      onError?.(error);
-    }
+    toast({
+      title: "Property Added",
+      description: "Property has been successfully added",
+    });
   };
 
   return (

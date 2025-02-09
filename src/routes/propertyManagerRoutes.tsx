@@ -1,51 +1,20 @@
-
-import { AppRoute } from "@/types/routes";
+import { RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Tenants from "@/pages/Tenants";
 import WorkOrders from "@/pages/WorkOrders";
-import Dashboard from "@/pages/Dashboard";
-import Banking from "@/pages/Banking";
-import Properties from "@/pages/Properties";
+import Reports from "@/pages/Reports";
 
-export const propertyManagerRoutes: AppRoute[] = [
+export const propertyManagerRoutes: RouteObject[] = [
   {
-    path: "dashboard",
-    element: (
-      <ProtectedRoute allowedRoles={["property_manager"]}>
-        <Dashboard />
-      </ProtectedRoute>
-    ),
+    element: <ProtectedRoute><Tenants /></ProtectedRoute>,
+    path: "/tenants",
   },
   {
-    path: "properties",
-    element: (
-      <ProtectedRoute allowedRoles={["property_manager"]}>
-        <Properties />
-      </ProtectedRoute>
-    ),
+    element: <ProtectedRoute><WorkOrders /></ProtectedRoute>,
+    path: "/work-orders",
   },
   {
-    path: "tenants",
-    element: (
-      <ProtectedRoute allowedRoles={["property_manager"]}>
-        <Tenants />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "work-orders",
-    element: (
-      <ProtectedRoute allowedRoles={["property_manager"]}>
-        <WorkOrders />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "banking",
-    element: (
-      <ProtectedRoute allowedRoles={["property_manager"]}>
-        <Banking />
-      </ProtectedRoute>
-    ),
+    element: <ProtectedRoute><Reports /></ProtectedRoute>,
+    path: "/reports",
   }
 ];

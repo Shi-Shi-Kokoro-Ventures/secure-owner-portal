@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,18 +6,13 @@ import { ArrowLeft, Clock, MessageSquare, Paperclip, User, Wrench } from "lucide
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
 
+// Mock data - replace with actual API call
 const fetchRequestDetails = async (id: string) => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Simulate random error for testing
-  if (Math.random() < 0.1) {
-    throw new Error("Failed to fetch maintenance request details");
-  }
   
   return {
     id,
@@ -48,31 +42,14 @@ const MaintenanceRequestDetail = () => {
   const { toast } = useToast();
   const [comment, setComment] = useState("");
 
-  const { data: request, isLoading, error, isError } = useQuery({
+  const { data: request, isLoading, error } = useQuery({
     queryKey: ['maintenanceRequest', id],
     queryFn: () => fetchRequestDetails(id || ''),
     enabled: !!id,
-    retry: 2,
-    meta: {
-      onError: () => {
-        toast({
-          title: "Error",
-          description: "Failed to load maintenance request details. Please try again later.",
-          variant: "destructive",
-        });
-      }
-    }
   });
 
   const handleAddComment = () => {
-    if (!comment.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter a comment before submitting.",
-        variant: "destructive",
-      });
-      return;
-    }
+    if (!comment.trim()) return;
     
     toast({
       title: "Comment Added",
@@ -83,60 +60,30 @@ const MaintenanceRequestDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto py-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-10 w-32" />
-          <Skeleton className="h-6 w-24" />
+      <div className="container mx-auto py-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+          <div className="h-48 bg-gray-200 rounded"></div>
         </div>
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-8 w-64 mb-4" />
-            <div className="flex items-center gap-4">
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-4 w-24" />
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Skeleton className="h-20 w-full" />
-            <div className="border rounded-lg p-4">
-              <Skeleton className="h-4 w-32 mb-4" />
-              <Skeleton className="h-4 w-48" />
-            </div>
-            <div className="space-y-4">
-              <Skeleton className="h-6 w-32 mb-4" />
-              <Card>
-                <CardContent className="pt-4">
-                  <div className="flex items-start gap-4">
-                    <Skeleton className="h-8 w-8 rounded-full" />
-                    <div className="flex-1">
-                      <Skeleton className="h-4 w-32 mb-2" />
-                      <Skeleton className="h-4 w-full" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     );
   }
 
-  if (isError) {
+  if (error) {
     return (
       <div className="container mx-auto py-6">
-        <Alert variant="destructive" className="mb-4">
-          <AlertTitle>Error</AlertTitle>
+        <Alert variant="destructive">
           <AlertDescription>
             Failed to load maintenance request details. Please try again later.
           </AlertDescription>
         </Alert>
         <Button
           variant="outline"
+          className="mt-4"
           onClick={() => navigate("/tenant/maintenance")}
-          className="flex items-center gap-2"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Maintenance Requests
         </Button>
       </div>
@@ -149,12 +96,17 @@ const MaintenanceRequestDetail = () => {
         <Button
           variant="outline"
           onClick={() => navigate("/tenant/maintenance")}
-          className="flex items-center gap-2"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Maintenance Requests
         </Button>
-        <Badge variant="outline" className="capitalize">
+        <Badge
+          className={`
+            ${request?.status === 'Open' ? 'bg-yellow-100 text-yellow-800' : ''}
+            ${request?.status === 'In Progress' ? 'bg-blue-100 text-blue-800' : ''}
+            ${request?.status === 'Completed' ? 'bg-green-100 text-green-800' : ''}
+          `}
+        >
           {request?.status}
         </Badge>
       </div>
@@ -225,8 +177,8 @@ const MaintenanceRequestDetail = () => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
               />
-              <Button onClick={handleAddComment} className="flex items-center gap-2">
-                <MessageSquare className="h-4 w-4" />
+              <Button onClick={handleAddComment}>
+                <MessageSquare className="h-4 w-4 mr-2" />
                 Add Comment
               </Button>
             </div>

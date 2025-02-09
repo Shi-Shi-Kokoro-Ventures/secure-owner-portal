@@ -8,7 +8,6 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { supabase } from "@/integrations/supabase/client";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { logger } from "@/utils/logger";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
@@ -57,7 +56,7 @@ const PaymentForm = ({ amount = 1200, leaseId = "", onSuccess }: {
         onSuccess();
       }
     } catch (error) {
-      logger.error('Payment error:', error);
+      console.error('Payment error:', error);
       toast({
         variant: "destructive",
         title: "Payment Failed",
@@ -102,11 +101,7 @@ const PaymentForm = ({ amount = 1200, leaseId = "", onSuccess }: {
   );
 };
 
-export function StripePaymentForm({ amount = 1200, leaseId = "", onSuccess }: { 
-  amount?: number;
-  leaseId?: string;
-  onSuccess?: () => void;
-}) {
+export function StripePaymentForm({ amount = 1200, leaseId = "" }) {
   const [clientSecret, setClientSecret] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -114,40 +109,21 @@ export function StripePaymentForm({ amount = 1200, leaseId = "", onSuccess }: {
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
-        // Get the current session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) {
-          logger.error('Session error:', sessionError);
-          throw new Error('Failed to get authentication session');
-        }
-
-        if (!session) {
-          logger.error('No session found');
-          throw new Error('No authentication session found');
-        }
-
-        // Make the request with the session token
         const { data, error } = await supabase.functions.invoke('stripe-payment', {
           body: { amount, leaseId },
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
         });
 
         if (error) {
-          logger.error('Error creating payment intent:', error);
           throw error;
         }
 
-        logger.info('Payment intent created successfully:', data);
         setClientSecret(data.clientSecret);
       } catch (error) {
-        logger.error('Error creating payment intent:', error);
+        console.error('Error creating payment intent:', error);
         toast({
           variant: "destructive",
           title: "Error",
-          description: error instanceof Error ? error.message : "Failed to initialize payment. Please try again.",
+          description: "Failed to initialize payment. Please try again.",
         });
       } finally {
         setIsLoading(false);
@@ -191,7 +167,7 @@ export function StripePaymentForm({ amount = 1200, leaseId = "", onSuccess }: {
       <CardContent>
         {clientSecret && (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
-            <PaymentForm amount={amount} leaseId={leaseId} onSuccess={onSuccess} />
+            <PaymentForm amount={amount} leaseId={leaseId} />
           </Elements>
         )}
       </CardContent>

@@ -1,6 +1,7 @@
 
-import { AppRoute } from "@/types/routes";
+import { Navigate, RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import VendorLayout from "@/components/VendorLayout";
 import VendorDashboard from "@/pages/vendor/VendorDashboard";
 import VendorWorkOrders from "@/pages/vendor/VendorWorkOrders";
 import VendorSchedule from "@/pages/vendor/VendorSchedule";
@@ -9,61 +10,43 @@ import VendorDocuments from "@/pages/vendor/VendorDocuments";
 import VendorCommunications from "@/pages/vendor/VendorCommunications";
 import VendorSettings from "@/pages/vendor/VendorSettings";
 
-export const vendorRoutes: AppRoute[] = [
+export const vendorRoutes: RouteObject[] = [
   {
-    path: "dashboard",
-    element: (
-      <ProtectedRoute allowedRoles={["vendor"]}>
-        <VendorDashboard />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "work-orders",
-    element: (
-      <ProtectedRoute allowedRoles={["vendor"]}>
-        <VendorWorkOrders />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "schedule",
-    element: (
-      <ProtectedRoute allowedRoles={["vendor"]}>
-        <VendorSchedule />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "payments",
-    element: (
-      <ProtectedRoute allowedRoles={["vendor"]}>
-        <VendorPayments />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "documents",
-    element: (
-      <ProtectedRoute allowedRoles={["vendor"]}>
-        <VendorDocuments />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "communications",
-    element: (
-      <ProtectedRoute allowedRoles={["vendor"]}>
-        <VendorCommunications />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "settings",
-    element: (
-      <ProtectedRoute allowedRoles={["vendor"]}>
-        <VendorSettings />
-      </ProtectedRoute>
-    ),
+    path: "vendor",
+    element: <ProtectedRoute><VendorLayout /></ProtectedRoute>,
+    children: [
+      {
+        index: true,
+        element: <Navigate to="dashboard" replace />
+      },
+      {
+        path: "dashboard",
+        element: <VendorDashboard />
+      },
+      {
+        path: "work-orders",
+        element: <VendorWorkOrders />
+      },
+      {
+        path: "schedule",
+        element: <VendorSchedule />
+      },
+      {
+        path: "payments",
+        element: <VendorPayments />
+      },
+      {
+        path: "documents",
+        element: <VendorDocuments />
+      },
+      {
+        path: "communications",
+        element: <VendorCommunications />
+      },
+      {
+        path: "settings",
+        element: <VendorSettings />
+      }
+    ]
   }
 ];

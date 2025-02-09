@@ -1,143 +1,53 @@
-
+import { Link, useLocation } from "react-router-dom";
+import { 
+  LayoutDashboard,
+  Wrench,
+  CreditCard,
+  FileText,
+  MessageSquare,
+  Settings,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, Home, FileText, MessageSquare, Settings, HelpCircle, Bell, WrenchIcon, CreditCard } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
 
-interface TenantSidebarProps {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-}
-
-export function TenantSidebar({ open, onOpenChange }: TenantSidebarProps) {
-  const navigate = useNavigate();
+export const TenantSidebar = () => {
   const location = useLocation();
-  const isMobile = useIsMobile();
-
-  const routes = [
-    {
-      label: "Dashboard",
-      icon: Home,
-      href: "/tenant/dashboard",
-    },
-    {
-      label: "Maintenance",
-      icon: WrenchIcon,
-      href: "/tenant/maintenance",
-    },
-    {
-      label: "Payments",
-      icon: CreditCard,
-      href: "/tenant/payments",
-    },
-    {
-      label: "Documents",
-      icon: FileText,
-      href: "/tenant/documents",
-    },
-    {
-      label: "Communications",
-      icon: MessageSquare,
-      href: "/tenant/communications",
-    },
-    {
-      label: "Settings",
-      icon: Settings,
-      href: "/tenant/settings",
-    },
-    {
-      label: "Help",
-      icon: HelpCircle,
-      href: "/tenant/help",
-    },
-    {
-      label: "Notifications",
-      icon: Bell,
-      href: "/tenant/notifications",
-    },
+  
+  const navigation = [
+    { name: "Dashboard", href: "/tenant/dashboard", icon: LayoutDashboard },
+    { name: "Maintenance", href: "/tenant/maintenance", icon: Wrench },
+    { name: "Payments", href: "/tenant/payments", icon: CreditCard },
+    { name: "Documents", href: "/tenant/documents", icon: FileText },
+    { name: "Communications", href: "/tenant/communications", icon: MessageSquare },
+    { name: "Settings", href: "/tenant/settings", icon: Settings },
   ];
 
-  const onNavigate = (href: string) => {
-    navigate(href);
-    if (onOpenChange && isMobile) {
-      onOpenChange(false);
-    }
-  };
-
-  if (isMobile) {
-    return (
-      <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetTrigger asChild>
-          <Button
-            variant="ghost"
-            className="lg:hidden"
-            size="icon"
-            aria-label="Open Menu"
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="p-0">
-          <ScrollArea className="h-full py-6">
-            <div className="space-y-4">
-              <div className="px-3 py-2">
-                <h2 className="mb-2 px-4 text-lg font-semibold">
-                  Tenant Portal
-                </h2>
-                <div className="space-y-1">
-                  {routes.map((route) => (
-                    <Button
-                      key={route.href}
-                      variant={location.pathname === route.href ? "secondary" : "ghost"}
-                      className="w-full justify-start"
-                      onClick={() => onNavigate(route.href)}
-                    >
-                      <route.icon className="mr-2 h-4 w-4" />
-                      {route.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </ScrollArea>
-        </SheetContent>
-      </Sheet>
-    );
-  }
-
   return (
-    <div className={cn(
-      "hidden lg:flex lg:flex-col",
-      "h-screen w-64 border-r bg-background",
-      "fixed left-0 top-0 z-40",
-      open ? "translate-x-0" : "-translate-x-full",
-      "transition-transform duration-300 ease-in-out"
-    )}>
-      <ScrollArea className="flex-1 py-6">
-        <div className="space-y-4">
-          <div className="px-3 py-2">
-            <h2 className="mb-2 px-4 text-lg font-semibold">
-              Tenant Portal
-            </h2>
-            <div className="space-y-1">
-              {routes.map((route) => (
-                <Button
-                  key={route.href}
-                  variant={location.pathname === route.href ? "secondary" : "ghost"}
-                  className="w-full justify-start"
-                  onClick={() => onNavigate(route.href)}
-                >
-                  <route.icon className="mr-2 h-4 w-4" />
-                  {route.label}
-                </Button>
-              ))}
-            </div>
-          </div>
+    <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
+      <div className="flex flex-col flex-grow bg-primary px-2 pb-4">
+        <div className="flex h-16 items-center px-4">
+          <img 
+            src="/lovable-uploads/40096a48-9069-46bc-9f6f-b4957de0ef74.png" 
+            alt="Shi Shi Kokoro Property Management" 
+            className="h-12 w-12 object-contain"
+          />
+          <h1 className="text-white text-xl font-bold ml-2">Tenant Portal</h1>
         </div>
-      </ScrollArea>
+        <nav className="mt-5 flex-1 space-y-1 px-2">
+          {navigation.map((item) => (
+            <Link
+              key={item.name}
+              to={item.href}
+              className={cn(
+                "group flex items-center px-3 py-2 text-sm font-medium rounded-md text-white hover:bg-primary-700",
+                location.pathname === item.href && "bg-primary-700"
+              )}
+            >
+              <item.icon className="mr-3 h-5 w-5" aria-hidden="true" />
+              {item.name}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </div>
   );
-}
+};

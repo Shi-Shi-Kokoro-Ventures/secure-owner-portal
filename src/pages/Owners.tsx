@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/Layout";
 import { OwnersTable } from "@/components/OwnersTable";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { AddOwnerDialog } from "@/components/AddOwnerDialog";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 const Owners = () => {
   const [showAddOwner, setShowAddOwner] = useState(false);
@@ -37,6 +36,7 @@ const Owners = () => {
         description: "Owner added successfully",
       });
       
+      // Trigger a refresh of the owners table
       setRefreshTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Error adding owner:', error);

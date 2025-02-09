@@ -1,19 +1,16 @@
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Upload, X } from "lucide-react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'] as const;
-
-type AllowedFileType = typeof ALLOWED_FILE_TYPES[number];
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
 
 interface MaintenanceRequestFilesProps {
   formData: {
     files: File[];
   };
-  setFormData: (data: { files: File[] }) => void;
+  setFormData: (data: any) => void;
   setError: (error: string | null) => void;
 }
 
@@ -29,7 +26,7 @@ export const MaintenanceRequestFiles = ({
         setError(`${file.name} exceeds 5MB size limit`);
         return true;
       }
-      if (!ALLOWED_FILE_TYPES.includes(file.type as AllowedFileType)) {
+      if (!ALLOWED_FILE_TYPES.includes(file.type)) {
         setError(`${file.name} is not a supported file type`);
         return true;
       }
@@ -37,17 +34,19 @@ export const MaintenanceRequestFiles = ({
     });
 
     if (invalidFiles.length === 0) {
-      setFormData({
-        files: [...formData.files, ...selectedFiles]
-      });
+      setFormData(prev => ({
+        ...prev,
+        files: [...prev.files, ...selectedFiles]
+      }));
       setError(null);
     }
   };
 
   const removeFile = (index: number) => {
-    setFormData({
-      files: formData.files.filter((_, i) => i !== index)
-    });
+    setFormData(prev => ({
+      ...prev,
+      files: prev.files.filter((_, i) => i !== index)
+    }));
   };
 
   return (

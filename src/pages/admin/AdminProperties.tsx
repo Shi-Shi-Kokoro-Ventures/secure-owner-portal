@@ -1,18 +1,23 @@
-
 import { useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { PropertiesSection } from "@/components/properties/PropertiesSection";
-import { DashboardSection } from "@/components/properties/DashboardSection";
+import { PropertiesTable } from "@/components/PropertiesTable";
+import { AddPropertyDialog } from "@/components/AddPropertyDialog";
 
-const AdminProperties = () => {
+export default function AdminProperties() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
     <AdminLayout>
-      <div className="container mx-auto px-4 py-6 space-y-8">
-        <DashboardSection />
-        <PropertiesSection />
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold tracking-tight">Properties</h1>
+          <AddPropertyDialog 
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+          />
+        </div>
+        <PropertiesTable />
       </div>
     </AdminLayout>
   );
-};
-
-export default AdminProperties;
+}

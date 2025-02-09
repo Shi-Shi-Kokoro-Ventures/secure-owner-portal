@@ -1,6 +1,10 @@
 
 import * as React from "react"
-import type { ToastActionElement, ToastProps } from "@/components/ui/toast"
+
+import type {
+  ToastActionElement,
+  ToastProps,
+} from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -53,7 +57,9 @@ interface State {
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
 const addToRemoveQueue = (toastId: string) => {
-  if (toastTimeouts.has(toastId)) return;
+  if (toastTimeouts.has(toastId)) {
+    return
+  }
 
   const timeout = setTimeout(() => {
     toastTimeouts.delete(toastId)
@@ -84,7 +90,7 @@ export const reducer = (state: State, action: Action): State => {
 
     case "DISMISS_TOAST": {
       const { toastId } = action
-      
+
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -105,13 +111,16 @@ export const reducer = (state: State, action: Action): State => {
         ),
       }
     }
-    
     case "REMOVE_TOAST":
+      if (action.toastId === undefined) {
+        return {
+          ...state,
+          toasts: [],
+        }
+      }
       return {
         ...state,
-        toasts: action.toastId === undefined 
-          ? [] 
-          : state.toasts.filter((t) => t.id !== action.toastId),
+        toasts: state.toasts.filter((t) => t.id !== action.toastId),
       }
   }
 }

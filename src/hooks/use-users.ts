@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -77,22 +76,6 @@ export const useUsers = () => {
 
   const updateUser = async (userId: string, userData: Partial<User>) => {
     try {
-      // Check if user is being updated to tenant role and has no profile picture
-      const { data: currentUser } = await supabase
-        .from('users')
-        .select('profile_picture_url')
-        .eq('id', userId)
-        .single();
-
-      if (userData.role === 'tenant' && !currentUser?.profile_picture_url) {
-        toast({
-          title: "Error",
-          description: "Profile picture is required for tenant users.",
-          variant: "destructive",
-        });
-        return false;
-      }
-
       const { error } = await supabase
         .from('users')
         .update(userData)

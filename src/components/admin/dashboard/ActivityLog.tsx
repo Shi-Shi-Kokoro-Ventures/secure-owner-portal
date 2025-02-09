@@ -27,17 +27,17 @@ export const SystemAlerts = () => {
   ];
 
   const severityColors = {
-    critical: 'bg-destructive/10 text-destructive dark:bg-destructive/20',
-    warning: 'bg-warning/10 text-warning dark:bg-warning/20',
-    info: 'bg-info/10 text-info dark:bg-info/20'
+    critical: 'bg-red-500',
+    warning: 'bg-amber-500',
+    info: 'bg-blue-500'
   };
 
   return (
-    <Card>
+    <Card className="bg-white dark:bg-gray-800 h-full transition-all duration-200">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg font-medium">
-            <AlertTriangle className="h-5 w-5 text-warning" />
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
             System Alerts
           </CardTitle>
           <Button
@@ -55,16 +55,14 @@ export const SystemAlerts = () => {
       </CardHeader>
       {!isCollapsed && (
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {alerts.map((alert, index) => (
               <div
                 key={index}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg p-4",
-                  severityColors[alert.severity]
-                )}
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
-                <p className="text-sm font-medium">{alert.message}</p>
+                <div className={cn("h-3 w-3 flex-shrink-0 rounded-full", severityColors[alert.severity])} />
+                <p className="text-sm text-gray-900 dark:text-gray-100 truncate flex-1">{alert.message}</p>
               </div>
             ))}
           </div>
@@ -99,11 +97,11 @@ export const RecentActivity = () => {
   ];
 
   return (
-    <Card>
+    <Card className="bg-white dark:bg-gray-800 h-full transition-all duration-200">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg font-medium">
-            <Bell className="h-5 w-5 text-primary" />
+            <Bell className="h-5 w-5 text-blue-500" />
             Recent Activity
           </CardTitle>
           <Button
@@ -121,19 +119,16 @@ export const RecentActivity = () => {
       </CardHeader>
       {!isCollapsed && (
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {activities.map((activity, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-4 rounded-lg p-4 hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                  <activity.icon className="h-5 w-5 text-primary" />
+              <div key={index} className="flex items-center gap-4 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div className="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-primary/10 dark:bg-primary/5">
+                  <activity.icon className="h-6 w-6 text-primary" />
                 </div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium">{activity.title}</p>
-                  <p className="text-sm text-muted-foreground">{activity.description}</p>
-                  <p className="text-xs text-muted-foreground">{activity.time}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{activity.title}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{activity.description}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{activity.time}</p>
                 </div>
               </div>
             ))}
@@ -145,7 +140,7 @@ export const RecentActivity = () => {
 };
 
 export const ActivityLog = () => (
-  <div className="grid gap-6">
+  <div className="grid gap-8 md:grid-cols-2">
     <SystemAlerts />
     <RecentActivity />
   </div>

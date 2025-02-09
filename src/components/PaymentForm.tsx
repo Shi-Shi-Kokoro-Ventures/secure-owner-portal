@@ -1,4 +1,3 @@
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -21,9 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { logger } from "@/utils/logger";
-import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   amount: z.string().min(1, "Amount is required"),
@@ -36,12 +32,10 @@ const formSchema = z.object({
 
 export function PaymentForm() {
   const { toast } = useToast();
-  const navigate = useNavigate();
-  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: "1200.00",
+      amount: "1200.00", // Default rent amount
       paymentMethod: "",
       cardNumber: "",
       expiryDate: "",
@@ -50,41 +44,13 @@ export function PaymentForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError) throw userError;
-      if (!user) throw new Error("No authenticated user found");
-
-      // Create payment record
-      const { error: paymentError } = await supabase
-        .from('payments')
-        .insert({
-          tenant_id: user.id,
-          amount_paid: parseFloat(values.amount),
-          payment_date: new Date().toISOString(),
-          status: 'pending',
-          method: values.paymentMethod === 'credit' ? 'credit_card' : 'ACH',
-        });
-
-      if (paymentError) throw paymentError;
-
-      toast({
-        title: "Payment Processing",
-        description: "Your payment is being processed...",
-      });
-
-      // Navigate to the payments page
-      navigate("/tenant/payments");
-    } catch (error) {
-      logger.error('Payment processing error:', error);
-      toast({
-        title: "Payment Failed",
-        description: "There was an error processing your payment. Please try again.",
-        variant: "destructive",
-      });
-    }
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // TODO: Integrate with payment processor (e.g., Stripe)
+    console.log(values);
+    toast({
+      title: "Payment Processing",
+      description: "Your payment is being processed...",
+    });
   }
 
   return (
@@ -192,7 +158,7 @@ export function PaymentForm() {
         />
 
         <div className="flex justify-end gap-4">
-          <Button variant="outline" type="button" onClick={() => navigate("/tenant/payments")}>
+          <Button variant="outline" type="button">
             Cancel
           </Button>
           <Button type="submit">Process Payment</Button>

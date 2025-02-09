@@ -1,16 +1,9 @@
-
 import { RouteObject } from "react-router-dom";
-import { ReactNode } from "react";
 
-export interface CustomRoute {
+export interface AdminRoute extends RouteObject {
+  key: string;
   path: string;
-  element: ReactNode;
-  key?: string;
+  element: React.ReactNode;
+  requiresAuth?: boolean;
   title?: string;
 }
-
-export interface AdminRoute extends CustomRoute {
-  requiresAuth?: boolean;
-}
-
-export type AppRoute = CustomRoute | RouteObject;

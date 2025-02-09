@@ -1,4 +1,3 @@
-
 import { Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -12,8 +11,6 @@ import {
   reportRoutes,
   userManagementRoutes,
   settingsRoutes,
-  newsletterRoutes,
-  messageRoutes,
 } from "./config/adminRoutesConfig";
 import { AdminRoute } from "@/types/routes";
 
@@ -26,8 +23,6 @@ const AdminMaintenance = lazy(() => import("@/pages/admin/AdminMaintenance"));
 const AdminLeases = lazy(() => import("@/pages/admin/AdminLeases"));
 const AdminSettings = lazy(() => import("@/pages/admin/AdminSettings"));
 const AdminReports = lazy(() => import("@/pages/admin/AdminReports"));
-const AdminNewsletters = lazy(() => import("@/pages/admin/AdminNewsletters"));
-const Messages = lazy(() => import("@/pages/Messages"));
 
 // Loading component for suspense fallback
 const LoadingComponent = () => (
@@ -37,18 +32,13 @@ const LoadingComponent = () => (
 );
 
 // Helper function to wrap component with ProtectedRoute and Suspense
-const wrapComponent = (Component: React.ComponentType): React.ReactNode => {
-  // In development, only check for authentication
-  const allowedRoles = process.env.NODE_ENV === 'development' ? [] : ['admin', 'special_admin'];
-  
-  return (
-    <ProtectedRoute allowedRoles={allowedRoles}>
-      <Suspense fallback={<LoadingComponent />}>
-        <Component />
-      </Suspense>
-    </ProtectedRoute>
-  );
-};
+const wrapComponent = (Component: React.ComponentType): React.ReactNode => (
+  <ProtectedRoute>
+    <Suspense fallback={<LoadingComponent />}>
+      <Component />
+    </Suspense>
+  </ProtectedRoute>
+);
 
 // Map route configurations to actual routes with components
 const mapRouteConfig = (config: AdminRoute): AdminRoute => {
@@ -69,10 +59,6 @@ const mapRouteConfig = (config: AdminRoute): AdminRoute => {
       return { ...config, element: wrapComponent(AdminSettings) };
     case "admin-reports":
       return { ...config, element: wrapComponent(AdminReports) };
-    case "admin-newsletters":
-      return { ...config, element: wrapComponent(AdminNewsletters) };
-    case "admin-messages":
-      return { ...config, element: wrapComponent(Messages) };
     default:
       return config;
   }
@@ -92,7 +78,5 @@ export const adminRoutes: AdminRoute[] = [
   ...maintenanceRoutes,
   ...reportRoutes,
   ...userManagementRoutes,
-  ...messageRoutes,
-  ...newsletterRoutes,
   ...settingsRoutes,
 ].map(mapRouteConfig);

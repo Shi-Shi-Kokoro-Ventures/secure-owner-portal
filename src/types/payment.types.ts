@@ -1,4 +1,5 @@
-import { PaymentMethodType, PaymentStatus } from '@/integrations/supabase/types/payment';
+export type PaymentMethod = 'ACH' | 'credit_card' | 'Zelle' | 'PayPal';
+export type PaymentStatus = 'pending' | 'completed' | 'failed';
 
 export interface Payment {
   id: string;
@@ -7,7 +8,7 @@ export interface Payment {
   amount_paid: number;
   payment_date: string;
   status: PaymentStatus;
-  method: PaymentMethodType;
+  method: PaymentMethod;
   created_at: string;
   stripe_payment_intent_id?: string;
   payment_method_id?: string;

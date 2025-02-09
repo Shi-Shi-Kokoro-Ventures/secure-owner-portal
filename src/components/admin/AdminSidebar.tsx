@@ -4,20 +4,17 @@ import {
   Building2,
   ChevronLeft,
   ClipboardList,
+  FileText,
   Home,
   Settings,
   Users,
   Wallet,
   Wrench,
   BarChart2,
-  Megaphone,
-  Mail,
-  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { AnnouncementDialog } from "@/components/admin/announcements/AnnouncementDialog";
 
 interface AdminSidebarProps {
   open: boolean;
@@ -63,16 +60,6 @@ export const AdminSidebar = ({ open, onOpenChange }: AdminSidebarProps) => {
       icon: BarChart2,
     },
     {
-      name: "Messages",
-      path: "/admin/messages",
-      icon: MessageSquare,
-    },
-    {
-      name: "Newsletters",
-      path: "/admin/newsletters",
-      icon: Mail,
-    },
-    {
       name: "User Management",
       path: "/admin/users",
       icon: Users,
@@ -87,7 +74,7 @@ export const AdminSidebar = ({ open, onOpenChange }: AdminSidebarProps) => {
   return (
     <div
       className={cn(
-        "relative flex h-screen flex-col border-r bg-background/80 backdrop-blur-sm transition-all duration-300 ease-in-out",
+        "relative flex h-screen flex-col border-r bg-background transition-all duration-300 ease-in-out",
         open ? "w-64" : "w-[60px]"
       )}
     >
@@ -95,7 +82,7 @@ export const AdminSidebar = ({ open, onOpenChange }: AdminSidebarProps) => {
         <Button
           variant="ghost"
           size="sm"
-          className="ml-auto hover:bg-transparent"
+          className="ml-auto"
           onClick={() => onOpenChange(!open)}
         >
           <ChevronLeft
@@ -124,20 +111,6 @@ export const AdminSidebar = ({ open, onOpenChange }: AdminSidebarProps) => {
               {open && <span>{item.name}</span>}
             </Link>
           ))}
-          <AnnouncementDialog 
-            trigger={
-              <button
-                className={cn(
-                  "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-                  "hover:bg-accent hover:text-accent-foreground",
-                  !open && "justify-center"
-                )}
-              >
-                <Megaphone className="h-4 w-4" />
-                {open && <span>Broadcast</span>}
-              </button>
-            }
-          />
         </div>
       </ScrollArea>
 

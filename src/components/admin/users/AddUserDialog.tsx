@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { UserFormState, UserRole } from "@/types/user";
+import type { UserFormState } from "@/types/user";
 
 interface AddUserDialogProps {
   open: boolean;
@@ -21,10 +21,6 @@ export const AddUserDialog = ({
   onFormChange,
   onSubmit,
 }: AddUserDialogProps) => {
-  const handleRoleChange = (role: UserRole) => {
-    onFormChange({ ...formData, role });
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -71,7 +67,7 @@ export const AddUserDialog = ({
             <Label htmlFor="add_role">Role</Label>
             <Select
               value={formData.role}
-              onValueChange={handleRoleChange}
+              onValueChange={(value: any) => onFormChange({ ...formData, role: value })}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select role" />

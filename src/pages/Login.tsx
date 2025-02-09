@@ -1,104 +1,165 @@
-
-import { useEffect, useCallback } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/hooks/use-auth-context";
-import { logger } from "@/utils/logger";
-import { AuthLayout } from "@/components/auth/AuthLayout";
-import { AuthLogo } from "@/components/auth/AuthLogo";
-import { LoginForm } from "@/components/auth/LoginForm";
-import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { AtSign, Key, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [userType, setUserType] = useState<"tenant" | "manager">("manager");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const { user, userProfile, isLoading } = useAuth();
+  const { toast } = useToast();
 
-  const from = (location.state as { from?: string })?.from || "/";
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  const handleRedirect = useCallback(() => {
-    if (!user?.id) {
-      logger.info('No user ID found, skipping redirect');
-      return;
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Store user type preference if remember me is checked
+      if (rememberMe) {
+        localStorage.setItem('userType', userType);
+      }
+
+      toast({
+        title: "Welcome back",
+        description: `You have successfully logged in as a ${userType}.`,
+      });
+
+      // Navigate based on user type
+      if (userType === "manager") {
+        navigate("/dashboard");
+      } else {
+        navigate("/tenant/dashboard");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    if (!userProfile?.role) {
-      logger.warn('User profile or role missing:', { userId: user.id });
-      return;
-    }
-
-    const roleBasedPath = {
-      admin: "/admin/dashboard",
-      property_manager: "/property-manager/dashboard",
-      tenant: "/tenant/dashboard",
-      owner: "/owner/dashboard",
-      vendor: "/vendor/dashboard",
-      special_admin: "/admin/dashboard"
-    }[userProfile.role];
-
-    if (!roleBasedPath) {
-      logger.error('Invalid role for redirect:', { role: userProfile.role });
-      return;
-    }
-
-    const redirectPath = from === '/' ? roleBasedPath : from;
-
-    logger.info("Redirecting authenticated user:", {
-      userId: user.id,
-      role: userProfile.role,
-      redirectPath,
-      originalPath: from
-    });
-    
-    navigate(redirectPath, { replace: true });
-  }, [user, userProfile, navigate, from]);
-
-  useEffect(() => {
-    if (isLoading) {
-      logger.info('Auth state is loading, waiting...');
-      return;
-    }
-    handleRedirect();
-  }, [isLoading, handleRedirect]);
-
-  const LoadingSpinner = () => (
-    <div 
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-purple-500 space-y-4"
-      role="progressbar"
-      aria-label="Loading"
-    >
-      <Loader2 className="h-8 w-8 animate-spin text-white" />
-      <p className="text-white text-sm">Loading...</p>
-    </div>
-  );
-
-  // Early return for loading state
-  if (isLoading) {
-    logger.info('Showing loading spinner');
-    return <LoadingSpinner />;
-  }
-
-  // Show login form for unauthenticated users
-  if (!user?.id) {
-    logger.info('Showing login form for unauthenticated user');
-    return (
-      <AuthLayout>
-        <AuthLogo />
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-lg">
         <div className="text-center">
-          <h1 id="login-title" className="text-3xl font-bold text-white mb-2">
+          <h2 className="mt-6 text-3xl font-bold text-gray-900">
             Welcome Back
-          </h1>
-          <p className="text-gray-400 text-sm">
-            To sign in please enter your email and password
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Sign in to access your portal
           </p>
         </div>
-        <LoginForm />
-      </AuthLayout>
-    );
-  }
 
-  // Show loading spinner while checking authentication
-  logger.info('User authenticated, showing loading spinner during redirect');
-  return <LoadingSpinner />;
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="userType">I am a</Label>
+              <select
+                id="userType"
+                className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
+                value={userType}
+                onChange={(e) => setUserType(e.target.value as "tenant" | "manager")}
+              >
+                <option value="manager">Property Manager</option>
+                <option value="tenant">Tenant</option>
+              </select>
+            </div>
+
+            <div className="relative">
+              <Label htmlFor="email">Email address</Label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <AtSign className="h-5 w-5 text-gray-400" />
+                </div>
+                <Input
+                  id="email"
+                  type="email"
+                  className="pl-10"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="relative">
+              <Label htmlFor="password">Password</Label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Key className="h-5 w-5 text-gray-400" />
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  className="pl-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                  Remember me
+                </label>
+              </div>
+              <div className="text-sm">
+                <a href="#" className="font-medium text-primary hover:text-primary/80">
+                  Forgot your password?
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              'Sign in'
+            )}
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default Login;

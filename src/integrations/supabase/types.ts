@@ -506,54 +506,14 @@ export type Database = {
           },
         ]
       }
-      maintenance_request_updates: {
-        Row: {
-          created_at: string | null
-          id: string
-          request_id: string | null
-          update_content: string
-          update_type: string
-          updated_by: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          request_id?: string | null
-          update_content: string
-          update_type: string
-          updated_by?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          request_id?: string | null
-          update_content?: string
-          update_type?: string
-          updated_by?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "maintenance_request_updates_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       maintenance_requests: {
         Row: {
           assigned_vendor: string | null
           created_at: string
           description: string
           id: string
-          last_updated_at: string | null
-          preferred_appointment_times: Json | null
-          priority: string | null
           status: Database["public"]["Enums"]["maintenance_status"]
-          technician_notes: string | null
           tenant_id: string | null
-          title: string
           unit_id: string | null
         }
         Insert: {
@@ -561,13 +521,8 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
-          last_updated_at?: string | null
-          preferred_appointment_times?: Json | null
-          priority?: string | null
           status?: Database["public"]["Enums"]["maintenance_status"]
-          technician_notes?: string | null
           tenant_id?: string | null
-          title?: string
           unit_id?: string | null
         }
         Update: {
@@ -575,13 +530,8 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
-          last_updated_at?: string | null
-          preferred_appointment_times?: Json | null
-          priority?: string | null
           status?: Database["public"]["Enums"]["maintenance_status"]
-          technician_notes?: string | null
           tenant_id?: string | null
-          title?: string
           unit_id?: string | null
         }
         Relationships: [
@@ -662,84 +612,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      newsletter_subscribers: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          status: string | null
-          unsubscribe_token: string
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          status?: string | null
-          unsubscribe_token?: string
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          status?: string | null
-          unsubscribe_token?: string
-        }
-        Relationships: []
-      }
-      newsletters: {
-        Row: {
-          approved_by: string | null
-          canva_design_id: string | null
-          content: string
-          created_at: string
-          created_by: string | null
-          delivery_status: string | null
-          error_log: Json | null
-          id: string
-          last_delivery_attempt: string | null
-          scheduled_for: string | null
-          sent_at: string | null
-          sent_count: number | null
-          status: string
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          approved_by?: string | null
-          canva_design_id?: string | null
-          content: string
-          created_at?: string
-          created_by?: string | null
-          delivery_status?: string | null
-          error_log?: Json | null
-          id?: string
-          last_delivery_attempt?: string | null
-          scheduled_for?: string | null
-          sent_at?: string | null
-          sent_count?: number | null
-          status?: string
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          approved_by?: string | null
-          canva_design_id?: string | null
-          content?: string
-          created_at?: string
-          created_by?: string | null
-          delivery_status?: string | null
-          error_log?: Json | null
-          id?: string
-          last_delivery_attempt?: string | null
-          scheduled_for?: string | null
-          sent_at?: string | null
-          sent_count?: number | null
-          status?: string
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
       }
       payment_methods: {
         Row: {
@@ -858,87 +730,27 @@ export type Database = {
       properties: {
         Row: {
           address: string
-          amenities: string[] | null
-          availability_date: string | null
-          bathrooms: number | null
-          bedrooms: number | null
           created_at: string
-          description: string | null
-          expenses_ytd: number | null
           id: string
-          insurance_info: Json | null
-          is_featured: boolean | null
-          last_inspection_date: string | null
-          last_modified_at: string | null
-          last_modified_by: string | null
-          maintenance_contact: string | null
           owner_id: string | null
-          parking_spots: number | null
-          property_image_url: string | null
           property_name: string
-          property_type: string | null
-          square_footage: number | null
-          status: string | null
-          total_revenue: number | null
           unit_count: number
-          virtual_tour_url: string | null
-          year_built: number | null
         }
         Insert: {
           address: string
-          amenities?: string[] | null
-          availability_date?: string | null
-          bathrooms?: number | null
-          bedrooms?: number | null
           created_at?: string
-          description?: string | null
-          expenses_ytd?: number | null
           id?: string
-          insurance_info?: Json | null
-          is_featured?: boolean | null
-          last_inspection_date?: string | null
-          last_modified_at?: string | null
-          last_modified_by?: string | null
-          maintenance_contact?: string | null
           owner_id?: string | null
-          parking_spots?: number | null
-          property_image_url?: string | null
           property_name: string
-          property_type?: string | null
-          square_footage?: number | null
-          status?: string | null
-          total_revenue?: number | null
           unit_count: number
-          virtual_tour_url?: string | null
-          year_built?: number | null
         }
         Update: {
           address?: string
-          amenities?: string[] | null
-          availability_date?: string | null
-          bathrooms?: number | null
-          bedrooms?: number | null
           created_at?: string
-          description?: string | null
-          expenses_ytd?: number | null
           id?: string
-          insurance_info?: Json | null
-          is_featured?: boolean | null
-          last_inspection_date?: string | null
-          last_modified_at?: string | null
-          last_modified_by?: string | null
-          maintenance_contact?: string | null
           owner_id?: string | null
-          parking_spots?: number | null
-          property_image_url?: string | null
           property_name?: string
-          property_type?: string | null
-          square_footage?: number | null
-          status?: string | null
-          total_revenue?: number | null
           unit_count?: number
-          virtual_tour_url?: string | null
-          year_built?: number | null
         }
         Relationships: [
           {
@@ -1259,57 +1071,6 @@ export type Database = {
           },
         ]
       }
-      user_profiles: {
-        Row: {
-          created_at: string | null
-          email: string
-          first_name: string | null
-          id: string
-          last_name: string | null
-          role: Database["public"]["Enums"]["user_role"]
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email: string
-          first_name?: string | null
-          id: string
-          last_name?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string
-          first_name?: string | null
-          id?: string
-          last_name?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string | null
-          id: string
-          role: Database["public"]["Enums"]["user_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          role: Database["public"]["Enums"]["user_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["user_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
       users: {
         Row: {
           created_at: string
@@ -1445,27 +1206,8 @@ export type Database = {
         }
         Returns: undefined
       }
-      get_user_role: {
-        Args: {
-          user_id: string
-        }
-        Returns: Database["public"]["Enums"]["user_role"]
-      }
-      has_role: {
-        Args: {
-          user_id: string
-          required_role: Database["public"]["Enums"]["user_role"]
-        }
-        Returns: boolean
-      }
       is_admin: {
         Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_admin_or_self: {
-        Args: {
-          target_user_id: string
-        }
         Returns: boolean
       }
       is_property_manager: {
@@ -1474,21 +1216,11 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_special_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
       redeem_rewards: {
         Args: {
           p_tenant_id: string
           p_points: number
           p_reward_item: string
-        }
-        Returns: undefined
-      }
-      toggle_test_mode: {
-        Args: {
-          new_state: boolean
         }
         Returns: undefined
       }
@@ -1519,19 +1251,13 @@ export type Database = {
       lease_status: "active" | "terminated" | "pending"
       lease_type_enum: "fixed" | "month-to-month" | "short-term"
       maintenance_status: "pending" | "in_progress" | "completed"
-      message_status: "sent" | "delivered" | "read" | "unread"
+      message_status: "sent" | "delivered" | "read"
       message_type: "text" | "image" | "video" | "file"
       payment_method: "ACH" | "credit_card" | "Zelle" | "PayPal"
       payment_status: "pending" | "completed" | "failed"
       security_deposit_status_enum: "pending" | "received" | "returned"
       unit_status: "vacant" | "occupied" | "under_maintenance"
-      user_role:
-        | "tenant"
-        | "property_manager"
-        | "owner"
-        | "admin"
-        | "vendor"
-        | "special_admin"
+      user_role: "tenant" | "property_manager" | "owner" | "admin" | "vendor"
       user_status: "active" | "pending_approval" | "suspended" | "archived"
       vendor_type:
         | "plumbing"

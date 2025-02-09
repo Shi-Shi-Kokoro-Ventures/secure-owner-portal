@@ -1,56 +1,26 @@
-
-import { useQuery } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CreditCard, Download, Plus } from "lucide-react";
-import { logger } from "@/utils/logger";
-import { Payment } from "@/types/payment.types";
-import { useAuth } from "@/hooks/use-auth-context";
+
+// Mock data - replace with actual API call
+const mockPayments = [
+  {
+    id: "PAY-001",
+    date: "2024-02-01",
+    amount: "$1,200.00",
+    status: "Completed",
+    method: "Credit Card",
+  },
+  {
+    id: "PAY-002",
+    date: "2024-01-01",
+    amount: "$1,200.00",
+    status: "Completed",
+    method: "Bank Transfer",
+  },
+];
 
 const TenantPayments = () => {
-  const { toast } = useToast();
-  const { user } = useAuth();
-  
-  const { data: payments, isLoading, error } = useQuery({
-    queryKey: ['payments'],
-    queryFn: async () => {
-      if (!user) throw new Error("No authenticated user");
-      
-      const { data, error } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('tenant_id', user.id)
-        .order('payment_date', { ascending: false });
-
-      if (error) {
-        logger.error('Error fetching payments:', error);
-        throw error;
-      }
-
-      return data as Payment[];
-    },
-  });
-
-  const handleMakePayment = () => {
-    // Logic for making a payment
-  };
-
-  const handleDownloadStatement = () => {
-    // Logic for downloading statement
-  };
-
-  if (error) {
-    return (
-      <div className="container mx-auto py-6">
-        <div className="rounded-lg border p-4 bg-destructive/10 text-destructive">
-          Error loading payments. Please try again later.
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div>
@@ -74,11 +44,11 @@ const TenantPayments = () => {
 
       {/* Actions */}
       <div className="flex justify-between items-center">
-        <Button variant="outline" onClick={handleDownloadStatement}>
+        <Button variant="outline">
           <Download className="h-4 w-4 mr-2" />
           Download Statement
         </Button>
-        <Button onClick={handleMakePayment}>
+        <Button>
           <Plus className="h-4 w-4 mr-2" />
           Make Payment
         </Button>
@@ -97,37 +67,19 @@ const TenantPayments = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center">
-                  Loading payments...
+            {mockPayments.map((payment) => (
+              <TableRow key={payment.id}>
+                <TableCell>{payment.id}</TableCell>
+                <TableCell>{payment.date}</TableCell>
+                <TableCell>{payment.amount}</TableCell>
+                <TableCell>
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    {payment.status}
+                  </span>
                 </TableCell>
+                <TableCell>{payment.method}</TableCell>
               </TableRow>
-            ) : payments && payments.length > 0 ? (
-              payments.map((payment) => (
-                <TableRow key={payment.id}>
-                  <TableCell>{payment.id}</TableCell>
-                  <TableCell>{new Date(payment.payment_date).toLocaleDateString()}</TableCell>
-                  <TableCell>${payment.amount_paid.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      payment.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      payment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
-                      {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
-                    </span>
-                  </TableCell>
-                  <TableCell>{payment.method}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                  No payments found
-                </TableCell>
-              </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
       </div>
