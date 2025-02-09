@@ -15,7 +15,8 @@ export const RootRedirect = () => {
     hasProfile: !!userProfile,
     isLoading,
     currentPath: location.pathname,
-    role: userProfile?.role
+    role: userProfile?.role,
+    isDevelopment: process.env.NODE_ENV === 'development'
   });
 
   // Handle loading state
@@ -28,46 +29,40 @@ export const RootRedirect = () => {
     );
   }
 
-  // Map roles to their default routes - this is purely for navigation, not permissions
-  const roleDefaultRoutes: Record<string, string> = {
-    admin: "/admin/dashboard",
-    property_manager: "/property-manager/dashboard",
-    tenant: "/tenant/dashboard",
-    owner: "/owner/dashboard",
-    vendor: "/vendor/dashboard",
-    special_admin: "/admin/dashboard"
-  };
-
-  // For root path, dashboard, or missing routes that should redirect to dashboard
-  if (location.pathname === '/' || 
-      location.pathname === '/dashboard' || 
-      !location.pathname) {
-    // If authenticated, navigate to role-specific dashboard
-    if (user && userProfile?.role) {
-      const defaultRoute = roleDefaultRoutes[userProfile.role];
-      if (defaultRoute) {
-        logger.info('Navigating to role-specific dashboard:', defaultRoute);
-        return <Navigate to={defaultRoute} replace />;
-      }
+  // Development mode: simplified routing
+  if (process.env.NODE_ENV === 'development') {
+    logger.info('Development mode: simplified routing');
+    
+    // If authenticated, default to admin dashboard for testing
+    if (user) {
+      logger.info('Development mode: redirecting to admin dashboard');
+      return <Navigate to="/admin/dashboard" replace />;
     }
     
-    // If not authenticated or no role, redirect to login
-    logger.info('No authenticated session, redirecting to login');
+    // If not authenticated, redirect to login
+    logger.info('Development mode: redirecting to login');
     return <Navigate to="/login" replace />;
   }
 
-  // For login page, prevent authenticated users from accessing it
-  if (location.pathname === '/login') {
-    if (user && userProfile?.role) {
-      const defaultRoute = roleDefaultRoutes[userProfile.role];
-      if (defaultRoute) {
-        logger.info('Authenticated user accessing login, redirecting to dashboard:', defaultRoute);
-        return <Navigate to={defaultRoute} replace />;
-      }
+  // Production mode: Role-based routing
+  if (user && userProfile?.role) {
+    const roleRoutes: Record<string, string> = {
+      admin: "/admin/dashboard",
+      property_manager: "/property-manager/dashboard",
+      tenant: "/tenant/dashboard",
+      owner: "/owner/dashboard",
+      vendor: "/vendor/dashboard",
+      special_admin: "/admin/dashboard"
+    };
+
+    const defaultRoute = roleRoutes[userProfile.role];
+    if (defaultRoute) {
+      logger.info('Redirecting to role-specific dashboard:', defaultRoute);
+      return <Navigate to={defaultRoute} replace />;
     }
-    return null; // Allow access to login page for non-authenticated users
   }
 
-  // Let the route components handle their own rendering logic
-  return null;
+  // Default fallback to login
+  logger.info('No authenticated session or role, redirecting to login');
+  return <Navigate to="/login" replace />;
 };

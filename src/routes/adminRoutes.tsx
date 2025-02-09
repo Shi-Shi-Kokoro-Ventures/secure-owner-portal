@@ -1,3 +1,4 @@
+
 import { Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -36,13 +37,18 @@ const LoadingComponent = () => (
 );
 
 // Helper function to wrap component with ProtectedRoute and Suspense
-const wrapComponent = (Component: React.ComponentType): React.ReactNode => (
-  <ProtectedRoute>
-    <Suspense fallback={<LoadingComponent />}>
-      <Component />
-    </Suspense>
-  </ProtectedRoute>
-);
+const wrapComponent = (Component: React.ComponentType): React.ReactNode => {
+  // In development, only check for authentication
+  const allowedRoles = process.env.NODE_ENV === 'development' ? [] : ['admin', 'special_admin'];
+  
+  return (
+    <ProtectedRoute allowedRoles={allowedRoles}>
+      <Suspense fallback={<LoadingComponent />}>
+        <Component />
+      </Suspense>
+    </ProtectedRoute>
+  );
+};
 
 // Map route configurations to actual routes with components
 const mapRouteConfig = (config: AdminRoute): AdminRoute => {
