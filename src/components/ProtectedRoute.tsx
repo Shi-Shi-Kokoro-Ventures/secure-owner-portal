@@ -21,6 +21,15 @@ export const ProtectedRoute = ({
   const { user, userProfile, isLoading } = useAuth();
   const location = useLocation();
   const { toast } = useToast();
+
+  // Log current route and auth state for debugging
+  logger.info('ProtectedRoute:', {
+    path: location.pathname,
+    requireAuth,
+    allowedRoles,
+    hasUser: !!user,
+    userRole: userProfile?.role
+  });
   
   // Save full path including search params and hash
   const currentPath = `${location.pathname}${location.search}${location.hash}`;
@@ -34,7 +43,7 @@ export const ProtectedRoute = ({
     );
   }
 
-  // Step 1: Authentication Check
+  // Step 1: Authentication Check (independent of role)
   if (requireAuth && !user) {
     logger.info('Protected route accessed without authentication, redirecting to:', redirectTo);
     return <Navigate to={redirectTo} state={{ from: currentPath }} replace />;
@@ -66,6 +75,7 @@ export const ProtectedRoute = ({
         vendor: "/vendor/dashboard"
       };
 
+      // Redirect to role-specific dashboard or fallback
       const redirectPath = userProfile.role ? roleDashboards[userProfile.role] || "/" : "/";
       return <Navigate to={redirectPath} replace />;
     }
