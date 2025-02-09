@@ -16,6 +16,7 @@ export const ProtectedRoute = ({
   children, 
   redirectTo = "/login",
   requireAuth = true,
+  allowedRoles = [],
 }: ProtectedRouteProps) => {
   const { user, isLoading } = useAuth();
   const location = useLocation();
@@ -37,9 +38,12 @@ export const ProtectedRoute = ({
     );
   }
 
-  // Development mode: Allow all access
+  // Development mode: Only check if user is authenticated
   if (process.env.NODE_ENV === 'development') {
-    logger.info('Development mode: bypassing auth checks');
+    logger.info('Development mode: minimal auth checks');
+    if (requireAuth && !user) {
+      return <Navigate to={redirectTo} state={{ from: location.pathname }} replace />;
+    }
     return <>{children}</>;
   }
 

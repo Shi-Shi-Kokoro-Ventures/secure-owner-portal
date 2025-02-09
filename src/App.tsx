@@ -18,6 +18,7 @@ import { Layout } from "./components/Layout";
 import { TenantLayout } from "./components/TenantLayout";
 import { RootRedirect } from "./components/routing/RootRedirect";
 import TenantServices from "./pages/TenantServices";
+import Tenants from "./pages/Tenants";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,6 +44,18 @@ const App: React.FC = () => {
               {/* Public routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/tenant-services" element={<TenantServices />} />
+              
+              {/* Add Tenants route */}
+              <Route 
+                path="/tenants" 
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <Tenants />
+                    </Layout>
+                  </ProtectedRoute>
+                } 
+              />
               
               {/* Common routes accessible to all authenticated users */}
               {commonRoutes.map((route) => (
