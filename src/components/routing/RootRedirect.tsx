@@ -38,8 +38,10 @@ export const RootRedirect = () => {
     special_admin: "/admin/dashboard"
   };
 
-  // For root path or /dashboard, handle navigation routing
-  if (location.pathname === '/' || location.pathname === '/dashboard') {
+  // For root path, dashboard, or missing routes that should redirect to dashboard
+  if (location.pathname === '/' || 
+      location.pathname === '/dashboard' || 
+      !location.pathname) {
     // If authenticated, navigate to role-specific dashboard
     if (user && userProfile?.role) {
       const defaultRoute = roleDefaultRoutes[userProfile.role];
@@ -64,12 +66,6 @@ export const RootRedirect = () => {
       }
     }
     return null; // Allow access to login page for non-authenticated users
-  }
-
-  // For all other routes, ensure authentication
-  if (!user) {
-    logger.info('Protected route accessed without auth, redirecting to login');
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
   // Let the route components handle their own rendering logic

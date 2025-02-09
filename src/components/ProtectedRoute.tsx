@@ -46,7 +46,7 @@ export const ProtectedRoute = ({
     return <Navigate to={redirectTo} state={{ from: location.pathname }} replace />;
   }
 
-  // Handle role-based navigation (not permissions)
+  // Handle role-based navigation
   if (allowedRoles.length > 0 && userProfile?.role) {
     // Special admin can access all routes
     if (userProfile.role === 'special_admin') {
@@ -77,6 +77,6 @@ export const ProtectedRoute = ({
     }
   }
 
-  // If all navigation checks pass, render the route content
+  // If all checks pass, render the route content
   return <>{children}</>;
 };

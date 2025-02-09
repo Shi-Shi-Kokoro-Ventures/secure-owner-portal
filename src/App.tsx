@@ -13,7 +13,6 @@ import { vendorRoutes } from "./routes/vendorRoutes";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import Index from "./pages/Index";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Layout } from "./components/Layout";
 import { RootRedirect } from "./components/routing/RootRedirect";
@@ -35,13 +34,23 @@ const App: React.FC = () => {
         <Router>
           <AuthProvider>
             <Routes>
-              {/* Root redirect handler */}
+              {/* Root and Dashboard redirects */}
               <Route path="/" element={<RootRedirect />} />
+              <Route path="/dashboard" element={<RootRedirect />} />
               
               {/* Public routes */}
               <Route path="/login" element={<Login />} />
               
-              {/* Portal routes */}
+              {/* Common routes accessible to all authenticated users */}
+              {commonRoutes.map((route) => (
+                <Route 
+                  key={`common-${route.path}`}
+                  path={route.path} 
+                  element={route.element} 
+                />
+              ))}
+              
+              {/* Role-specific routes */}
               <Route
                 path="/owner/*"
                 element={
@@ -51,7 +60,7 @@ const App: React.FC = () => {
                         {ownerRoutes.map((route) => (
                           <Route
                             key={route.path}
-                            path={route.path}
+                            path={route.path.replace('owner/', '')}
                             element={route.element}
                           />
                         ))}
@@ -64,13 +73,13 @@ const App: React.FC = () => {
               <Route
                 path="/admin/*"
                 element={
-                  <ProtectedRoute allowedRoles={["admin"]}>
+                  <ProtectedRoute allowedRoles={["admin", "special_admin"]}>
                     <Layout>
                       <Routes>
                         {adminRoutes.map((route) => (
                           <Route
                             key={route.path}
-                            path={route.path}
+                            path={route.path.replace('admin/', '')}
                             element={route.element}
                           />
                         ))}
@@ -89,7 +98,7 @@ const App: React.FC = () => {
                         {propertyManagerRoutes.map((route) => (
                           <Route
                             key={route.path}
-                            path={route.path}
+                            path={route.path.replace('property-manager/', '')}
                             element={route.element}
                           />
                         ))}
@@ -108,7 +117,7 @@ const App: React.FC = () => {
                         {tenantRoutes.map((route) => (
                           <Route
                             key={route.path}
-                            path={route.path}
+                            path={route.path.replace('tenant/', '')}
                             element={route.element}
                           />
                         ))}
@@ -127,7 +136,7 @@ const App: React.FC = () => {
                         {vendorRoutes.map((route) => (
                           <Route
                             key={route.path}
-                            path={route.path}
+                            path={route.path.replace('vendor/', '')}
                             element={route.element}
                           />
                         ))}
@@ -136,15 +145,6 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-
-              {/* Common routes accessible to all authenticated users */}
-              {commonRoutes.map((route) => (
-                <Route 
-                  key={`common-${route.path}`}
-                  path={route.path} 
-                  element={<ProtectedRoute>{route.element}</ProtectedRoute>} 
-                />
-              ))}
 
               {/* Catch invalid routes */}
               <Route path="*" element={<NotFound />} />
