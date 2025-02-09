@@ -4,13 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/utils/logger";
 import { Loader2 } from "lucide-react";
+import { UserRole } from "@/types/user";
 
 export const ProtectedRoute = ({ 
   children,
   requiredRole 
 }: { 
   children: React.ReactNode;
-  requiredRole?: string;
+  requiredRole?: UserRole;
 }) => {
   const { data: session, isLoading } = useQuery({
     queryKey: ['session'],
@@ -39,7 +40,7 @@ export const ProtectedRoute = ({
     );
   }
 
-  // During development, bypass all checks
+  // During development, bypass authentication checks
   if (import.meta.env.DEV) {
     logger.info('Development mode: bypassing auth checks');
     return <>{children}</>;
@@ -51,6 +52,6 @@ export const ProtectedRoute = ({
     return <Navigate to="/login" replace />;
   }
 
-  // Allow access if authenticated
+  // Role check happens at the data layer through RLS policies
   return <>{children}</>;
 };

@@ -18,7 +18,7 @@ import Applications from "@/pages/Applications";
 export const ownerRoutes: RouteObject[] = [
   {
     path: "/owner",
-    element: <ProtectedRoute requiredRole="owner"><OwnerLayout /></ProtectedRoute>,
+    element: <ProtectedRoute><OwnerLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <OwnerDashboard /> },
       { path: "dashboard", element: <OwnerDashboard /> },

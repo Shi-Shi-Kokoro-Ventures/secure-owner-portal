@@ -13,7 +13,7 @@ import VendorSettings from "@/pages/vendor/VendorSettings";
 export const vendorRoutes: RouteObject[] = [
   {
     path: "vendor",
-    element: <ProtectedRoute requiredRole="vendor"><VendorLayout /></ProtectedRoute>,
+    element: <ProtectedRoute><VendorLayout /></ProtectedRoute>,
     children: [
       {
         index: true,

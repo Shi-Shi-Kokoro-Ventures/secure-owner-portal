@@ -17,7 +17,7 @@ import Notifications from "@/pages/Notifications";
 
 export const tenantRoutes: RouteObject[] = [
   {
-    element: <ProtectedRoute requiredRole="tenant"><TenantLayout /></ProtectedRoute>,
+    element: <ProtectedRoute><TenantLayout /></ProtectedRoute>,
     children: [
       { path: "/tenant/dashboard", element: <TenantDashboard /> },
       { path: "/tenant/maintenance", element: <TenantMaintenance /> },
