@@ -89,7 +89,7 @@ const App: React.FC = () => {
               <Route
                 path="/admin/*"
                 element={
-                  <ProtectedRoute allowedRoles={["admin", "special_admin"]}>
+                  <ProtectedRoute>
                     <Layout>
                       <Routes>
                         {adminRoutes.map((route) => (
@@ -108,7 +108,7 @@ const App: React.FC = () => {
               <Route
                 path="/property-manager/*"
                 element={
-                  <ProtectedRoute allowedRoles={["property_manager"]}>
+                  <ProtectedRoute>
                     <Layout>
                       <Routes>
                         {propertyManagerRoutes.map((route) => (
@@ -127,7 +127,7 @@ const App: React.FC = () => {
               <Route
                 path="/tenant/*"
                 element={
-                  <ProtectedRoute allowedRoles={["tenant"]}>
+                  <ProtectedRoute>
                     <TenantLayout>
                       <Routes>
                         {tenantRoutes.map((route) => (
@@ -146,7 +146,7 @@ const App: React.FC = () => {
               <Route
                 path="/vendor/*"
                 element={
-                  <ProtectedRoute allowedRoles={["vendor"]}>
+                  <ProtectedRoute>
                     <Layout>
                       <Routes>
                         {vendorRoutes.map((route) => (
@@ -180,4 +180,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
