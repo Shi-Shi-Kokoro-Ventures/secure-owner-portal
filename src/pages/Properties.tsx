@@ -1,18 +1,8 @@
 
-import { Layout } from "@/components/Layout";
-import { DashboardSection } from "@/components/properties/DashboardSection";
-import { PropertiesSection } from "@/components/properties/PropertiesSection";
+import { Navigate } from "react-router-dom";
 
 const Properties = () => {
-  return (
-    <Layout>
-      <div className="space-y-4 animate-fade-in">
-        <DashboardSection />
-        <PropertiesSection />
-      </div>
-    </Layout>
-  );
+  return <Navigate to="/admin/properties" replace />;
 };
 
 export default Properties;
-

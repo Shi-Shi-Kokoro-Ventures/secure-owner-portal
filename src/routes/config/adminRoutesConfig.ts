@@ -1,39 +1,40 @@
+
 import { AdminRoute } from "@/types/routes";
 
 export const dashboardRoutes: AdminRoute[] = [
   {
     key: "admin-dashboard",
-    path: "/admin/dashboard",
+    path: "dashboard",
     element: null,
     requiresAuth: true,
     title: "Dashboard",
   }
 ];
 
-export const leaseRoutes: AdminRoute[] = [
-  {
-    key: "admin-leases",
-    path: "/admin/leases",
-    element: null,
-    requiresAuth: true,
-    title: "Lease Management",
-  }
-];
-
 export const propertyRoutes: AdminRoute[] = [
   {
     key: "admin-properties",
-    path: "/admin/properties",
+    path: "properties",
     element: null,
     requiresAuth: true,
     title: "Properties",
   }
 ];
 
+export const leaseRoutes: AdminRoute[] = [
+  {
+    key: "admin-leases",
+    path: "leases",
+    element: null,
+    requiresAuth: true,
+    title: "Lease Management",
+  }
+];
+
 export const financialRoutes: AdminRoute[] = [
   {
     key: "admin-payments",
-    path: "/admin/payments",
+    path: "payments",
     element: null,
     requiresAuth: true,
     title: "Financial Management",
@@ -43,7 +44,7 @@ export const financialRoutes: AdminRoute[] = [
 export const maintenanceRoutes: AdminRoute[] = [
   {
     key: "admin-maintenance",
-    path: "/admin/maintenance",
+    path: "maintenance",
     element: null,
     requiresAuth: true,
     title: "Maintenance",
@@ -53,7 +54,7 @@ export const maintenanceRoutes: AdminRoute[] = [
 export const reportRoutes: AdminRoute[] = [
   {
     key: "admin-reports",
-    path: "/admin/reports",
+    path: "reports",
     element: null,
     requiresAuth: true,
     title: "Reports & Analytics",
@@ -63,7 +64,7 @@ export const reportRoutes: AdminRoute[] = [
 export const userManagementRoutes: AdminRoute[] = [
   {
     key: "admin-users",
-    path: "/admin/users",
+    path: "users",
     element: null,
     requiresAuth: true,
     title: "User Management",
@@ -73,7 +74,7 @@ export const userManagementRoutes: AdminRoute[] = [
 export const newsletterRoutes: AdminRoute[] = [
   {
     key: "admin-newsletters",
-    path: "/admin/newsletters",
+    path: "newsletters",
     element: null,
     requiresAuth: true,
     title: "Newsletter Management",
@@ -83,7 +84,7 @@ export const newsletterRoutes: AdminRoute[] = [
 export const settingsRoutes: AdminRoute[] = [
   {
     key: "admin-settings",
-    path: "/admin/settings",
+    path: "settings",
     element: null,
     requiresAuth: true,
     title: "Settings",
@@ -93,7 +94,7 @@ export const settingsRoutes: AdminRoute[] = [
 export const messageRoutes: AdminRoute[] = [
   {
     key: "admin-messages",
-    path: "/admin/messages",
+    path: "messages",
     element: null,
     requiresAuth: true,
     title: "Messages",

@@ -5,6 +5,7 @@ import Tenants from "@/pages/Tenants";
 import WorkOrders from "@/pages/WorkOrders";
 import Dashboard from "@/pages/Dashboard";
 import Banking from "@/pages/Banking";
+import Properties from "@/pages/Properties";
 
 export const propertyManagerRoutes: AppRoute[] = [
   {
@@ -12,6 +13,14 @@ export const propertyManagerRoutes: AppRoute[] = [
     element: (
       <ProtectedRoute allowedRoles={["property_manager"]}>
         <Dashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "properties",
+    element: (
+      <ProtectedRoute allowedRoles={["property_manager"]}>
+        <Properties />
       </ProtectedRoute>
     ),
   },
