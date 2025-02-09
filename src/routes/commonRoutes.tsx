@@ -6,6 +6,8 @@ import Signup from "@/pages/Signup";
 import Services from "@/pages/Services";
 import TenantServices from "@/pages/TenantServices";
 import AvailableProperties from "@/pages/AvailableProperties";
+import Owners from "@/pages/Owners";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 export const commonRoutes = [
   {
@@ -31,5 +33,13 @@ export const commonRoutes = [
   {
     path: "/available-properties",
     element: <AvailableProperties />,
+  },
+  {
+    path: "/owners",
+    element: (
+      <ProtectedRoute allowedRoles={["admin", "property_manager"]}>
+        <Owners />
+      </ProtectedRoute>
+    ),
   },
 ];
