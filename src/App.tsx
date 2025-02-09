@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
@@ -43,16 +44,6 @@ const App: React.FC = () => {
               {/* Public routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/tenant-services" element={<TenantServices />} />
-              
-              {/* Reports redirect */}
-              <Route 
-                path="/reports" 
-                element={
-                  <ProtectedRoute>
-                    <Navigate to="/admin/reports" replace />
-                  </ProtectedRoute>
-                } 
-              />
               
               {/* Add Tenants route */}
               <Route 
@@ -171,6 +162,12 @@ const App: React.FC = () => {
                 }
               />
 
+              {/* Default redirect for /reports to admin reports */}
+              <Route 
+                path="/reports" 
+                element={<Navigate to="/admin/reports" replace />} 
+              />
+
               {/* Catch invalid routes */}
               <Route path="*" element={<NotFound />} />
             </Routes>
@@ -183,3 +180,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
