@@ -30,7 +30,7 @@ const createOwnerRoute = (path: string, Component: React.ComponentType): AppRout
   ),
 });
 
-// Define routes with consistent pattern
+// Define owner-specific routes
 export const ownerRoutes: AppRoute[] = [
   createOwnerRoute("owner/dashboard", OwnerDashboard),
   createOwnerRoute("owner/properties", OwnerProperties),
