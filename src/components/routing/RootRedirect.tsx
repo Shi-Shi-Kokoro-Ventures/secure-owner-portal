@@ -38,8 +38,8 @@ export const RootRedirect = () => {
     special_admin: "/admin/dashboard"
   };
 
-  // For root path, redirect to appropriate dashboard
-  if (location.pathname === '/') {
+  // For root path or /dashboard, redirect to appropriate dashboard
+  if (location.pathname === '/' || location.pathname === '/dashboard') {
     if (user && userProfile) {
       const defaultRoute = roleDashboards[userProfile.role];
       if (defaultRoute) {
